@@ -20,11 +20,30 @@ No test framework, linter, or formatter is configured.
 
 **Single-component SPA:** The entire frontend lives in one React component (`CompliancePortal` in `src/App.jsx`) using hooks (`useState`, `useRef`) for all state management. There is no router, no state library, and no component decomposition.
 
-**Serverless API:** `api/submit.js` is a Vercel serverless function handling `POST /api/submit`. It currently runs in demo mode (logs and returns success). FileMaker Data API integration is the planned backend but is not yet implemented (marked TODO).
+**Two UI states:** The component renders either the form view or a confirmation view, toggled by the `submitted` boolean. The confirmation view shows a summary and a JSON preview of the structured payload, with options to download the JSON or reset and submit again.
 
-**Form submission flow:** The form collects buyer info + three categories of file uploads (progress photos, documentation, receipts/invoices). On submit, data is serialized to a JSON structure client-side and displayed as a confirmation. Files are not actually uploaded to a server — only metadata (name, size, type) is captured. A "Download JSON" button lets users export the submission payload.
+**Serverless API:** `api/submit.js` is a Vercel serverless function handling `POST /api/submit`. It currently runs in demo mode (logs and returns success). FileMaker Data API integration is the planned backend but is not yet implemented (marked TODO). The frontend does not actually call this endpoint yet — submission is handled entirely client-side.
 
-**File upload handling:** Three separate drag-and-drop zones share common `handleDrag`/`handleDrop`/`handleFiles` functions, differentiated by a `fileType` string (`'progress'`, `'financial'`, `'receipts'`). Image files get `URL.createObjectURL` previews; non-images show a generic icon.
+**Form fields:** Required: buyerName, email (validated with regex), propertyAddress, programType (Ready4Rehab | Featured Homes | VIP). Optional: totalSpent (dollar amount), submissionType (defaults to `'progress'`).
+
+**File upload handling:** Three separate drag-and-drop zones share common `handleDrag`/`handleDrop`/`handleFiles` functions, differentiated by a `fileType` string (`'progress'`, `'financial'`, `'receipts'`). Accepted types: images (all zones), PDF and CSV (documentation and receipts zones). Image files get `URL.createObjectURL` previews; non-images show a generic icon. Files are not uploaded to a server — only metadata (name, size, type) is captured in the submission payload.
+
+**Submission payload structure:**
+```json
+{
+  "timestamp": "ISO string",
+  "buyer": { "name", "email", "propertyAddress", "programType" },
+  "financial": { "totalSpent": number|null, "hasReceipts": boolean },
+  "files": {
+    "progressPhotos": [{ "name", "size", "type" }],
+    "documentation": [{ "name", "size", "type" }],
+    "receipts": [{ "name", "size", "type" }]
+  },
+  "submissionType": "progress"
+}
+```
+
+**Deployment:** Hosted on Vercel. `vercel.json` rewrites `/api/*` to the serverless functions in `api/`.
 
 ## Code Conventions
 
