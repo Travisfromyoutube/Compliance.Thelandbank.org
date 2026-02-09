@@ -1,29 +1,10 @@
-# CLAUDE.md - Landbank Compliance Portal
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
 Genesee County Land Bank (GCLB) Compliance Portal — a single-page React application where property buyers submit progress photos, financial documentation, and receipts for property rehabilitation programs (Ready4Rehab, Featured Homes, VIP).
-
-## Tech Stack
-
-- **Frontend:** React 18, Vite 5, Tailwind CSS 3
-- **Backend:** Vercel serverless functions (Node.js) in `api/`
-- **Styling:** Tailwind CSS with PostCSS + Autoprefixer
-- **Icons:** Lucide React
-- **Module system:** ES Modules (`"type": "module"`)
-- **Deployment:** Vercel
-
-## Directory Structure
-
-```
-src/
-  App.jsx        # Main CompliancePortal component (~535 lines)
-  main.jsx       # React entry point
-  index.css      # Tailwind CSS imports
-api/
-  submit.js      # POST /api/submit — form submission endpoint (demo mode, FileMaker integration pending)
-index.html       # HTML entry point
-```
 
 ## Commands
 
@@ -33,17 +14,22 @@ npm run build    # Production build to dist/
 npm run preview  # Preview production build locally
 ```
 
-## Key Architecture Notes
+No test framework, linter, or formatter is configured.
 
-- The entire frontend is a single React component (`CompliancePortal`) using hooks for state management (useState, useRef).
-- File uploads support drag-and-drop with client-side preview for images.
-- The API endpoint at `api/submit.js` currently runs in demo mode — it logs submissions and returns success but does not yet integrate with FileMaker Data API (marked as TODO).
-- `vercel.json` rewrites `/api/*` to the serverless functions.
-- No test framework, linter, or formatter is currently configured.
+## Architecture
+
+**Single-component SPA:** The entire frontend lives in one React component (`CompliancePortal` in `src/App.jsx`) using hooks (`useState`, `useRef`) for all state management. There is no router, no state library, and no component decomposition.
+
+**Serverless API:** `api/submit.js` is a Vercel serverless function handling `POST /api/submit`. It currently runs in demo mode (logs and returns success). FileMaker Data API integration is the planned backend but is not yet implemented (marked TODO).
+
+**Form submission flow:** The form collects buyer info + three categories of file uploads (progress photos, documentation, receipts/invoices). On submit, data is serialized to a JSON structure client-side and displayed as a confirmation. Files are not actually uploaded to a server — only metadata (name, size, type) is captured. A "Download JSON" button lets users export the submission payload.
+
+**File upload handling:** Three separate drag-and-drop zones share common `handleDrag`/`handleDrop`/`handleFiles` functions, differentiated by a `fileType` string (`'progress'`, `'financial'`, `'receipts'`). Image files get `URL.createObjectURL` previews; non-images show a generic icon.
 
 ## Code Conventions
 
-- JSX files use `.jsx` extension
-- Tailwind utility classes for all styling (no custom CSS beyond Tailwind imports)
-- CORS is enabled with wildcard origin on the API endpoint
-- Form validation is handled client-side with inline error display
+- `.jsx` extension for all React files
+- Tailwind utility classes for all styling (no custom CSS)
+- ES Modules throughout (`"type": "module"` in package.json)
+- CORS enabled with wildcard origin on the API endpoint
+- Client-side form validation with inline error display
