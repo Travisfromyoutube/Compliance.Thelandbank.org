@@ -26,7 +26,7 @@ const NAV_SECTIONS = [
     icon: ICONS.enforcement,
     collapsible: false,
     items: [
-      { label: 'Action Queue',   icon: ICONS.actionQueue,   path: '/action-queue' },
+      { label: 'Action Queue',   icon: ICONS.actionQueue,   path: '/action-queue', badge: 'needsAction' },
       { label: 'Properties',     icon: ICONS.properties,    path: '/properties' },
       { label: 'Milestones',     icon: ICONS.milestones,    path: '/milestones' },
       { label: 'Compliance',     icon: ICONS.compliance,    path: '/compliance' },
@@ -40,7 +40,6 @@ const NAV_SECTIONS = [
     collapsible: false,
     items: [
       { label: 'Communication',  icon: ICONS.communication, path: '/communications' },
-      { label: 'Batch Email',    icon: ICONS.batchEmail,    path: '/batch-email' },
       { label: 'Templates',      icon: ICONS.file,          path: '/templates' },
     ],
   },
@@ -65,6 +64,34 @@ function NavItem({ item, onClick }) {
     >
       <AppIcon icon={item.icon} size={15} />
       <span className="truncate">{item.label}</span>
+    </NavLink>
+  );
+}
+
+/* ── Nav item with live badge ────────────────── */
+
+function NavItemWithBadge({ item, onClick, badgeCount }) {
+  return (
+    <NavLink
+      to={item.path}
+      end={item.path === '/'}
+      onClick={onClick}
+      className={({ isActive }) =>
+        [
+          'group flex items-center gap-2.5 pl-9 pr-3 py-[7px] text-[13px] rounded-md transition-all duration-150',
+          isActive
+            ? 'bg-white/10 text-white font-medium shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
+            : 'text-blue-200/60 hover:bg-white/[0.05] hover:text-blue-100',
+        ].join(' ')
+      }
+    >
+      <AppIcon icon={item.icon} size={15} />
+      <span className="truncate flex-1">{item.label}</span>
+      {badgeCount > 0 && (
+        <span className="flex-shrink-0 min-w-[20px] px-1.5 py-0.5 rounded-full bg-warning/20 text-warning text-[10px] font-mono font-medium text-center leading-none">
+          {badgeCount}
+        </span>
+      )}
     </NavLink>
   );
 }
@@ -107,7 +134,7 @@ function SectionHeader({ section, isOpen, hasActiveChild, onClick }) {
 
 /* ── Nav section (handles both collapsible + static) */
 
-function NavSection({ section, openSections, toggleSection, onNavClick }) {
+function NavSection({ section, openSections, toggleSection, onNavClick, badgeCounts }) {
   const location = useLocation();
   const isCollapsible = section.collapsible;
   const isOpen = !isCollapsible || openSections.includes(section.id);
@@ -116,6 +143,20 @@ function NavSection({ section, openSections, toggleSection, onNavClick }) {
       ? location.pathname === '/'
       : location.pathname.startsWith(item.path)
   );
+
+  const renderItem = (item) => {
+    if (item.badge && badgeCounts?.[item.badge] !== undefined) {
+      return (
+        <NavItemWithBadge
+          key={item.label}
+          item={item}
+          onClick={onNavClick}
+          badgeCount={badgeCounts[item.badge]}
+        />
+      );
+    }
+    return <NavItem key={item.path} item={item} onClick={onNavClick} />;
+  };
 
   return (
     <div>
@@ -135,52 +176,38 @@ function NavSection({ section, openSections, toggleSection, onNavClick }) {
           ].join(' ')}
         >
           <div className="space-y-px pb-1">
-            {section.items.map((item) => (
-              <NavItem key={item.path} item={item} onClick={onNavClick} />
-            ))}
+            {section.items.map(renderItem)}
           </div>
         </div>
       ) : (
         /* Always visible for Compliance & Outreach */
         <div className="space-y-px mt-0.5 pb-1">
-          {section.items.map((item) => (
-            <NavItem key={item.path} item={item} onClick={onNavClick} />
-          ))}
+          {section.items.map(renderItem)}
         </div>
       )}
     </div>
   );
 }
 
-/* ── Action nudge widget ─────────────────────── */
+/* ── Batch Mail nudge widget ──────────────────── */
 
-function ActionNudge() {
-  const { properties } = useProperties();
-
-  const actionCount = useMemo(() => {
-    return properties.filter(
-      (p) => p.enforcementLevel > 0
-    ).length;
-  }, [properties]);
-
-  if (actionCount === 0) return null;
-
+function BatchMailNudge() {
   return (
     <div className="px-2.5 pb-2">
       <Link
-        to="/action-queue"
+        to="/batch-email"
         className="group block px-3 py-2.5 rounded-md bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] hover:border-accent/30 transition-all duration-150"
       >
         <div className="flex items-center gap-2.5">
-          <div className="flex-shrink-0 w-7 h-7 rounded bg-warning/15 flex items-center justify-center">
-            <AppIcon icon={ICONS.warning} size={14} variant="warning" />
+          <div className="flex-shrink-0 w-7 h-7 rounded bg-accent/15 flex items-center justify-center">
+            <AppIcon icon={ICONS.batchEmail} size={14} className="text-accent-light" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-medium text-white leading-tight">
-              <span className="font-mono tabular-nums">{actionCount}</span> need action
+              Batch Mail
             </p>
             <p className="text-[10px] text-blue-200/40 mt-0.5 group-hover:text-blue-200/60 transition-colors">
-              Open Action Queue →
+              Send compliance emails →
             </p>
           </div>
         </div>
@@ -193,6 +220,11 @@ function ActionNudge() {
 
 function Sidebar({ onNavClick }) {
   const location = useLocation();
+  const { properties } = useProperties();
+
+  const badgeCounts = useMemo(() => ({
+    needsAction: properties.filter((p) => p.enforcementLevel > 0).length,
+  }), [properties]);
 
   // Only collapsible sections need open/close state
   const getActiveSections = () =>
@@ -247,12 +279,13 @@ function Sidebar({ onNavClick }) {
             openSections={openSections}
             toggleSection={toggleSection}
             onNavClick={onNavClick}
+            badgeCounts={badgeCounts}
           />
         ))}
       </nav>
 
-      {/* ── Action nudge ─────────────────────── */}
-      <ActionNudge />
+      {/* ── Batch Mail nudge ──────────────────── */}
+      <BatchMailNudge />
 
       {/* ── Footer ───────────────────────────── */}
       <div className="px-2.5 pb-1.5">
