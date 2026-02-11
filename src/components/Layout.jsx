@@ -189,6 +189,39 @@ function NavSection({ section, openSections, toggleSection, onNavClick, badgeCou
   );
 }
 
+/* ── FileMaker sync status ───────────────────── */
+
+function FileMakerSyncStatus() {
+  return (
+    <div className="px-2.5 pb-2">
+      <div className="px-3 py-2.5 rounded-md bg-white/[0.03] border border-white/[0.06]">
+        <div className="flex items-center gap-2 mb-2">
+          <AppIcon icon={ICONS.database} size={13} className="text-blue-200/60" />
+          <span className="text-[11px] font-mono font-semibold tracking-[0.06em] uppercase text-blue-200/50">
+            FileMaker Bridge
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/60 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+          </span>
+          <span className="text-[10px] text-accent-light font-medium">Connected</span>
+          <span className="text-[10px] text-blue-200/30 ml-auto font-mono">
+            Bidirectional
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 mt-1.5">
+          <AppIcon icon={ICONS.sync} size={10} className="text-blue-200/30" />
+          <span className="text-[9px] text-blue-200/30 font-mono">
+            Last sync: 2m ago
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Batch Mail nudge widget ──────────────────── */
 
 function BatchMailNudge() {
@@ -287,6 +320,9 @@ function Sidebar({ onNavClick }) {
       {/* ── Batch Mail nudge ──────────────────── */}
       <BatchMailNudge />
 
+      {/* ── FileMaker sync status ───────────── */}
+      <FileMakerSyncStatus />
+
       {/* ── Footer ───────────────────────────── */}
       <div className="px-2.5 pb-1.5">
         <NavLink
@@ -321,8 +357,9 @@ function Sidebar({ onNavClick }) {
 
       <div className="px-4 py-3 border-t border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-1.5 py-px rounded text-[9px] font-mono font-medium tracking-wider uppercase bg-accent/20 text-accent-light">
-            Prototype
+          <span className="inline-flex items-center gap-1 px-1.5 py-px rounded text-[9px] font-mono font-medium tracking-wider uppercase bg-accent/20 text-accent-light">
+            <AppIcon icon={ICONS.zap} size={8} className="text-accent-light" />
+            FileMaker Ready
           </span>
         </div>
       </div>

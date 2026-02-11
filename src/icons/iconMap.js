@@ -44,6 +44,13 @@ import {
   Eye,
   Scale,
   Megaphone,
+  Database,
+  RefreshCw,
+  ArrowUpDown,
+  Zap,
+  TrendingUp,
+  TrendingDown,
+  Minus,
 } from 'lucide-react';
 
 const ICONS = {
@@ -93,6 +100,17 @@ const ICONS = {
   overview:      Eye,
   enforcement:   Scale,
   outreach:      Megaphone,
+
+  // FileMaker Bridge / Integration
+  database:      Database,
+  sync:          RefreshCw,
+  dataFlow:      ArrowUpDown,
+  zap:           Zap,
+
+  // Trends
+  trendUp:       TrendingUp,
+  trendDown:     TrendingDown,
+  trendFlat:     Minus,
 };
 
 export default ICONS;
