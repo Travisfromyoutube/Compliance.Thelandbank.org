@@ -18,7 +18,7 @@ export default function BuyerHero() {
           <div className="flex items-center gap-4">
             {/* GCLBA official logo */}
             <img
-              src="/gclba-logo.jpg"
+              src="/gclba-logo.png"
               alt="Genesee County Land Bank"
               className="hidden sm:block flex-shrink-0 w-14 h-14 object-contain"
             />
