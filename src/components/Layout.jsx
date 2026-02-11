@@ -5,11 +5,14 @@ import ICONS from '../icons/iconMap';
 
 const CORE_NAV = [
   { label: 'Dashboard',     icon: ICONS.dashboard,     path: '/' },
+  { label: 'Action Queue',  icon: ICONS.actionQueue,   path: '/action-queue' },
   { label: 'Properties',    icon: ICONS.properties,    path: '/properties' },
   { label: 'Milestones',    icon: ICONS.milestones,    path: '/milestones' },
   { label: 'Compliance',    icon: ICONS.compliance,    path: '/compliance' },
   { label: 'Communication', icon: ICONS.communication, path: '/communications' },
   { label: 'Reports',       icon: ICONS.reports,       path: '/reports' },
+  { label: 'Compliance Map', icon: ICONS.mapPin,       path: '/map' },
+  { label: 'Audit Trail',   icon: ICONS.auditTrail,    path: '/audit' },
 ];
 
 const UTIL_NAV = [

@@ -8,6 +8,9 @@ import {
   ClipboardCheck,
   ArrowRight,
   LayoutDashboard,
+  ListChecks,
+  MapPin,
+  ShieldCheck,
 } from 'lucide-react';
 import { Card, StatCard, StatusPill, DataTable, AdminPageHeader } from '../components/ui';
 import { useProperties } from '../context/PropertyContext';
@@ -179,35 +182,78 @@ const Dashboard = () => {
         </Card>
       </div>
 
+      {/* Action Queue CTA — primary demo entry point */}
+      <div className="animate-fade-slide-up admin-stagger-4">
+        <Link
+          to="/action-queue"
+          className="group flex items-center justify-between p-5 rounded-lg bg-accent/5 border-2 border-accent/30 hover:border-accent hover:bg-accent/10 transition-all"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-accent/15 flex items-center justify-center group-hover:bg-accent/25 transition-colors">
+              <ListChecks className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <h3 className="font-heading text-sm font-semibold text-accent">
+                Open Action Queue
+              </h3>
+              <p className="text-xs text-muted mt-0.5">
+                {actionStats.needs1st + actionStats.needs2nd} properties need compliance action — review, select, and mail merge in one step
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="w-5 h-5 text-accent/50 group-hover:text-accent group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+        </Link>
+      </div>
+
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-slide-up admin-stagger-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-fade-slide-up admin-stagger-4">
         <Link
           to="/milestones"
-          className="group flex items-center justify-between p-5 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
+          className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
         >
+          <Clock className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
           <div>
-            <h3 className="font-heading text-sm font-semibold text-text group-hover:text-accent transition-colors">
-              View Milestones
+            <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
+              Milestones
             </h3>
-            <p className="text-xs text-muted mt-1">
-              Track project milestones and deadlines
-            </p>
+            <p className="text-[10px] text-muted mt-0.5 hidden md:block">Deadlines &amp; schedules</p>
           </div>
-          <ArrowRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
         </Link>
         <Link
           to="/compliance"
-          className="group flex items-center justify-between p-5 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
+          className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
         >
+          <ClipboardCheck className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
           <div>
-            <h3 className="font-heading text-sm font-semibold text-text group-hover:text-accent transition-colors">
-              Check Compliance
+            <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
+              Compliance
             </h3>
-            <p className="text-xs text-muted mt-1">
-              Review compliance status and requirements
-            </p>
+            <p className="text-[10px] text-muted mt-0.5 hidden md:block">Status &amp; requirements</p>
           </div>
-          <ArrowRight className="w-5 h-5 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+        </Link>
+        <Link
+          to="/map"
+          className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
+        >
+          <MapPin className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+          <div>
+            <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
+              Map View
+            </h3>
+            <p className="text-[10px] text-muted mt-0.5 hidden md:block">Geographic overview</p>
+          </div>
+        </Link>
+        <Link
+          to="/audit"
+          className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
+        >
+          <ShieldCheck className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+          <div>
+            <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
+              Audit Trail
+            </h3>
+            <p className="text-[10px] text-muted mt-0.5 hidden md:block">Compliance history</p>
+          </div>
         </Link>
       </div>
 

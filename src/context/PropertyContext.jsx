@@ -9,7 +9,7 @@
  */
 
 import React, { createContext, useContext, useReducer, useMemo, useEffect, useState } from 'react';
-import { mockProperties as seedProperties } from '../data/mockData';
+import { allProperties as seedProperties } from '../data/mockData';
 
 /* ── action types ──────────────────────────────────────── */
 export const ACTIONS = {

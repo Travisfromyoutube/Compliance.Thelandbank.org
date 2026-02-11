@@ -1,5 +1,6 @@
 // Mock data modeled on actual FileMaker field structure from GCLBA Compliance SOP
 // Programs: Featured Homes, R4R (Ready 4 Rehab), Demo (Demolition), VIP
+import { generateDemoProperties } from './mockDataGenerator';
 
 export const PROGRAM_TYPES = {
   FEATURED: 'Featured Homes',
@@ -38,6 +39,7 @@ export const mockProperties = [
     dateSold: '2025-06-15',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0059, lng: -83.6910,
     // Featured Homes specific fields (from SOP image10)
     dateProofOfInvestProvided: null,
     compliance1stAttempt: '2025-11-01',
@@ -69,6 +71,7 @@ export const mockProperties = [
     dateSold: '2025-03-10',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0234, lng: -83.7321,
     // R4R specific fields
     dateProofOfInvestProvided: null,
     compliance1stAttempt: '2025-09-15',
@@ -98,6 +101,7 @@ export const mockProperties = [
     dateSold: '2024-10-25',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0151, lng: -83.6886,
     complianceType: 'Renovation', // New Build or Renovation
     // VIP RC dates (from SOP image13 - auto-calculated from dateSold)
     rcDates: {
@@ -151,6 +155,7 @@ export const mockProperties = [
     dateSold: '2025-04-20',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0412, lng: -83.7205,
     // Demo specific fields
     dateProofOfInvestProvided: null,
     demoFinalCertDate: null, // needs local gov sign-off
@@ -172,6 +177,7 @@ export const mockProperties = [
     dateSold: '2025-01-15',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0389, lng: -83.7198,
     dateProofOfInvestProvided: '2025-12-01',
     compliance1stAttempt: '2025-07-20',
     compliance2ndAttempt: null,
@@ -196,6 +202,7 @@ export const mockProperties = [
     dateSold: '2025-08-01',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 42.9712, lng: -83.6945,
     dateProofOfInvestProvided: null,
     compliance1stAttempt: null,
     compliance2ndAttempt: null,
@@ -218,6 +225,7 @@ export const mockProperties = [
     dateSold: '2025-05-10',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0023, lng: -83.6773,
     dateProofOfInvestProvided: null,
     demoFinalCertDate: '2025-11-15',
     compliance1stAttempt: '2025-11-01',
@@ -239,6 +247,7 @@ export const mockProperties = [
     dateSold: '2025-07-01',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0345, lng: -83.7156,
     dateProofOfInvestProvided: null,
     compliance1stAttempt: '2026-01-05',
     compliance2ndAttempt: null,
@@ -262,6 +271,7 @@ export const mockProperties = [
     dateSold: '2025-09-01',
     offerType: 'Cash',
     purchaseType: '',
+    lat: 43.0478, lng: -83.6852,
     complianceType: 'New Build',
     rcDates: {
       RC15:  { due: '2025-09-16', completed: '2025-09-20' },
@@ -307,6 +317,7 @@ export const mockProperties = [
     dateSold: '2025-02-20',
     offerType: 'Land Contract',
     purchaseType: '',
+    lat: 43.0098, lng: -83.7034,
     dateProofOfInvestProvided: null,
     compliance1stAttempt: '2025-08-25',
     compliance2ndAttempt: '2025-10-30',
@@ -323,6 +334,14 @@ export const mockProperties = [
     ]
   }
 ];
+
+// Merge hand-curated properties with generated demo data for 40+ total
+const _handCuratedProperties = mockProperties;
+const _generatedProperties = generateDemoProperties(30);
+
+// Re-export merged array (hand-curated first, generated after)
+export { _handCuratedProperties, _generatedProperties };
+export const allProperties = [..._handCuratedProperties, ..._generatedProperties];
 
 // Email templates matching SOP shared drive (k/Jennifer Riggs/Compliance/)
 export const emailTemplates = [

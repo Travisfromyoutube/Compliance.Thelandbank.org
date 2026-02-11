@@ -36,6 +36,9 @@ import {
   Home,
   Timer,
   Menu,
+  ListChecks,
+  MapPin,
+  ShieldCheck,
 } from 'lucide-react';
 
 const ICONS = {
@@ -73,6 +76,11 @@ const ICONS = {
   file:          FileText,
   home:          Home,
   timer:         Timer,
+
+  // SOP-Killer features
+  actionQueue:   ListChecks,
+  mapPin:        MapPin,
+  auditTrail:    ShieldCheck,
 };
 
 export default ICONS;
