@@ -16,7 +16,6 @@ import { PROGRAM_TYPES } from '../data/mockData';
 import { DEFAULT_TEMPLATES, ACTION_LABELS } from '../data/emailTemplates';
 import { computeComplianceTiming } from '../lib/computeDueNow';
 import { findTemplateForAction } from '../lib/templateRenderer';
-import { toDisplayName } from '../lib/programTypeMapper';
 import { formatDate } from '../utils/milestones';
 import { EmailPreview } from '../components/EmailPreview';
 import { PropertyDetailDrawer } from '../components/PropertyDetailDrawer';
