@@ -136,7 +136,7 @@ const Dashboard = () => {
         <StatCard
           label="Needs Attention"
           value={stats.warningCount}
-          icon={ICONS.warning}
+          icon={ICONS.listTodo}
           variant="warning"
         />
         <StatCard
