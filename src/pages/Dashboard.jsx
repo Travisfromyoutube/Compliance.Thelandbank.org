@@ -1,17 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  CheckCircle,
-  AlertTriangle,
-  AlertCircle,
-  Clock,
-  ClipboardCheck,
-  ArrowRight,
-  LayoutDashboard,
-  ListChecks,
-  MapPin,
-  ShieldCheck,
-} from 'lucide-react';
+import ICONS from '../icons/iconMap';
 import { Card, StatCard, StatusPill, DataTable, AdminPageHeader } from '../components/ui';
 import { useProperties } from '../context/PropertyContext';
 import {
@@ -127,7 +116,7 @@ const Dashboard = () => {
       <AdminPageHeader
         title="Dashboard"
         subtitle={todayFormatted}
-        icon={LayoutDashboard}
+        icon={ICONS.dashboard}
       />
 
       {/* Summary Stats */}
@@ -135,25 +124,25 @@ const Dashboard = () => {
         <StatCard
           label="Total Properties"
           value={stats.totalActiveCases}
-          icon={ClipboardCheck}
+          icon={ICONS.compliance}
           variant="default"
         />
         <StatCard
           label="Compliant"
           value={stats.compliantCount}
-          icon={CheckCircle}
+          icon={ICONS.success}
           variant="success"
         />
         <StatCard
           label="Needs Attention"
           value={stats.warningCount}
-          icon={AlertTriangle}
+          icon={ICONS.warning}
           variant="warning"
         />
         <StatCard
           label="At Risk"
           value={stats.defaultCount}
-          icon={AlertCircle}
+          icon={ICONS.alert}
           variant="danger"
         />
       </div>
@@ -190,7 +179,7 @@ const Dashboard = () => {
         >
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-accent/15 flex items-center justify-center group-hover:bg-accent/25 transition-colors">
-              <ListChecks className="w-5 h-5 text-accent" />
+              <ICONS.actionQueue className="w-5 h-5 text-accent" strokeWidth={1.75} />
             </div>
             <div>
               <h3 className="font-heading text-sm font-semibold text-accent">
@@ -201,7 +190,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <ArrowRight className="w-5 h-5 text-accent/50 group-hover:text-accent group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+          <ICONS.arrowRight className="w-5 h-5 text-accent/50 group-hover:text-accent group-hover:translate-x-0.5 transition-all flex-shrink-0" strokeWidth={1.75} />
         </Link>
       </div>
 
@@ -211,7 +200,7 @@ const Dashboard = () => {
           to="/milestones"
           className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
         >
-          <Clock className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+          <ICONS.milestones className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" strokeWidth={1.75} />
           <div>
             <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
               Milestones
@@ -223,7 +212,7 @@ const Dashboard = () => {
           to="/compliance"
           className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
         >
-          <ClipboardCheck className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+          <ICONS.compliance className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" strokeWidth={1.75} />
           <div>
             <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
               Compliance
@@ -235,7 +224,7 @@ const Dashboard = () => {
           to="/map"
           className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
         >
-          <MapPin className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+          <ICONS.mapPin className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" strokeWidth={1.75} />
           <div>
             <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
               Map View
@@ -247,7 +236,7 @@ const Dashboard = () => {
           to="/audit"
           className="group flex items-center gap-3 p-4 rounded-lg border-2 border-warm-200 hover:border-accent transition-colors"
         >
-          <ShieldCheck className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" />
+          <ICONS.auditTrail className="w-4 h-4 text-muted group-hover:text-accent transition-colors flex-shrink-0" strokeWidth={1.75} />
           <div>
             <h3 className="font-heading text-xs font-semibold text-text group-hover:text-accent transition-colors">
               Audit Trail
@@ -262,19 +251,19 @@ const Dashboard = () => {
         <StatCard
           label="Needs 1st Attempt"
           value={actionStats.needs1st}
-          icon={AlertTriangle}
+          icon={ICONS.warning}
           variant="warning"
         />
         <StatCard
           label="Needs 2nd Attempt"
           value={actionStats.needs2nd}
-          icon={Clock}
+          icon={ICONS.clock}
           variant="warning"
         />
         <StatCard
           label="No Email on File"
           value={actionStats.noEmail}
-          icon={AlertCircle}
+          icon={ICONS.alert}
           variant="danger"
         />
       </div>
@@ -295,7 +284,7 @@ const Dashboard = () => {
           />
         ) : (
           <div className="text-center py-8 bg-surface rounded-lg border border-border">
-            <CheckCircle className="w-8 h-8 text-success mx-auto mb-2" />
+            <ICONS.success className="w-8 h-8 text-success mx-auto mb-2" strokeWidth={1.75} />
             <p className="text-sm text-muted">All properties are on track</p>
           </div>
         )}

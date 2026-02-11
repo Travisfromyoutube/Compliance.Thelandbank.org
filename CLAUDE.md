@@ -23,6 +23,9 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 | Milestones Page | Done | Upcoming milestones computed from compliance rules |
 | Template Manager | Done | CRUD for email templates with variant system |
 | Enforcement Tracker | Done | Enforcement level visualization and tracking |
+| Action Queue | Done | Grouped by action type, mail merge workflow, email preview |
+| Compliance Map | Done | Leaflet map with enforcement-colored markers, program filter |
+| Audit Trail | Done | Expandable property timelines, chronological event history |
 | Reports Page | Scaffold | Page exists, needs data aggregation |
 | Settings Page | Scaffold | Page exists, placeholder content |
 | Database (Neon) | Done | 7 models, seed script, API endpoints connected |
@@ -44,7 +47,7 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 ### State Management
 
 `PropertyContext.jsx` uses `useReducer` as the central state store:
-- Initializes from `mockData.js` (deep clone), then attempts API fetch on mount
+- Initializes from `allProperties` in `mockData.js` (10 hand-curated + 30 generated), then attempts API fetch on mount
 - All mutations dispatch locally AND fire-and-forget PATCH to `/api/properties/:id`
 - Actions: `SET_PROPERTIES`, `ADD_COMMUNICATION`, `UPDATE_PROPERTY_FIELD`, `BATCH_UPDATE_PROPERTIES`
 - Helpers: `logCommunication()`, `batchLogCommunications()`, `updateField()`, `getProperty()`
@@ -113,6 +116,11 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | `src/lib/db.js` | Prisma client singleton (serverless-safe) |
 | `src/lib/emailSender.js` | Resend integration with mock fallback |
 | `src/data/mockData.js` | Seed data + enum exports (PROGRAM_TYPES, ENFORCEMENT_LEVELS, COMPLIANCE_STATUSES) |
+| `src/data/mockDataGenerator.js` | Seeded PRNG generator for 30+ demo properties with realistic data |
+| `src/data/emailTemplates.js` | DEFAULT_TEMPLATES, ACTION_LABELS for compliance email actions |
+| `src/pages/ActionQueue.jsx` | SOP-killer: grouped compliance actions with mail merge |
+| `src/pages/ComplianceMap.jsx` | Leaflet map with enforcement-level markers and popups |
+| `src/pages/AuditTrail.jsx` | Per-property timeline with communications and milestones |
 | `src/components/Layout.jsx` | Admin shell — sidebar nav + outlet |
 | `src/icons/iconMap.js` | Semantic icon registry (Lucide) |
 | `tailwind.config.js` | Design tokens (colors, fonts, animations) |
@@ -130,6 +138,8 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **API responses**: Flatten Prisma includes to match the shape PropertyContext expects (buyerName as single string, dates as ISO strings).
 - **Program types**: Use display names in UI/mockData, rule keys in compliance engine. Convert with `toRuleKey()` / `toDisplayName()`.
 - **Fonts**: Headings use `font-heading` (Bitter), stats/dates/IDs use `font-mono` (Courier Prime), body uses `font-sans` (Inter).
+- **Vite cache**: After changing major dependency versions, clear `node_modules/.vite` and restart dev server.
+- **Mock data**: `allProperties` merges hand-curated (10) + generated (30) properties. Import from `src/data/mockData.js`.
 
 ---
 
@@ -144,6 +154,9 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | Prisma + Neon serverless | Free tier suits prototype; pgbouncer pooling for serverless compatibility |
 | Separate buyer portal route (`/submit`) | Different audience, different aesthetic; no admin sidebar needed |
 | Michigan Civic Editorial design language | Professional civic tech aesthetic; warm neutrals, serif headings, matte surfaces |
+| react-leaflet pinned to v4.2.1 | v5 requires React 19 context API; crashes on React 18 with "render2 is not a function" |
+| Seeded PRNG mock data generator | 30 generated + 10 hand-curated = 40 properties; deterministic so data is stable across refreshes |
+| Action Queue as SOP-killer centerpiece | Groups properties by compliance action, one-click mail merge replaces 6-tool manual workflow |
 
 ---
 

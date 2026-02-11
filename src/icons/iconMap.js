@@ -28,6 +28,7 @@ import {
   ArrowRight,
   ArrowLeft,
   ChevronRight,
+  ChevronDown,
   Send,
   Camera,
   X,
@@ -38,7 +39,10 @@ import {
   Menu,
   ListChecks,
   MapPin,
-  ShieldCheck,
+  ScrollText,
+  Eye,
+  Scale,
+  Megaphone,
 } from 'lucide-react';
 
 const ICONS = {
@@ -80,7 +84,13 @@ const ICONS = {
   // SOP-Killer features
   actionQueue:   ListChecks,
   mapPin:        MapPin,
-  auditTrail:    ShieldCheck,
+  auditTrail:    ScrollText,
+
+  // Section headers & UI
+  chevronDown:   ChevronDown,
+  overview:      Eye,
+  enforcement:   Scale,
+  outreach:      Megaphone,
 };
 
 export default ICONS;

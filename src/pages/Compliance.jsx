@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ShieldCheck } from 'lucide-react';
+import { Search } from 'lucide-react';
+import ICONS from '../icons/iconMap';
 import { StatCard, StatusPill, DataTable, FormField, TextInput, SelectInput, AdminPageHeader } from '../components/ui';
 import { useProperties } from '../context/PropertyContext';
 import { computeComplianceTiming } from '../lib/computeDueNow';
@@ -241,7 +242,7 @@ export default function Compliance() {
             ? `${filteredProperties.length} propert${filteredProperties.length === 1 ? 'y' : 'ies'} require${filteredProperties.length === 1 ? 's' : ''} attention`
             : 'All properties clear'
         }
-        icon={ShieldCheck}
+        icon={ICONS.compliance}
       />
 
       {/* Summary Stats */}

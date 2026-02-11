@@ -3,25 +3,48 @@ import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { AppIcon } from './ui';
 import ICONS from '../icons/iconMap';
 
-const CORE_NAV = [
-  { label: 'Dashboard',     icon: ICONS.dashboard,     path: '/' },
-  { label: 'Action Queue',  icon: ICONS.actionQueue,   path: '/action-queue' },
-  { label: 'Properties',    icon: ICONS.properties,    path: '/properties' },
-  { label: 'Milestones',    icon: ICONS.milestones,    path: '/milestones' },
-  { label: 'Compliance',    icon: ICONS.compliance,    path: '/compliance' },
-  { label: 'Communication', icon: ICONS.communication, path: '/communications' },
-  { label: 'Reports',       icon: ICONS.reports,       path: '/reports' },
-  { label: 'Compliance Map', icon: ICONS.mapPin,       path: '/map' },
-  { label: 'Audit Trail',   icon: ICONS.auditTrail,    path: '/audit' },
+/* ══════════════════════════════════════════════════
+   Navigation Structure — grouped by mental model
+   ══════════════════════════════════════════════════ */
+
+const NAV_SECTIONS = [
+  {
+    id: 'overview',
+    label: 'Overview',
+    icon: ICONS.overview,
+    items: [
+      { label: 'Dashboard',      icon: ICONS.dashboard,   path: '/' },
+      { label: 'Compliance Map',  icon: ICONS.mapPin,      path: '/map' },
+      { label: 'Reports',         icon: ICONS.reports,     path: '/reports' },
+    ],
+  },
+  {
+    id: 'enforcement',
+    label: 'Enforcement',
+    icon: ICONS.enforcement,
+    items: [
+      { label: 'Action Queue',   icon: ICONS.actionQueue,   path: '/action-queue' },
+      { label: 'Properties',     icon: ICONS.properties,    path: '/properties' },
+      { label: 'Milestones',     icon: ICONS.milestones,    path: '/milestones' },
+      { label: 'Compliance',     icon: ICONS.compliance,    path: '/compliance' },
+      { label: 'Audit Trail',    icon: ICONS.auditTrail,    path: '/audit' },
+    ],
+  },
+  {
+    id: 'outreach',
+    label: 'Outreach',
+    icon: ICONS.outreach,
+    items: [
+      { label: 'Communication',  icon: ICONS.communication, path: '/communications' },
+      { label: 'Batch Email',    icon: ICONS.batchEmail,    path: '/batch-email' },
+      { label: 'Templates',      icon: ICONS.file,          path: '/templates' },
+    ],
+  },
 ];
 
-const UTIL_NAV = [
-  { label: 'Settings',    icon: ICONS.settings,   path: '/settings' },
-  { label: 'Batch Email', icon: ICONS.batchEmail, path: '/batch-email' },
-  { label: 'Templates',   icon: ICONS.file,       path: '/templates' },
-];
+/* ── Single nav link ──────────────────────────── */
 
-function NavItem({ item, onClick }) {
+function NavItem({ item, onClick, compact }) {
   return (
     <NavLink
       to={item.path}
@@ -29,78 +52,184 @@ function NavItem({ item, onClick }) {
       onClick={onClick}
       className={({ isActive }) =>
         [
-          'flex items-center gap-3 px-4 py-2.5 md:py-2 text-sm rounded-md transition-colors border-l-2',
+          'group flex items-center gap-2.5 pl-9 pr-3 py-[7px] text-[13px] rounded-md transition-all duration-150',
           isActive
-            ? 'bg-white/8 text-white font-medium border-accent'
-            : 'text-blue-200/70 hover:bg-white/6 hover:text-blue-100 border-transparent',
+            ? 'bg-white/10 text-white font-medium shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
+            : 'text-blue-200/60 hover:bg-white/[0.05] hover:text-blue-100',
         ].join(' ')
       }
     >
-      <AppIcon icon={item.icon} size={18} />
-      <span>{item.label}</span>
+      <AppIcon icon={item.icon} size={15} />
+      <span className="truncate">{item.label}</span>
     </NavLink>
   );
 }
 
-function Sidebar({ onNavClick }) {
+/* ── Collapsible section ─────────────────────── */
+
+function NavSection({ section, openSections, toggleSection, onNavClick }) {
+  const location = useLocation();
+  const isOpen = openSections.includes(section.id);
+  const hasActiveChild = section.items.some(
+    (item) => item.path === '/'
+      ? location.pathname === '/'
+      : location.pathname.startsWith(item.path)
+  );
+
   return (
-    <aside className="w-60 sidebar-bg text-white flex flex-col flex-shrink-0 h-full">
-      <div className="px-5 py-6 border-b border-white/10">
-        <h1 className="font-heading text-lg font-bold tracking-tight text-white">GCLBA</h1>
-        <p className="text-[11px] font-mono text-blue-200/60 mt-0.5 font-medium tracking-widest uppercase">
+    <div>
+      <button
+        onClick={() => toggleSection(section.id)}
+        className={[
+          'w-full flex items-center gap-2.5 px-3 py-2 text-[10px] font-mono font-semibold tracking-[0.12em] uppercase rounded-md transition-colors duration-150',
+          hasActiveChild && !isOpen
+            ? 'text-accent-light bg-white/[0.04]'
+            : 'text-blue-200/40 hover:text-blue-200/60 hover:bg-white/[0.03]',
+        ].join(' ')}
+      >
+        <AppIcon icon={section.icon} size={13} />
+        <span className="flex-1 text-left">{section.label}</span>
+        <span
+          className={[
+            'transition-transform duration-200',
+            isOpen ? 'rotate-0' : '-rotate-90',
+          ].join(' ')}
+        >
+          <AppIcon icon={ICONS.chevronDown} size={12} />
+        </span>
+      </button>
+
+      <div
+        className={[
+          'overflow-hidden transition-all duration-200 ease-out',
+          isOpen ? 'max-h-[500px] opacity-100 mt-0.5' : 'max-h-0 opacity-0',
+        ].join(' ')}
+      >
+        <div className="space-y-px pb-1">
+          {section.items.map((item) => (
+            <NavItem key={item.path} item={item} onClick={onNavClick} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Sidebar chrome ──────────────────────────── */
+
+function Sidebar({ onNavClick }) {
+  const location = useLocation();
+
+  // Auto-open sections that contain the active route
+  const getActiveSections = () =>
+    NAV_SECTIONS.filter((s) =>
+      s.items.some((item) =>
+        item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path)
+      )
+    ).map((s) => s.id);
+
+  const [openSections, setOpenSections] = useState(getActiveSections);
+
+  // When route changes, ensure the active section is open
+  useEffect(() => {
+    const active = getActiveSections();
+    setOpenSections((prev) => {
+      const merged = new Set([...prev, ...active]);
+      return [...merged];
+    });
+  }, [location.pathname]);
+
+  const toggleSection = (id) => {
+    setOpenSections((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+    );
+  };
+
+  return (
+    <aside className="w-[232px] sidebar-bg text-white flex flex-col flex-shrink-0 h-full">
+      {/* ── Brand ────────────────────────────── */}
+      <div className="px-4 pt-5 pb-4 border-b border-white/[0.06]">
+        <div className="flex items-baseline gap-2">
+          <h1 className="font-heading text-[17px] font-bold tracking-tight text-white leading-none">
+            GCLBA
+          </h1>
+          <span className="text-[10px] font-mono text-blue-200/40 tracking-widest uppercase leading-none">
+            v1.1
+          </span>
+        </div>
+        <p className="text-[10px] font-mono text-blue-200/50 mt-1 tracking-[0.15em] uppercase">
           Compliance Portal
         </p>
       </div>
 
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <div className="space-y-1">
-          {CORE_NAV.map((item) => (
-            <NavItem key={item.path} item={item} onClick={onNavClick} />
-          ))}
-        </div>
-
-        <div className="h-px bg-white/8 my-3" />
-
-        <div className="space-y-1">
-          {UTIL_NAV.map((item) => (
-            <NavItem key={item.path} item={item} onClick={onNavClick} />
-          ))}
-        </div>
+      {/* ── Navigation ───────────────────────── */}
+      <nav className="flex-1 px-2.5 py-3 overflow-y-auto scrollbar-thin space-y-1">
+        {NAV_SECTIONS.map((section) => (
+          <NavSection
+            key={section.id}
+            section={section}
+            openSections={openSections}
+            toggleSection={toggleSection}
+            onNavClick={onNavClick}
+          />
+        ))}
       </nav>
 
-      <div className="px-3 pb-2">
+      {/* ── Footer ───────────────────────────── */}
+      <div className="px-2.5 pb-1.5">
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            [
+              'flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-md transition-colors duration-150',
+              isActive
+                ? 'bg-white/10 text-white font-medium'
+                : 'text-blue-200/50 hover:bg-white/[0.05] hover:text-blue-100',
+            ].join(' ')
+          }
+        >
+          <AppIcon icon={ICONS.settings} size={15} />
+          <span>Settings</span>
+        </NavLink>
+      </div>
+
+      <div className="px-2.5 pb-3">
         <a
           href="/submit"
           target="_blank"
           rel="noopener noreferrer"
           onClick={onNavClick}
-          className="flex items-center gap-3 px-4 py-2.5 md:py-2 text-sm text-blue-200/70 hover:bg-white/6 hover:text-blue-100 rounded-md transition-colors border-l-2 border-transparent"
+          className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-blue-200/50 hover:bg-white/[0.05] hover:text-blue-100 rounded-md transition-colors duration-150"
         >
-          <AppIcon icon={ICONS.buyerPortal} size={18} />
+          <AppIcon icon={ICONS.buyerPortal} size={15} />
           <span>Buyer Portal</span>
+          <AppIcon icon={ICONS.arrowRight} size={11} />
         </a>
       </div>
 
-      <div className="px-5 py-4 border-t border-white/10">
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium tracking-wider uppercase bg-white/10 text-blue-200/80">
-          Prototype
-        </span>
-        <p className="text-[10px] font-mono text-blue-200/40 mt-1.5 tracking-wide">v1.0.0</p>
+      <div className="px-4 py-3 border-t border-white/[0.06]">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center px-1.5 py-px rounded text-[9px] font-mono font-medium tracking-wider uppercase bg-accent/20 text-accent-light">
+            Prototype
+          </span>
+        </div>
       </div>
     </aside>
   );
 }
 
+/* ══════════════════════════════════════════════════
+   Layout Shell
+   ══════════════════════════════════════════════════ */
+
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Auto-close sidebar on navigation
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  // Auto-close sidebar when resizing above md breakpoint
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)');
     const handler = () => { if (mq.matches) setSidebarOpen(false); };
@@ -110,12 +239,12 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen">
-      {/* Desktop sidebar — always visible at md+ */}
+      {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar />
       </div>
 
-      {/* Mobile backdrop overlay */}
+      {/* Mobile backdrop */}
       <div
         className={`fixed inset-0 z-40 bg-black/30 md:hidden sidebar-backdrop ${sidebarOpen ? 'open' : ''}`}
         onClick={() => setSidebarOpen(false)}
@@ -123,13 +252,13 @@ export default function Layout() {
       />
 
       {/* Mobile drawer */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-60 md:hidden sidebar-drawer ${sidebarOpen ? 'open' : ''}`}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-[232px] md:hidden sidebar-drawer ${sidebarOpen ? 'open' : ''}`}>
         <Sidebar onNavClick={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Main content area */}
+      {/* Main content */}
       <main className="flex-1 overflow-y-auto app-bg">
-        {/* Mobile top bar — shown only below md */}
+        {/* Mobile top bar */}
         <div className="sticky top-0 z-30 md:hidden sidebar-bg px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -144,7 +273,6 @@ export default function Layout() {
               Compliance Portal
             </p>
           </div>
-          {/* Spacer for centering */}
           <div className="w-10" />
         </div>
 
