@@ -38,6 +38,7 @@ import {
   Timer,
   Menu,
   ListChecks,
+  ListTodo,
   MapPin,
   ScrollText,
   Eye,
@@ -83,6 +84,7 @@ const ICONS = {
 
   // SOP-Killer features
   actionQueue:   ListChecks,
+  listTodo:      ListTodo,
   mapPin:        MapPin,
   auditTrail:    ScrollText,
 
