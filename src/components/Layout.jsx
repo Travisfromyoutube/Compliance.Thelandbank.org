@@ -355,14 +355,6 @@ function Sidebar({ onNavClick }) {
         </a>
       </div>
 
-      <div className="px-4 py-3 border-t border-white/[0.06]">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 px-1.5 py-px rounded text-[9px] font-mono font-medium tracking-wider uppercase bg-accent/20 text-accent-light">
-            <AppIcon icon={ICONS.zap} size={8} className="text-accent-light" />
-            FileMaker Ready
-          </span>
-        </div>
-      </div>
     </aside>
   );
 }

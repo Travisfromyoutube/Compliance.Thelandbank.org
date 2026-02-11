@@ -26,74 +26,6 @@ function getGreeting(hour) {
   return 'Good evening';
 }
 
-/* ── FileMaker Sync Health Card ──────────────── */
-function FileMakerSyncCard({ properties }) {
-  const totalRecords = properties.length;
-  const syncedPct = 100; // All records synced in demo
-  const fieldMappings = [
-    { fm: 'ParcelID', portal: 'parcelId', status: 'mapped' },
-    { fm: 'BuyerName', portal: 'buyerName', status: 'mapped' },
-    { fm: 'ProgramType', portal: 'programType', status: 'mapped' },
-    { fm: 'EnfLevel', portal: 'enforcementLevel', status: 'mapped' },
-    { fm: 'DateSold', portal: 'dateSold', status: 'mapped' },
-    { fm: 'CompStatus', portal: 'complianceStatus', status: 'mapped' },
-  ];
-
-  return (
-    <Card className="border-l-[3px] border-l-accent-blue">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-accent-blue-light flex items-center justify-center">
-            <AppIcon icon={ICONS.database} size={18} className="text-accent-blue" />
-          </div>
-          <div>
-            <h3 className="font-heading text-sm font-semibold text-text">FileMaker Bridge</h3>
-            <p className="text-[10px] text-muted mt-0.5">Bidirectional sync active</p>
-          </div>
-        </div>
-        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-medium">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />
-          </span>
-          Live
-        </span>
-      </div>
-
-      {/* Sync stats */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="text-center p-2 bg-warm-100/60 rounded-lg">
-          <p className="text-lg font-mono font-semibold text-text tabular-nums">{totalRecords}</p>
-          <p className="text-[9px] text-muted uppercase tracking-wider">Records</p>
-        </div>
-        <div className="text-center p-2 bg-warm-100/60 rounded-lg">
-          <p className="text-lg font-mono font-semibold text-accent tabular-nums">{syncedPct}%</p>
-          <p className="text-[9px] text-muted uppercase tracking-wider">Synced</p>
-        </div>
-        <div className="text-center p-2 bg-warm-100/60 rounded-lg">
-          <p className="text-lg font-mono font-semibold text-text tabular-nums">{fieldMappings.length}</p>
-          <p className="text-[9px] text-muted uppercase tracking-wider">Fields</p>
-        </div>
-      </div>
-
-      {/* Field mapping preview */}
-      <div className="space-y-1">
-        <p className="text-[10px] font-mono font-semibold text-muted uppercase tracking-wider mb-1.5">
-          Field Mapping
-        </p>
-        {fieldMappings.map((f) => (
-          <div key={f.fm} className="flex items-center gap-2 text-[11px] py-1 px-2 rounded bg-warm-100/30">
-            <span className="font-mono text-accent-blue w-20 truncate">{f.fm}</span>
-            <AppIcon icon={ICONS.dataFlow} size={10} className="text-muted flex-shrink-0" />
-            <span className="font-mono text-text flex-1 truncate">{f.portal}</span>
-            <AppIcon icon={ICONS.success} size={11} className="text-success flex-shrink-0" />
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
 /* ── Main Dashboard ─────────────────────────── */
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -252,36 +184,28 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Two-column: Program Breakdown + FileMaker Sync */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 animate-fade-slide-up admin-stagger-3">
-        {/* Program Breakdown — spans 3 cols */}
-        <div className="lg:col-span-3">
-          <Card>
-            <h2 className="font-heading text-sm font-semibold text-text mb-5">
-              Program Breakdown
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: 'Featured Homes', value: stats.programBreakdown.featuredHomes },
-                { label: 'Ready4Rehab', value: stats.programBreakdown.r4r },
-                { label: 'Demolition', value: stats.programBreakdown.demo },
-                { label: 'VIP', value: stats.programBreakdown.vip },
-              ].map(({ label, value }) => (
-                <div key={label} className="text-center">
-                  <p className="text-2xl font-mono font-semibold text-text tabular-nums">
-                    {value}
-                  </p>
-                  <p className="text-xs text-muted mt-1">{label}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
-
-        {/* FileMaker Sync — spans 2 cols */}
-        <div className="lg:col-span-2">
-          <FileMakerSyncCard properties={properties} />
-        </div>
+      {/* Program Breakdown */}
+      <div className="animate-fade-slide-up admin-stagger-3">
+        <Card>
+          <h2 className="font-heading text-sm font-semibold text-text mb-5">
+            Program Breakdown
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: 'Featured Homes', value: stats.programBreakdown.featuredHomes },
+              { label: 'Ready4Rehab', value: stats.programBreakdown.r4r },
+              { label: 'Demolition', value: stats.programBreakdown.demo },
+              { label: 'VIP', value: stats.programBreakdown.vip },
+            ].map(({ label, value }) => (
+              <div key={label} className="text-center">
+                <p className="text-2xl font-mono font-semibold text-text tabular-nums">
+                  {value}
+                </p>
+                <p className="text-xs text-muted mt-1">{label}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
 
       {/* Action Queue CTA — with pulsing urgency indicator */}
