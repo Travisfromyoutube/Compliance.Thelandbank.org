@@ -227,7 +227,7 @@ export default function ComplianceMap() {
       {/* Legend */}
       <Card className="animate-fade-slide-up admin-stagger-5">
         <h3 className="text-[11px] font-heading font-semibold uppercase tracking-wider text-muted mb-3">
-          Enforcement Levels
+          Rate of Compliance
         </h3>
         <div className="flex flex-wrap gap-4">
           {LEGEND_ITEMS.map((item) => (

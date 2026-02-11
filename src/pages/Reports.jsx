@@ -393,9 +393,9 @@ export default function Reports() {
         />
       </div>
 
-      {/* Enforcement Distribution */}
+      {/* Rate of Compliance */}
       <div className="animate-fade-slide-up admin-stagger-4">
-        <h2 className="font-heading text-lg font-semibold text-text mb-4">Enforcement Distribution</h2>
+        <h2 className="font-heading text-lg font-semibold text-text mb-4">Rate of Compliance</h2>
         <Card>
           <div className="space-y-4">
             {enforcementDistribution.map((item) => {

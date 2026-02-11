@@ -19,8 +19,8 @@ const NAV_SECTIONS = [
     ],
   },
   {
-    id: 'enforcement',
-    label: 'Enforcement',
+    id: 'compliance',
+    label: 'Compliance',
     icon: ICONS.enforcement,
     items: [
       { label: 'Action Queue',   icon: ICONS.actionQueue,   path: '/action-queue' },
@@ -81,21 +81,21 @@ function NavSection({ section, openSections, toggleSection, onNavClick }) {
       <button
         onClick={() => toggleSection(section.id)}
         className={[
-          'w-full flex items-center gap-2.5 px-3 py-2 text-[10px] font-mono font-semibold tracking-[0.12em] uppercase rounded-md transition-colors duration-150',
-          hasActiveChild && !isOpen
-            ? 'text-accent-light bg-white/[0.04]'
-            : 'text-blue-200/40 hover:text-blue-200/60 hover:bg-white/[0.03]',
+          'w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-mono font-semibold tracking-[0.08em] uppercase rounded-md transition-colors duration-150',
+          hasActiveChild
+            ? 'text-accent bg-white/[0.06]'
+            : 'text-blue-200/50 hover:text-blue-200/70 hover:bg-white/[0.04]',
         ].join(' ')}
       >
-        <AppIcon icon={section.icon} size={13} />
+        <AppIcon icon={section.icon} size={15} />
         <span className="flex-1 text-left">{section.label}</span>
         <span
           className={[
-            'transition-transform duration-200',
+            'transition-transform duration-200 opacity-50',
             isOpen ? 'rotate-0' : '-rotate-90',
           ].join(' ')}
         >
-          <AppIcon icon={ICONS.chevronDown} size={12} />
+          <AppIcon icon={ICONS.chevronDown} size={13} />
         </span>
       </button>
 

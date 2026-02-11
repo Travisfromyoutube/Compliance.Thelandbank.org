@@ -40,7 +40,8 @@
       "Bash(npx vercel deploy:*)",
       "Skill(commit-commands:commit-push-pr)",
       "Skill(commit-commands:commit-push-pr:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npx -y gh pr create --title \"feat\\(admin\\): sidebar redesign, blueprint grid, icon updates\" --body \"$\\(cat <<''EOF''\n## Summary\n- **Sidebar**: Reorganized 12 flat nav items into 3 collapsible sections \\(Overview, Enforcement, Outreach\\) with auto-expand on active route\n- **Background grid**: Upgraded from invisible black lines to visible civic-blue tinted grid with intersection dots \\(architectural blueprint aesthetic\\)\n- **Audit trail icon**: Replaced ShieldCheck \\(security badge\\) with ScrollText \\(paper trail\\) — warmer, less intimidating\n- **Dashboard + Compliance**: Migrated direct lucide-react imports to centralized ICONS.* convention\n\n## Test plan\n- [ ] Verify sidebar sections collapse/expand on click\n- [ ] Verify active route auto-opens its parent section\n- [ ] Confirm blue grid pattern is visible but not distracting on main content area\n- [ ] Check audit trail icon shows ScrollText \\(paper scroll\\) in sidebar and all pages\n- [ ] Test mobile drawer still works correctly with new sidebar structure\n- [ ] Verify build passes with no errors\nEOF\n\\)\")"
     ]
   }
 }
