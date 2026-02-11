@@ -47,7 +47,11 @@
       "Bash(npx vercel@50.15.0 env add:*)",
       "Bash(npm run db:seed:*)",
       "Bash(node -e:*)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:www.thelandbank.org)",
+      "mcp__bfc13c11-f2c2-4e0c-a809-4bca80af5ff4__search_vercel_documentation",
+      "Bash(pip3 install:*)"
     ]
   }
 }

@@ -1,23 +1,38 @@
 import React, { useRef, useState } from 'react';
-import { Camera, X, RefreshCw } from 'lucide-react';
+import { Camera, X, RefreshCw, Loader2 } from 'lucide-react';
+import { uploadFile } from '../../lib/uploadFile';
 
 export default function PhotoSlot({ label, photo, onUpload, onRemove }) {
   const inputRef = useRef(null);
   const [justUploaded, setJustUploaded] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const handleClick = () => {
-    inputRef.current?.click();
+    if (!uploading) inputRef.current?.click();
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      onUpload(file);
+    if (!file || !file.type.startsWith('image/')) return;
+    e.target.value = '';
+
+    setUploading(true);
+    try {
+      const { url } = await uploadFile(file);
+      onUpload({ name: file.name, data: url, blobUrl: url, size: file.size });
+    } catch (err) {
+      console.error(`Photo upload failed for ${label}:`, err);
+      // Fallback to local data URL
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        onUpload({ name: file.name, data: ev.target.result, size: file.size });
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploading(false);
       setJustUploaded(true);
       setTimeout(() => setJustUploaded(false), 600);
     }
-    // Reset so the same file can be re-selected
-    e.target.value = '';
   };
 
   return (
@@ -68,16 +83,22 @@ export default function PhotoSlot({ label, photo, onUpload, onRemove }) {
         <button
           type="button"
           onClick={handleClick}
+          disabled={uploading}
           className={[
             'w-full aspect-[4/3] rounded-lg',
             'bg-warm-100/50 border-2 border-dashed border-warm-200',
             'hover:border-accent hover:bg-accent-light/20',
             'transition-all duration-200 cursor-pointer',
             'flex flex-col items-center justify-center gap-2',
+            'disabled:opacity-60 disabled:cursor-wait',
           ].join(' ')}
         >
-          <Camera className="w-5 h-5 text-text/40" />
-          <span className="text-xs font-medium text-text/50">Tap to upload</span>
+          {uploading
+            ? <Loader2 className="w-5 h-5 text-accent animate-spin" />
+            : <Camera className="w-5 h-5 text-text/40" />}
+          <span className="text-xs font-medium text-text/50">
+            {uploading ? 'Uploading...' : 'Tap to upload'}
+          </span>
         </button>
       )}
 

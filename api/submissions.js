@@ -77,7 +77,7 @@ export default async function handler(req, res) {
         },
       });
 
-      // Create document metadata records (no blob storage yet)
+      // Create document records with optional blob URLs
       if (documents.length > 0) {
         await tx.document.createMany({
           data: documents.map((doc) => ({
@@ -86,6 +86,7 @@ export default async function handler(req, res) {
             sizeBytes: doc.sizeBytes || 0,
             category: doc.category || 'document',
             slot: doc.slot || null,
+            blobUrl: doc.blobUrl || null,
             submissionId: sub.id,
             propertyId: property.id,
           })),

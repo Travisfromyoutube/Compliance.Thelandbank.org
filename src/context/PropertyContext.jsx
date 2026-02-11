@@ -60,11 +60,19 @@ function propertyReducer(state, action) {
 /* ── API helpers (fire-and-forget) ─────────────────────── */
 const API_BASE = '/api';
 
+/** Build headers for admin API calls, including auth if configured. */
+function adminHeaders(extra = {}) {
+  const headers = { 'Content-Type': 'application/json', ...extra };
+  const key = typeof window !== 'undefined' && window.__ADMIN_API_KEY;
+  if (key) headers['Authorization'] = `Bearer ${key}`;
+  return headers;
+}
+
 async function apiPatch(propertyId, data) {
   try {
     await fetch(`${API_BASE}/properties/${propertyId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: adminHeaders(),
       body: JSON.stringify(data),
     });
   } catch {
@@ -92,7 +100,7 @@ export function PropertyProvider({ children }) {
 
     async function fetchProperties() {
       try {
-        const res = await fetch(`${API_BASE}/properties`);
+        const res = await fetch(`${API_BASE}/properties`, { headers: adminHeaders() });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!cancelled && Array.isArray(data) && data.length > 0) {

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText } from 'lucide-react';
+import { Upload, FileText, Loader2 } from 'lucide-react';
+import { uploadFile } from '../../lib/uploadFile';
 
 export default function DropZone({ icon: Icon = Upload, title, subtitle, accept, onFilesAdded }) {
   const [dragActive, setDragActive] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const inputRef = useRef(null);
 
   const handleDrag = (e) => {
@@ -22,18 +24,23 @@ export default function DropZone({ icon: Icon = Upload, title, subtitle, accept,
     setDragActive(false);
   };
 
-  const processFiles = (files) => {
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        onFilesAdded({
-          name: file.name,
-          data: event.target.result,
-          size: file.size,
-        });
-      };
-      reader.readAsDataURL(file);
-    });
+  const processFiles = async (files) => {
+    setUploading(true);
+    for (const file of Array.from(files)) {
+      try {
+        const { url } = await uploadFile(file);
+        onFilesAdded({ name: file.name, data: url, blobUrl: url, size: file.size });
+      } catch (err) {
+        console.error(`Upload failed for ${file.name}:`, err);
+        // Fallback to local data URL so the form still works
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          onFilesAdded({ name: file.name, data: event.target.result, size: file.size });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    setUploading(false);
   };
 
   const handleDrop = (e) => {
@@ -84,10 +91,14 @@ export default function DropZone({ icon: Icon = Upload, title, subtitle, accept,
       />
 
       <div className={dragActive ? 'animate-gentle-pulse' : ''}>
-        <Icon className="w-8 h-8 text-muted mx-auto mb-3" />
+        {uploading
+          ? <Loader2 className="w-8 h-8 text-accent mx-auto mb-3 animate-spin" />
+          : <Icon className="w-8 h-8 text-muted mx-auto mb-3" />}
       </div>
-      <p className="text-base font-semibold text-text mb-1">{title || 'Drag and drop files here'}</p>
-      <p className="text-sm text-muted">{subtitle || 'or click to browse'}</p>
+      <p className="text-base font-semibold text-text mb-1">
+        {uploading ? 'Uploading...' : (title || 'Drag and drop files here')}
+      </p>
+      <p className="text-sm text-muted">{uploading ? 'Please wait' : (subtitle || 'or click to browse')}</p>
     </div>
   );
 }
