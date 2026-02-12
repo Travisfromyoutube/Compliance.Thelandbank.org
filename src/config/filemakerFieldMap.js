@@ -20,6 +20,7 @@
 export const PROPERTY_FIELD_MAP = {
   // ✅ Identifiers — visible on main form
   parcelId:              'Parc ID',               // ✅ Top of form: "4635457003"
+  parcelIdDashed:        'PID w/Dashes',          // ✅ PARC-Form — second field next to Parc ID (e.g., "46-35-457-003")
   address:               'Address',               // ✅ "3618 BURGESS ST, FLINT, MI 48504"
 
   // ✅ Program & sale info — visible on main form + buyer portal section
@@ -43,6 +44,16 @@ export const PROPERTY_FIELD_MAP = {
   fireDamage:            'fire_damage',            // ✅ Survey field
   occupancyStatus:       'occupancy_status',       // ✅ Survey field
   overallCondition:      'LB_Overall condition',   // ✅ Survey field
+
+  // ✅ FM operational status
+  availability:  'Availability',           // ✅ PARC-Form — next to GCLB Owned, drives FM color coding
+
+  // ✅ CP layout — Featured Homes tab (sale/closing fields)
+  buyerOfferDate:          'Buyer Offer Date',                // ✅ CP layout — date picker
+  downPaymentAmount:       'Down payment amount',             // ✅ CP layout — Featured tab
+  monthlyPaymentAmount:    'Monthly Payment Amount',          // ✅ CP layout — Featured tab
+  termOfContractMonths:    'Term of Contract in Months',      // ✅ CP layout — Featured tab
+  applicantHomeConditions: 'Applicant Home_Property Conditions', // ✅ CP layout — Featured tab
 
   // 🔍 Compliance dates — not visible in CP layout screenshots (right side truncated)
   occupancyDeadline:     'TBD_Occupancy_Deadline',       // 🔍 Check Sales tab
@@ -205,6 +216,18 @@ export function normalizeParcelId(raw) {
   return String(raw).replace(/[-\s]/g, '').trim();
 }
 
+/**
+ * Format a 10-digit parcel ID into Genesee County dashed format.
+ * "4635457003" → "46-35-457-003"
+ * Returns input as-is if not exactly 10 digits.
+ */
+export function formatParcelIdDashed(parcelId) {
+  if (!parcelId) return '';
+  const clean = String(parcelId).replace(/\D/g, '');
+  if (clean.length !== 10) return clean; // non-standard format, return as-is
+  return `${clean.slice(0, 2)}-${clean.slice(2, 4)}-${clean.slice(4, 7)}-${clean.slice(7, 10)}`;
+}
+
 /* ── Converters ─────────────────────────────────────────── */
 
 /**
@@ -270,6 +293,7 @@ const DATE_FIELDS = new Set([
   'dateProofOfInvestProvided', 'compliance1stAttempt', 'compliance2ndAttempt',
   'lastContactDate', 'rehabDeadline', 'demoFinalCertDate',
   'referredToLISC', 'liscRecommendReceived', 'liscRecommendSale',
+  'buyerOfferDate', 'dateForScope', 'dateClosed', 'lienReleaseDate',
 ]);
 
 /** Date-type fields in the buyer map */
@@ -282,16 +306,20 @@ const BOOLEAN_FIELDS = new Set([
   'insuranceReceived', 'scopeOfWorkApproved',
   'buildingPermitObtained', 'bondRequired', 'gclbOwned',
   'lcForfeit', 'treasRevert',
+  'waive550', 'delinquentTaxes', 'deedRecorded',
 ]); // Note: occupancyEstablished removed — now a 3-state String ("Yes"/"No"/"Unsure")
 
 /** Numeric fields */
 const NUMERIC_FIELDS = new Set([
   'enforcementLevel', 'percentComplete', 'foreclosureYear',
+  'termOfContractMonths', 'bedrooms', 'baths', 'sqFt', 'yearBuilt', 'garageSize', 'basementSize',
 ]);
 
 /** Currency fields */
 const CURRENCY_FIELDS = new Set([
   'minimumBid', 'bondAmount', 'sev',
+  'downPaymentAmount', 'monthlyPaymentAmount',
+  'askingPrice', 'propMiscCost', 'delinquentTaxAmount',
 ]);
 
 /**

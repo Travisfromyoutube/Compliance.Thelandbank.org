@@ -49,14 +49,28 @@ model Program {
 
 // ── Property ─────────────────────────────────────────────
 model Property {
-  id        String @id @default(cuid())
-  parcelId  String @unique
-  address   String
+  id             String  @id @default(cuid())
+  parcelId       String  @unique
+  parcelIdDashed String?  // FM "PID w/Dashes" format: "46-35-457-003"
+  address        String
 
   programType String // denormalized for quick filtering
   dateSold    DateTime
   offerType   String?
   purchaseType String?
+
+  // CP layout sale fields (Featured Homes / R4R / Demo tabs)
+  buyerOfferDate         DateTime?
+  downPaymentAmount      Float?
+  monthlyPaymentAmount   Float?
+  termOfContractMonths   Int?
+  applicantHomeConditions String?
+  partnerOrg             String?    // "Metro Community Development", "Habitat for Humanity", "Fannie Mae"
+
+  // CP layout closing fields
+  dateForScope           DateTime?
+  dateClosed             DateTime?
+  waive550               Boolean    @default(false)
 
   // Compliance date fields
   occupancyDeadline   DateTime?
@@ -96,6 +110,9 @@ model Property {
   fireDamage         String?
   occupancyStatus    String?
   overallCondition   String?
+
+  // FM operational status
+  availability   String?   // FM status: "Available", "Sold", "Under LC", "Inactive", "Treasurer"
 
   // Program-specific JSON (rcDates, checklists, etc.)
   extras Json?

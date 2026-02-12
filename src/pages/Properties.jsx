@@ -79,6 +79,13 @@ export default function Properties() {
       )
     },
     {
+      key: 'availability',
+      header: 'FM Status',
+      render: (value) => value
+        ? <StatusPill fmStatus={value}>{value}</StatusPill>
+        : <span className="text-sm text-muted">—</span>
+    },
+    {
       key: 'enforcementLevel',
       header: 'Enforcement',
       render: (value) => {

@@ -31,6 +31,7 @@ import {
   getFirstOverdueMilestoneDate,
 } from '../utils/milestones';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { formatParcelIdDashed } from '../config/filemakerFieldMap';
 
 const PropertyDetail = () => {
   usePageTitle('Property Detail');
@@ -478,10 +479,13 @@ const PropertyDetail = () => {
       <AdminPageHeader
         breadcrumb={{ label: 'Back to Properties', to: '/properties' }}
         title={property.address}
-        subtitle={<>Parcel ID: <span className="font-mono">{property.parcelId}</span></>}
+        subtitle={<>Parcel: <span className="font-mono">{property.parcelId}</span>{' / '}<span className="font-mono text-muted">{property.parcelIdDashed || formatParcelIdDashed(property.parcelId)}</span></>}
         icon={Home}
         actions={
           <div className="flex gap-2 flex-wrap justify-end">
+            {property.availability && (
+              <StatusPill fmStatus={property.availability}>{property.availability}</StatusPill>
+            )}
             <StatusPill variant="default">{property.programType}</StatusPill>
             <StatusPill status={enforcementStatus}>
               {property.enforcementLevel === 0 ? 'Compliant' : `Level ${property.enforcementLevel}`}
