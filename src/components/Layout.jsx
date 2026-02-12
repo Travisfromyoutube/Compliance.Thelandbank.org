@@ -205,19 +205,24 @@ function FileMakerSyncStatus() {
 
   useEffect(() => {
     let mounted = true;
+    let intervalId = null;
     async function check() {
       try {
         const res = await fetch('/api/filemaker?action=status');
         const data = await res.json();
-        if (mounted) setFmStatus(data);
+        if (mounted) {
+          setFmStatus(data);
+          // Only start polling if FileMaker is actually configured
+          if (data.configured && !intervalId) {
+            intervalId = setInterval(check, 5 * 60 * 1000);
+          }
+        }
       } catch {
         if (mounted) setFmStatus({ connected: false, configured: false });
       }
     }
     check();
-    // Re-check every 5 minutes
-    const id = setInterval(check, 5 * 60 * 1000);
-    return () => { mounted = false; clearInterval(id); };
+    return () => { mounted = false; if (intervalId) clearInterval(intervalId); };
   }, []);
 
   const connected = fmStatus?.connected;
@@ -243,7 +248,7 @@ function FileMakerSyncStatus() {
             <span className={`relative inline-flex rounded-full h-2 w-2 ${connected ? 'bg-accent' : configured ? 'bg-warning' : 'bg-blue-200/30'}`} />
           </span>
           <span className={`text-[10px] font-medium ${connected ? 'text-accent-light' : 'text-blue-200/40'}`}>
-            {fmStatus === null ? 'Checking...' : connected ? 'Connected' : configured ? 'Disconnected' : 'Not configured'}
+            {fmStatus === null ? 'Checking...' : connected ? 'Connected' : configured ? 'Disconnected' : 'Awaiting setup'}
           </span>
           <span className="text-[10px] text-blue-200/30 ml-auto font-mono">
             {connected ? 'Bidirectional' : ''}
@@ -270,7 +275,7 @@ function BatchMailNudge() {
   return (
     <div className="px-2.5 pb-2">
       <Link
-        to="/batch-email"
+        to="/action-queue"
         className="group block px-3 py-2.5 rounded-md bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] hover:border-accent/30 transition-all duration-150"
       >
         <div className="flex items-center gap-2.5">

@@ -26,6 +26,7 @@ import {
   BUYER_FIELD_MAP,
   SUBMISSION_FIELD_MAP,
   COMMUNICATION_FIELD_MAP,
+  joinNameForFM,
   getLayouts,
 } from '../src/config/filemakerFieldMap.js';
 
@@ -433,13 +434,19 @@ async function pushSubmission(submissionId, layouts, res) {
       createdAt: submission.createdAt,
     }, SUBMISSION_FIELD_MAP);
 
+    // Add parcel + buyer context via field maps (skip TBD fields)
     submissionFields[PROPERTY_FIELD_MAP.parcelId] = parcelId;
-    submissionFields.Buyer_Email = submission.property.buyer?.email || '';
-    submissionFields.Buyer_FullName = [
-      submission.property.buyer?.firstName,
-      submission.property.buyer?.lastName,
-    ].filter(Boolean).join(' ');
+    if (BUYER_FIELD_MAP.email && !BUYER_FIELD_MAP.email.startsWith('TBD_')) {
+      submissionFields[BUYER_FIELD_MAP.email] = submission.property.buyer?.email || '';
+    }
+    if (BUYER_FIELD_MAP.fullName && !BUYER_FIELD_MAP.fullName.startsWith('TBD_')) {
+      submissionFields[BUYER_FIELD_MAP.fullName] = joinNameForFM(
+        submission.property.buyer?.firstName,
+        submission.property.buyer?.lastName,
+      );
+    }
 
+    // Document counts (these field names are TBD — will be set when layout is created)
     const photos = submission.documents.filter((d) => d.category === 'photo');
     const docs = submission.documents.filter((d) => d.category === 'document');
     const receipts = submission.documents.filter((d) => d.category === 'receipt');
@@ -495,7 +502,7 @@ async function pushCommunication(communicationId, layouts, res) {
     }, COMMUNICATION_FIELD_MAP);
 
     commFields[PROPERTY_FIELD_MAP.parcelId] = comm.property?.parcelId || '';
-    commFields.Property_Address = comm.property?.address || '';
+    commFields[PROPERTY_FIELD_MAP.address] = comm.property?.address || '';
 
     const fmResult = await createRecord(token, layouts.communications, commFields);
     return { fmRecordId: fmResult.recordId };

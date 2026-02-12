@@ -51,6 +51,11 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
+  Shield,
+  Copy,
+  Check,
+  MailWarning,
+  Loader2,
 } from 'lucide-react';
 
 const ICONS = {
@@ -111,6 +116,13 @@ const ICONS = {
   trendUp:       TrendingUp,
   trendDown:     TrendingDown,
   trendFlat:     Minus,
+
+  // Buyer portal / confirmation
+  shield:        Shield,
+  copy:          Copy,
+  check:         Check,
+  mailWarning:   MailWarning,
+  loader:        Loader2,
 };
 
 export default ICONS;

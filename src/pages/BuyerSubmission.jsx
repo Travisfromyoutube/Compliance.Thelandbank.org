@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Upload, FileText, Camera, AlertCircle, CheckCircle2 } from 'lucide-react';
+import ICONS from '../icons/iconMap';
+import { AppIcon } from '../components/ui';
 import { FormField, TextInput, SelectInput } from '../components/ui';
 import {
   BuyerHero,
@@ -334,7 +335,7 @@ export default function BuyerSubmission() {
         <BuyerHero />
         <div className="max-w-5xl mx-auto px-6 py-20 text-center">
           <div className="bg-surface rounded-xl border border-border p-8 max-w-md mx-auto">
-            <AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
+            <AppIcon icon={ICONS.alert} size={48} className="text-danger mx-auto mb-4" />
             <h2 className="font-heading text-lg font-bold text-text mb-2">Access Denied</h2>
             <p className="text-sm text-muted mb-6">{tokenError}</p>
             <p className="text-xs text-muted">
@@ -385,7 +386,7 @@ export default function BuyerSubmission() {
             >
               {tokenMode && (
                 <div className="flex items-center gap-2 mb-5 bg-accent/5 border border-accent/20 rounded-lg px-4 py-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0" />
+                  <AppIcon icon={ICONS.success} size={16} className="text-accent flex-shrink-0" />
                   <span className="text-sm text-accent font-medium">
                     Your information has been pre-filled from your property record
                   </span>
@@ -528,7 +529,7 @@ export default function BuyerSubmission() {
             >
               {/* Upload count indicator */}
               <div className="flex items-center gap-2 mb-5">
-                <Camera className="w-4 h-4 text-muted" />
+                <AppIcon icon={ICONS.camera} size={16} className="text-muted" />
                 <span className="text-sm text-muted">
                   <span className="font-medium text-text">{uploadedPhotoCount}</span> of 8 uploaded
                 </span>
@@ -570,7 +571,7 @@ export default function BuyerSubmission() {
                     Contracts & Permits
                   </h3>
                   <DropZone
-                    icon={FileText}
+                    icon={ICONS.file}
                     title="Drag and drop documents here"
                     subtitle="or click to browse — PDF, JPG, PNG accepted"
                     accept="image/*,.pdf"
@@ -597,7 +598,7 @@ export default function BuyerSubmission() {
                   </h3>
                   <p className="text-xs text-muted mb-3">Optional — upload proof of investment if available</p>
                   <DropZone
-                    icon={Upload}
+                    icon={ICONS.upload}
                     title="Drag and drop receipts here"
                     subtitle="or click to browse"
                     accept="image/*,.pdf,.csv"
@@ -645,7 +646,7 @@ export default function BuyerSubmission() {
                   </>
                 ) : (
                   <>
-                    <Upload className="w-4 h-4" />
+                    <AppIcon icon={ICONS.upload} size={16} />
                     Submit Compliance Update
                   </>
                 )}

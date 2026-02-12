@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { FileText, ArrowRight, Clock, Mail, Shield, Copy, Check } from 'lucide-react';
+import ICONS from '../../icons/iconMap';
+import { AppIcon } from '../ui';
 import AnimatedCheck from './AnimatedCheck';
 import BuyerHero from './BuyerHero';
 
@@ -37,17 +38,17 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
 
   const nextSteps = [
     {
-      icon: Mail,
+      icon: ICONS.batchEmail,
       title: 'Check your email',
       desc: 'A confirmation email has been sent to the address on file with your submission details.',
     },
     {
-      icon: Clock,
+      icon: ICONS.clock,
       title: 'Review within 5 business days',
       desc: 'A compliance officer will review your submission and update your property record.',
     },
     {
-      icon: Shield,
+      icon: ICONS.shield,
       title: 'Stay on track',
       desc: 'Continue meeting your program milestones. You\'ll be notified of your next required update.',
     },
@@ -83,8 +84,8 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
               title="Copy confirmation ID"
             >
               {copied
-                ? <Check className="w-4 h-4 text-accent" />
-                : <Copy className="w-4 h-4 text-muted" />}
+                ? <AppIcon icon={ICONS.check} size={16} className="text-accent" />
+                : <AppIcon icon={ICONS.copy} size={16} className="text-muted" />}
             </button>
           </div>
           {copied && (
@@ -96,7 +97,7 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />
             </span>
-            Synced to FileMaker
+            Saved to compliance database
           </p>
         </div>
 
@@ -111,7 +112,7 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
                 style={{ animationDelay: `${300 + i * 150}ms` }}
               >
                 <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center mt-0.5">
-                  <step.icon className="w-4 h-4 text-accent" />
+                  <AppIcon icon={step.icon} size={16} className="text-accent" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-text">{step.title}</p>
@@ -142,7 +143,7 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
             onClick={onDownload}
             className="flex-1 flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-accent-blue border-2 border-accent-blue rounded-lg hover:bg-accent-blue-light transition-colors"
           >
-            <FileText className="w-4 h-4" />
+            <AppIcon icon={ICONS.file} size={16} />
             Download Record
           </button>
           <button
@@ -151,7 +152,7 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
             className="flex-1 flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-white bg-accent hover:bg-accent-dark rounded-lg transition-colors"
           >
             Submit Another
-            <ArrowRight className="w-4 h-4" />
+            <AppIcon icon={ICONS.arrowRight} size={16} />
           </button>
         </div>
       </main>

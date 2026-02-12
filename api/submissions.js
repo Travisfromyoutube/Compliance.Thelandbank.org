@@ -10,7 +10,14 @@
 
 import prisma from '../src/lib/db.js';
 import { isConfigured, withSession, findRecords, createRecord } from '../src/lib/filemakerClient.js';
-import { toFM, PROPERTY_FIELD_MAP, SUBMISSION_FIELD_MAP, getLayouts } from '../src/config/filemakerFieldMap.js';
+import {
+  toFM,
+  PROPERTY_FIELD_MAP,
+  BUYER_FIELD_MAP,
+  SUBMISSION_FIELD_MAP,
+  joinNameForFM,
+  getLayouts,
+} from '../src/config/filemakerFieldMap.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -126,15 +133,25 @@ async function pushToFileMaker(submissionId, parcelId, property) {
   const layouts = getLayouts();
 
   await withSession(async (token) => {
-    const submissionFields = {
-      [PROPERTY_FIELD_MAP.parcelId]: parcelId,
-      Buyer_Email: property.buyer?.email || '',
-      Buyer_FullName: [property.buyer?.firstName, property.buyer?.lastName].filter(Boolean).join(' '),
-      Submission_Type: 'progress',
-      Submission_Status: 'received',
-      Confirmation_ID: submissionId,
-      Date_Submitted: new Date().toLocaleDateString('en-US'),
-    };
+    // Build submission fields using the field maps — no hardcoded FM names
+    const submissionFields = toFM({
+      type: 'progress',
+      status: 'received',
+      confirmationId: submissionId,
+      createdAt: new Date(),
+    }, SUBMISSION_FIELD_MAP);
+
+    // Add parcel and buyer context via their respective maps
+    submissionFields[PROPERTY_FIELD_MAP.parcelId] = parcelId;
+    if (BUYER_FIELD_MAP.email && !BUYER_FIELD_MAP.email.startsWith('TBD_')) {
+      submissionFields[BUYER_FIELD_MAP.email] = property.buyer?.email || '';
+    }
+    if (BUYER_FIELD_MAP.fullName && !BUYER_FIELD_MAP.fullName.startsWith('TBD_')) {
+      submissionFields[BUYER_FIELD_MAP.fullName] = joinNameForFM(
+        property.buyer?.firstName,
+        property.buyer?.lastName,
+      );
+    }
 
     await createRecord(token, layouts.submissions, submissionFields);
     console.log(`FM push: submission ${submissionId} synced to FileMaker`);

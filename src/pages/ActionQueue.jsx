@@ -1,16 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ListChecks,
-  Mail,
-  Send,
-  CheckCircle2,
-  AlertTriangle,
-  AlertCircle,
-  Info,
-  Clock,
-  MailWarning,
-} from 'lucide-react';
+import ICONS from '../icons/iconMap';
+import { AppIcon } from '../components/ui';
 import { Card, StatCard, StatusPill, AdminPageHeader, SelectInput } from '../components/ui';
 import { PROGRAM_TYPES } from '../data/mockData';
 import { DEFAULT_TEMPLATES, ACTION_LABELS } from '../data/emailTemplates';
@@ -26,10 +17,10 @@ import { useProperties } from '../context/PropertyContext';
 const ACTION_ORDER = ['ATTEMPT_1', 'ATTEMPT_2', 'WARNING', 'DEFAULT_NOTICE'];
 
 const ACTION_ICON = {
-  ATTEMPT_1: Info,
-  ATTEMPT_2: AlertTriangle,
-  WARNING: AlertTriangle,
-  DEFAULT_NOTICE: AlertCircle,
+  ATTEMPT_1: ICONS.info,
+  ATTEMPT_2: ICONS.warning,
+  WARNING: ICONS.warning,
+  DEFAULT_NOTICE: ICONS.alert,
 };
 
 const ACTION_STAT_VARIANT = {
@@ -209,7 +200,7 @@ export default function ActionQueue() {
     <div className="space-y-6">
       {/* Header */}
       <AdminPageHeader
-        icon={ListChecks}
+        icon={ICONS.actionQueue}
         title="Compliance Action Queue"
         subtitle="Properties grouped by required action"
       />
@@ -219,7 +210,7 @@ export default function ActionQueue() {
         <div className="animate-fade-slide-up">
           <Card className="bg-success-light border-success">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
+              <AppIcon icon={ICONS.success} size={20} className="text-success flex-shrink-0" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-success">
                   Sent {successMessage.sentCount} compliance email{successMessage.sentCount !== 1 ? 's' : ''}.
@@ -249,6 +240,14 @@ export default function ActionQueue() {
                 >
                   Comm Log
                 </button>
+                <span className="text-success/40">|</span>
+                <button
+                  onClick={() => setSuccessMessage(null)}
+                  className="p-1 rounded hover:bg-success/10 transition-colors"
+                  title="Dismiss"
+                >
+                  <AppIcon icon={ICONS.close} size={14} className="text-success" />
+                </button>
               </div>
             </div>
           </Card>
@@ -260,25 +259,25 @@ export default function ActionQueue() {
         <StatCard
           label="Needs 1st Attempt"
           value={statCounts.ATTEMPT_1}
-          icon={Info}
+          icon={ICONS.info}
           variant="info"
         />
         <StatCard
           label="Needs 2nd Attempt"
           value={statCounts.ATTEMPT_2}
-          icon={AlertTriangle}
+          icon={ICONS.warning}
           variant="warning"
         />
         <StatCard
           label="Needs Warning"
           value={statCounts.WARNING}
-          icon={AlertTriangle}
+          icon={ICONS.warning}
           variant="warning"
         />
         <StatCard
           label="Needs Default Notice"
           value={statCounts.DEFAULT_NOTICE}
-          icon={AlertCircle}
+          icon={ICONS.alert}
           variant="danger"
         />
       </div>
@@ -301,7 +300,7 @@ export default function ActionQueue() {
       {activeActions.length === 0 && !noEmailProperties.length && (
         <Card className="animate-fade-slide-up admin-stagger-4">
           <div className="text-center py-12">
-            <CheckCircle2 className="w-10 h-10 text-success mx-auto mb-3" />
+            <AppIcon icon={ICONS.success} size={40} className="text-success mx-auto mb-3" />
             <h3 className="text-lg font-heading font-semibold text-text mb-1">All Clear</h3>
             <p className="text-sm text-muted">No properties require compliance action right now.</p>
           </div>
@@ -320,7 +319,7 @@ export default function ActionQueue() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <ActionIcon className={`w-4 h-4 text-${ACTION_STAT_VARIANT[action] === 'info' ? 'info' : ACTION_STAT_VARIANT[action]}`} />
+                  <AppIcon icon={ActionIcon} size={16} className={`text-${ACTION_STAT_VARIANT[action] === 'info' ? 'info' : ACTION_STAT_VARIANT[action]}`} />
                   <h2 className="text-lg font-semibold text-text font-heading">
                     {ACTION_LABELS[action]}
                   </h2>
@@ -349,7 +348,7 @@ export default function ActionQueue() {
                       : 'text-white bg-accent hover:bg-accent-dark'
                   }`}
                 >
-                  <Send className="w-4 h-4" />
+                  <AppIcon icon={ICONS.send} size={16} />
                   Mail Merge ({selected.size})
                 </button>
               </div>
@@ -421,7 +420,7 @@ export default function ActionQueue() {
       {noEmailProperties.length > 0 && (
         <Card className="animate-fade-slide-up admin-stagger-5 border-l-[3px] border-l-warning">
           <div className="flex items-start gap-3">
-            <MailWarning className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+            <AppIcon icon={ICONS.mailWarning} size={20} className="text-warning flex-shrink-0 mt-0.5" />
             <div>
               <h3 className="text-sm font-heading font-semibold text-text mb-1">
                 No Email on File ({noEmailProperties.length})
@@ -454,7 +453,7 @@ export default function ActionQueue() {
       {/* Follow-up Summary */}
       <Card className="animate-fade-slide-up admin-stagger-6">
         <div className="flex items-start gap-3">
-          <Clock className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
+          <AppIcon icon={ICONS.clock} size={20} className="text-info flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="text-sm font-heading font-semibold text-text mb-1">
               Automatic Follow-ups

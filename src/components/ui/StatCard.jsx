@@ -28,7 +28,7 @@ export function StatCard({
   return (
     <div
       className={[
-        'bg-surface rounded-lg border border-border shadow-sm p-5',
+        'bg-surface rounded-lg border border-border shadow-sm p-5 hover:shadow-md transition-all duration-150',
         'border-l-[3px]',
         VARIANT_ACCENT[variant] || VARIANT_ACCENT.default,
         className,

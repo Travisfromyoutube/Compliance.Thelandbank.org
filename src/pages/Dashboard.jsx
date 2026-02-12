@@ -309,7 +309,7 @@ const Dashboard = () => {
             { label: 'Demolition', value: stats.programBreakdown.demo },
             { label: 'VIP', value: stats.programBreakdown.vip },
           ].map(({ label, value }) => (
-            <div key={label} className="flex items-center gap-3 p-3.5 rounded-lg bg-surface border border-border">
+            <div key={label} className="flex items-center gap-3 p-3.5 rounded-lg bg-surface border border-border hover:shadow-md hover:border-accent/20 transition-all duration-150 cursor-default">
               <p className="text-lg font-mono font-semibold text-text tabular-nums">{value}</p>
               <p className="text-xs text-muted">{label}</p>
             </div>

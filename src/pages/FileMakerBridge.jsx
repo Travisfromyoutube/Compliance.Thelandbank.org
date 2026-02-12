@@ -47,7 +47,7 @@ function ConnectionCard({ status, loading, onRefresh }) {
                 ? `Connected · ${status.latencyMs}ms`
                 : configured
                   ? `Disconnected — ${status.error || 'check server'}`
-                  : 'Not configured — set FM_* env vars'}
+                  : 'Awaiting FileMaker credentials'}
             </p>
           </div>
         </div>
@@ -89,7 +89,7 @@ function InfoRow({ label, value }) {
 
 /* ── Record sync card ───────────────────────── */
 
-function SyncCard({ status, onSync, syncing, lastSyncResult }) {
+function SyncCard({ status, onSync, syncing, lastSyncResult, lastChecked }) {
   const connected = status?.connected;
   const fmCount = status?.sync?.fmRecords ?? '—';
   const portalCount = status?.sync?.portalRecords ?? '—';
@@ -103,12 +103,16 @@ function SyncCard({ status, onSync, syncing, lastSyncResult }) {
           <h3 className="font-heading text-base font-semibold text-text">Record Sync</h3>
           <p className="text-xs text-muted mt-0.5">
             {inSync ? 'Records are in sync' : delta > 0 ? `${delta} records behind FileMaker` : 'Check sync status'}
+            {lastChecked && (
+              <span className="text-muted/60"> · checked {lastChecked.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</span>
+            )}
           </p>
         </div>
         <button
           onClick={onSync}
           disabled={!connected || syncing}
           className="inline-flex items-center gap-2 px-3 py-1.5 bg-accent text-white text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          title={!connected ? 'Connect to FileMaker Server first' : syncing ? 'Sync in progress...' : 'Pull latest records from FileMaker'}
         >
           <AppIcon icon={ICONS.sync} size={14} className={syncing ? 'animate-spin' : ''} />
           {syncing ? 'Syncing...' : 'Sync Now'}
@@ -267,7 +271,7 @@ function FieldMappingCard({ status }) {
   const displayFields = expanded ? fields : fields.slice(0, 8);
 
   return (
-    <Card title="Field Mapping" subtitle={`${mapping.mappedFields} fields mapped between portal and FileMaker`}>
+    <Card title="Field Mapping" subtitle={`${mapping.mappedFields} fields synced between portal and FileMaker`}>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
@@ -362,6 +366,7 @@ export default function FileMakerBridge() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [lastSyncResult, setLastSyncResult] = useState(null);
+  const [lastChecked, setLastChecked] = useState(null);
 
   const fetchStatus = useCallback(async () => {
     setLoading(true);
@@ -369,6 +374,7 @@ export default function FileMakerBridge() {
       const res = await fetch('/api/filemaker?action=status');
       const data = await res.json();
       setStatus(data);
+      setLastChecked(new Date());
     } catch (err) {
       setStatus({ connected: false, configured: false, error: err.message });
     } finally {
@@ -414,7 +420,7 @@ export default function FileMakerBridge() {
       {/* Row 1: Connection + Sync */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ConnectionCard status={status} loading={loading} onRefresh={fetchStatus} />
-        <SyncCard status={status} onSync={runSync} syncing={syncing} lastSyncResult={lastSyncResult} />
+        <SyncCard status={status} onSync={runSync} syncing={syncing} lastSyncResult={lastSyncResult} lastChecked={lastChecked} />
       </div>
 
       {/* Row 2: Data Flow Diagram */}
