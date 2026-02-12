@@ -18,7 +18,7 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 | Properties CRUD | Done | List, detail view, inline field editing |
 | Compliance Engine | Done | Deterministic schedule from close date + enforcement levels |
 | Buyer Submission | Done | Standalone `/submit` page with photo/doc uploads |
-| Email System | Done | Template rendering, batch send, Resend integration (mock fallback) |
+| Email System | Done | Template rendering, batch send via `/api/email`, Resend integration (mock fallback) |
 | Communication Log | Done | Per-property tracking, batch approval workflow |
 | Milestones Page | Done | Upcoming milestones computed from compliance rules |
 | Template Manager | Done | CRUD for email templates with variant system |
@@ -29,9 +29,9 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 | Reports Page | Done | Data aggregation and compliance reporting |
 | Settings Page | Done | Application settings and configuration |
 | ComplianceOverview | Done | Buyer-facing compliance timeline + expandable formal policy |
-| Database (Neon) | Done | 7 models, seed script, API endpoints connected |
+| Database (Neon) | Done | 8 models, seed script, API endpoints connected |
 | Design System | Done | Custom tokens, reusable UI components, civic editorial aesthetic |
-| FileMaker Integration | In progress | Field map (17 confirmed, 18 TBD), sync/push API, FM Bridge page. Awaiting real credentials |
+| FileMaker Integration | In progress | Field map (20 confirmed, 15 TBD), sync/push API, FM Bridge page, parcel ID normalizer, buyer status fields. Awaiting real credentials |
 | Vercel Blob Uploads | Done | File uploads via `put()`, fallback to base64 data URLs |
 | Cron Job | Done | Hourly compliance check (8AM-6PM ET, Mon-Fri) |
 | Edge Middleware | Done | API route protection via `ADMIN_API_KEY` (prototype mode: open) |
@@ -57,7 +57,7 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 - Initializes from `allProperties` in `mockData.js` (10 hand-curated + 30 generated), then attempts API fetch on mount
 - All mutations dispatch locally AND fire-and-forget PATCH to `/api/properties/:id`
 - Actions: `SET_PROPERTIES`, `ADD_COMMUNICATION`, `UPDATE_PROPERTY_FIELD`, `BATCH_UPDATE_PROPERTIES`
-- Helpers: `logCommunication()`, `batchLogCommunications()`, `updateField()`, `getProperty()`
+- Helpers: `logCommunication()`, `batchLogCommunications()` (async — calls `/api/email` then logs locally), `updateField()`, `getProperty()`
 
 ### Compliance Engine
 
@@ -87,14 +87,15 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 
 ### Database (Prisma + Neon PostgreSQL)
 
-7 models in `prisma/schema.prisma`:
-- **Buyer** — name, email, phone, organization
+8 models in `prisma/schema.prisma`:
+- **Buyer** — firstName, lastName, email, phone, organization, lcForfeit, treasRevert, buyerStatus
 - **Program** — key, label, cadence, schedule JSON, grace days, required uploads/docs
-- **Property** — parcel, address, program-specific compliance fields, enforcement level (0-4), status
+- **Property** — parcel, address, program-specific compliance fields, enforcement level (0-4), status, FM sync fields (soldStatus, gclbOwned, sev, flintAreaName, minimumBid, category, conditions)
 - **Submission** — type (progress/final/monthly), form data JSON, status, confirmation ID
 - **Document** — filename, mime, category (photo/document/receipt), slot, blob URL
 - **Communication** — template, action, channel, body, status, sent/approved timestamps
 - **EmailTemplate** — name, program types JSON, variants JSON (per-action subject/body)
+- **AccessToken** — token (unique), buyerId, propertyId, expiry, used flag
 
 ### Design System
 
@@ -110,9 +111,10 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **Field map** (`filemakerFieldMap.js`): Single source of truth for Prisma ↔ FM field names. `toFM()` converts portal→FM (skips `TBD_` prefixed fields), `fromFM()` converts FM→portal.
 - **TBD_ pattern**: Undiscovered FM field names get `TBD_` prefix; `toFM()` auto-skips them. Run `?action=status&meta=true` with real credentials to discover actual names.
 - **FM client** (`filemakerClient.js`): Wraps FM Data API — session token lifecycle, `getRecords`, `findRecords`, `createRecord`, `updateRecord`.
-- **Sync flow**: `GET /api/filemaker?action=sync` pulls FM records → `fromFM()` → Prisma upsert on `parcelId`.
+- **Parcel ID normalizer**: `normalizeParcelId()` strips dashes/spaces for consistent matching (FM stores both `4635457003` and `46-35-457-003`).
+- **Sync flow**: `GET /api/filemaker?action=sync` pulls FM records → `fromFM()` (with parcel normalization) → Prisma upsert on `parcelId`.
 - **Push flow**: `POST /api/filemaker?action=push` reads Prisma record → `toFM()` → FM `createRecord`/`updateRecord`.
-- **Buyer portal in FM**: Buyers are related records on the property layout (not a separate layout). Single "Name" field → `splitFMName()` splits to first/last.
+- **Buyer portal in FM**: Buyers are related records on the property layout (not a separate layout). Single "Name" field → `splitFMName()` splits to first/last. Includes `lcForfeit`, `treasRevert`, `buyerStatus` fields.
 
 ### Domain Concepts
 
@@ -137,6 +139,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | `src/lib/emailSender.js` | Resend integration with mock fallback |
 | `src/data/mockData.js` | Seed data + enum exports (PROGRAM_TYPES, ENFORCEMENT_LEVELS, COMPLIANCE_STATUSES) |
 | `src/data/mockDataGenerator.js` | Seeded PRNG generator for 30+ demo properties with realistic data |
+| `src/data/programPolicies.js` | Single source of truth for GCLBA program policies, enforcement levels, eligibility |
 | `src/data/emailTemplates.js` | DEFAULT_TEMPLATES, ACTION_LABELS for compliance email actions |
 | `src/pages/ActionQueue.jsx` | SOP-killer: grouped compliance actions with mail merge |
 | `src/pages/ComplianceMap.jsx` | Leaflet map with enforcement-level markers and popups |
@@ -146,11 +149,11 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | `public/gclba-logo.png` | Official GCLBA logo (transparent PNG) |
 | `src/icons/iconMap.js` | Semantic icon registry (Lucide) |
 | `tailwind.config.js` | Design tokens (colors, fonts, animations) |
-| `prisma/schema.prisma` | Database schema (7 models) |
+| `prisma/schema.prisma` | Database schema (8 models) |
 | `DESIGN-SPEC.md` | Visual direction spec (civic editorial) |
 | `src/config/filemakerFieldMap.js` | FM ↔ Portal field mapping, `toFM()`/`fromFM()` converters, TBD_ pattern |
 | `src/lib/filemakerClient.js` | FM Data API client (session tokens, CRUD, layout metadata) |
-| `src/pages/FileMakerBridge.jsx` | FM integration dashboard — connection status, sync controls |
+| `src/pages/FileMakerBridge.jsx` | FM integration dashboard — architecture explainer, system health bar, tech stack, sync controls |
 | `docs/plans/2026-02-11-filemaker-integration-design.md` | FM architecture decisions and field mapping reference |
 | `docs/feature-spec.md` | 28-feature roadmap across 6 pillars |
 | `api/upload.js` | Vercel Blob file upload endpoint (`put()` pattern) |
@@ -201,12 +204,9 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | Separate buyer portal route (`/submit`) | Different audience, different aesthetic; no admin sidebar needed |
 | Michigan Civic Editorial design language | Professional civic tech aesthetic; warm neutrals, serif headings, matte surfaces |
 | react-leaflet pinned to v4.2.1 | v5 requires React 19 context API; crashes on React 18 with "render2 is not a function" |
-| Seeded PRNG mock data generator | 30 generated + 10 hand-curated = 40 properties; deterministic so data is stable across refreshes |
 | Action Queue as SOP-killer centerpiece | Groups properties by compliance action, one-click mail merge replaces 6-tool manual workflow |
-| Dashboard as command center (4 sections) | Replaced 7 flat sections with status→action→details→reference hierarchy; removed Quick Links (already in sidebar) |
 | ComplianceOverview reads from COMPLIANCE_RULES | Single source of truth; buyer timeline auto-updates when program type changes; no duplicate rule definitions |
 | DataTable shared component upgrade | One file change (headers, zebra, hover, compact prop) cascades to 8+ pages; avoids per-page styling drift |
-| GCLBA logo as transparent PNG | JPG→PNG conversion via Pillow; served from `public/` for both admin and buyer surfaces |
 | Buyer fields always via `toFM()` | Manual TBD_ guard checks are a DRY violation; `toFM()` handles skipping centrally |
 | FM polling stops when unconfigured | `Layout.jsx` only starts 5-min interval if `data.configured === true`; saves unnecessary network calls during prototype phase |
 | Vercel Blob server-side `put()` over client-upload | Simpler, smaller bundle (no `@vercel/blob/client` in browser), `bodyParser: false` streams directly |
@@ -215,6 +215,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | Edge cache: properties 30s, compliance 5min, templates 1hr | SWR pattern — edge serves stale while revalidating in background |
 | Hourly cron (Pro plan) over daily | Staff gets fresher compliance data during business hours |
 | Vercel Pro upgrade | Removed 12-function ceiling, unlocked hourly crons, Turbo Build, Analytics |
+| `db push` over `migrate dev` for schema changes | Project has no migration history (started with `db push`); `migrate dev` would require full DB reset. Non-destructive column additions only. |
 
 ---
 
@@ -239,8 +240,8 @@ npm run db:studio    # Open Prisma Studio GUI
 
 ## Next Steps
 
-1. **Authentication** — Add role-based auth (staff vs. buyer) before any public deployment beyond prototype
-2. **Tests** — Set up Vitest, start with compliance engine unit tests (`computeComplianceTiming`)
-3. **FileMaker credentials** — Get real FM credentials from Lucille; run `?action=status&meta=true` to discover TBD_ field names
+1. **FileMaker credentials** — Get real FM credentials from Lucille; run `?action=status&meta=true` to discover remaining 15 TBD_ field names. Bridge page + normalizer are ready.
+2. **Authentication** — Add role-based auth (staff vs. buyer) before any public deployment beyond prototype
+3. **Tests** — Set up Vitest, start with compliance engine unit tests (`computeComplianceTiming`)
 4. **Reports page** — Wire up data aggregation for the monthly compliance dashboard
 5. **Feature roadmap** — See `docs/feature-spec.md` for the full 28-feature, 6-pillar plan
