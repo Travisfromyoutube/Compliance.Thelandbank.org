@@ -157,7 +157,7 @@ export default function ActionQueue() {
   }, [emailPreviewAction, selectedByAction, properties]);
 
   const handleApproveAndSend = async (entries) => {
-    batchLogCommunications(entries);
+    await batchLogCommunications(entries);
 
     const sentCount = entries.length;
     const noEmailCount = noEmailProperties.length;

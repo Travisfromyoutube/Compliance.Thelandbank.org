@@ -8,6 +8,7 @@ import { toDisplayName } from '../lib/programTypeMapper';
 import { formatDate } from '../utils/milestones';
 import { PropertyDetailDrawer } from '../components/PropertyDetailDrawer';
 import { EmailPreview } from '../components/EmailPreview';
+import { renderTemplate, findTemplateForAction } from '../lib/templateRenderer';
 import { useProperties } from '../context/PropertyContext';
 
 /* ── helpers ───────────────────────────────────────────── */
@@ -192,7 +193,7 @@ export default function BatchEmail() {
     else if (step === 2) setStep(1);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     // For custom mode Step 3, build entries and batch log
     const entries = selectedProperties
       .filter(p => p.buyerEmail)
@@ -204,7 +205,6 @@ export default function BatchEmail() {
           return null;
         }
 
-        const { renderTemplate, findTemplateForAction } = require('../lib/templateRenderer');
         const rendered = renderTemplate(template, timing.currentAction, prop);
 
         return {
@@ -220,7 +220,7 @@ export default function BatchEmail() {
       .filter(Boolean);
 
     if (entries.length > 0) {
-      batchLogCommunications(entries);
+      await batchLogCommunications(entries);
     }
 
     alert(`Email sent to ${selectedIds.size} properties using template: ${selectedTemplate.name}`);
@@ -231,8 +231,8 @@ export default function BatchEmail() {
   };
 
   const handleApproveAndSend = async (entries) => {
-    // Log all communications via PropertyContext
-    batchLogCommunications(entries);
+    // Send emails via API, then log communications via PropertyContext
+    await batchLogCommunications(entries);
   };
 
   /* ── Drawer handler ───────────────────────────────────── */

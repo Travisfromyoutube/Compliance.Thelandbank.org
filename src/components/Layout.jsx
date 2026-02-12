@@ -275,7 +275,7 @@ function BatchMailNudge() {
   return (
     <div className="px-2.5 pb-2">
       <Link
-        to="/action-queue"
+        to="/batch-email"
         className="group block px-3 py-2.5 rounded-md bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] hover:border-accent/30 transition-all duration-150"
       >
         <div className="flex items-center gap-2.5">

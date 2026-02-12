@@ -170,12 +170,54 @@ export function PropertyProvider({ children }) {
     },
 
     /**
-     * Batch-approve and log communications for multiple properties.
+     * Batch-approve and send emails, then log communications for multiple properties.
+     * Calls /api/email with action=send-batch, then logs results locally.
      */
-    batchLogCommunications(entries) {
-      return entries.map((entry) =>
-        actions.logCommunication(entry.propertyId, { ...entry, status: 'sent' })
-      );
+    async batchLogCommunications(entries) {
+      // Build email payloads for the API
+      const emailPayloads = entries
+        .filter(e => e.recipientEmail)
+        .map(e => ({
+          propertyId: e.propertyId,
+          to: e.recipientEmail,
+          subject: e.subject,
+          body: e.body,
+          templateId: e.templateId,
+          templateName: e.templateName,
+          action: e.action,
+        }));
+
+      let apiResults = [];
+
+      // Call the email API if we have emails to send
+      if (emailPayloads.length > 0) {
+        try {
+          const res = await fetch(`${API_BASE}/email`, {
+            method: 'POST',
+            headers: adminHeaders(),
+            body: JSON.stringify({ action: 'send-batch', emails: emailPayloads }),
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            apiResults = data.results || [];
+            console.info(`[BatchEmail] Sent ${data.sent}/${data.total}, failed ${data.failed}`);
+          } else {
+            console.error('[BatchEmail] API error:', res.status);
+            // Fall through — still log locally even if API fails
+          }
+        } catch (err) {
+          console.error('[BatchEmail] Network error:', err.message);
+          // Fall through — still log locally
+        }
+      }
+
+      // Log each entry locally (whether API succeeded or not)
+      return entries.map((entry) => {
+        const apiResult = apiResults.find(r => r.propertyId === entry.propertyId);
+        const status = apiResult?.success ? 'sent' : (apiResult ? 'failed' : 'sent');
+        return actions.logCommunication(entry.propertyId, { ...entry, status });
+      });
     },
 
     /**
