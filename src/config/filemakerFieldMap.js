@@ -155,6 +155,10 @@ export const SALES_DISPOSITION_MAP = {
  * Convert FM "Sales Disposition" checkbox value → portal programType.
  * FM stores checkbox values as return-delimited strings.
  * We pick the first recognized program type.
+ *
+ * @param {string|null|undefined} fmValue — Raw FM checkbox value (newline-delimited)
+ * @returns {string|null} A SALES_DISPOSITION_MAP value (e.g. 'FeaturedHomes'),
+ *   the raw first checkbox value if unrecognized, or null if input is empty.
  */
 export function salesDispositionToProgram(fmValue) {
   if (!fmValue) return null;
@@ -226,6 +230,7 @@ function fromFMBoolean(value) {
 export function splitFMName(fullName) {
   if (!fullName) return { firstName: 'Unknown', lastName: '' };
   const trimmed = String(fullName).trim();
+  if (!trimmed) return { firstName: 'Unknown', lastName: '' };
 
   // FM often stores as "Last, First"
   if (trimmed.includes(',')) {

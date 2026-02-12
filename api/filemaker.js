@@ -434,17 +434,18 @@ async function pushSubmission(submissionId, layouts, res) {
       createdAt: submission.createdAt,
     }, SUBMISSION_FIELD_MAP);
 
-    // Add parcel + buyer context via field maps (skip TBD fields)
+    // Add parcel context
     submissionFields[PROPERTY_FIELD_MAP.parcelId] = parcelId;
-    if (BUYER_FIELD_MAP.email && !BUYER_FIELD_MAP.email.startsWith('TBD_')) {
-      submissionFields[BUYER_FIELD_MAP.email] = submission.property.buyer?.email || '';
-    }
-    if (BUYER_FIELD_MAP.fullName && !BUYER_FIELD_MAP.fullName.startsWith('TBD_')) {
-      submissionFields[BUYER_FIELD_MAP.fullName] = joinNameForFM(
+
+    // Add buyer context via toFM() — automatically skips TBD fields
+    const buyerFields = toFM({
+      email: submission.property.buyer?.email || '',
+      fullName: joinNameForFM(
         submission.property.buyer?.firstName,
         submission.property.buyer?.lastName,
-      );
-    }
+      ),
+    }, BUYER_FIELD_MAP);
+    Object.assign(submissionFields, buyerFields);
 
     // Document counts (these field names are TBD — will be set when layout is created)
     const photos = submission.documents.filter((d) => d.category === 'photo');

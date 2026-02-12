@@ -141,17 +141,18 @@ async function pushToFileMaker(submissionId, parcelId, property) {
       createdAt: new Date(),
     }, SUBMISSION_FIELD_MAP);
 
-    // Add parcel and buyer context via their respective maps
+    // Add parcel context
     submissionFields[PROPERTY_FIELD_MAP.parcelId] = parcelId;
-    if (BUYER_FIELD_MAP.email && !BUYER_FIELD_MAP.email.startsWith('TBD_')) {
-      submissionFields[BUYER_FIELD_MAP.email] = property.buyer?.email || '';
-    }
-    if (BUYER_FIELD_MAP.fullName && !BUYER_FIELD_MAP.fullName.startsWith('TBD_')) {
-      submissionFields[BUYER_FIELD_MAP.fullName] = joinNameForFM(
+
+    // Add buyer context via toFM() — automatically skips TBD fields
+    const buyerFields = toFM({
+      email: property.buyer?.email || '',
+      fullName: joinNameForFM(
         property.buyer?.firstName,
         property.buyer?.lastName,
-      );
-    }
+      ),
+    }, BUYER_FIELD_MAP);
+    Object.assign(submissionFields, buyerFields);
 
     await createRecord(token, layouts.submissions, submissionFields);
     console.log(`FM push: submission ${submissionId} synced to FileMaker`);

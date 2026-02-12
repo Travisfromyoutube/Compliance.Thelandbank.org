@@ -213,7 +213,7 @@ function FileMakerSyncStatus() {
         if (mounted) {
           setFmStatus(data);
           // Only start polling if FileMaker is actually configured
-          if (data.configured && !intervalId) {
+          if (data.configured && !intervalId && mounted) {
             intervalId = setInterval(check, 5 * 60 * 1000);
           }
         }
