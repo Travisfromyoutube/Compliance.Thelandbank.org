@@ -77,6 +77,9 @@ async function handleDueNow(req, res) {
 
   filtered.sort((a, b) => b.daysOverdue - a.daysOverdue);
 
+  // Edge cache: 5 min fresh, serve stale up to 10 min while revalidating
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+
   return res.status(200).json({
     count: filtered.length,
     computedAt: today.toISOString(),
@@ -138,6 +141,9 @@ async function handleExceptions(req, res) {
   }
 
   exceptions.sort((a, b) => b.issues.length - a.issues.length);
+
+  // Edge cache: 5 min fresh, serve stale up to 10 min while revalidating
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
 
   return res.status(200).json({
     count: exceptions.length,

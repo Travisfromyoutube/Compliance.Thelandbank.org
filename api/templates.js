@@ -22,6 +22,8 @@ export default async function handler(req, res) {
       const templates = await prisma.emailTemplate.findMany({
         orderBy: { createdAt: 'desc' },
       });
+      // Edge cache: 1 hr fresh, serve stale up to 2 hr while revalidating
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
       return res.status(200).json(templates);
     }
 

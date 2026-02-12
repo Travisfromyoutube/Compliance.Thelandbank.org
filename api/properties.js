@@ -38,6 +38,9 @@ export default async function handler(req, res) {
     });
 
     // Flatten to match the shape the frontend expects
+    // Edge cache: 30s fresh, serve stale up to 5 min while revalidating
+    res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=300');
+
     const result = properties.map((p) => ({
       id: p.id,
       parcelId: p.parcelId,
