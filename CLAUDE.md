@@ -170,7 +170,11 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | `api/cron/compliance-check.js` | Hourly compliance monitoring cron job |
 | `middleware.js` | Edge Middleware — API route auth gating |
 | `src/lib/uploadFile.js` | Browser-side upload helper (plain `fetch()` to `/api/upload`) |
-| `vite.config.js` | Build config with manual chunks (vendor-react, vendor-map) |
+| `src/pages/HowItWorks.jsx` | Split-panel page: 30% sticky diagram + 70% scrollable chapters, IntersectionObserver sync |
+| `src/components/howItWorks/SystemMap.jsx` | React Flow diagram: 7 system nodes, dynamic annotation nodes, chapter-driven highlighting |
+| `src/components/howItWorks/SystemNode.jsx` | Stacked vertical node card (180px wide): icon → label → subtitle → description |
+| `src/components/howItWorks/AnnotationNode.jsx` | SOP callout nodes: fade in/out per active chapter, dashed left-border accent |
+| `vite.config.js` | Build config with manual chunks (vendor-react, vendor-map, vendor-flow) |
 
 ---
 
@@ -193,7 +197,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **FM buyer fields**: Use `toFM({ email, fullName }, BUYER_FIELD_MAP)` + `Object.assign()` to merge buyer context into submission/communication payloads.
 - **useEffect + async + intervals**: When setting up `setInterval` inside an async callback within `useEffect`, always gate on a `mounted` flag to prevent orphaned intervals after unmount.
 - **Code splitting**: Dashboard + Properties are eager-loaded; all other pages use `React.lazy()` in `main.jsx`. New pages should be lazy-loaded by default.
-- **Vendor chunks**: Vite config separates `vendor-react` and `vendor-map` chunks for long-term browser caching. Add new heavy libraries to `manualChunks` in `vite.config.js`.
+- **Vendor chunks**: Vite config separates `vendor-react`, `vendor-map`, and `vendor-flow` chunks for long-term browser caching. Add new heavy libraries to `manualChunks` in `vite.config.js`.
 - **API cache headers**: GET endpoints set `Cache-Control: s-maxage=N, stale-while-revalidate=M`. Only add to GET handlers, never POST/PUT/DELETE.
 - **Blob uploads**: `api/upload.js` uses `put(filename, req, { access: 'public' })` with `bodyParser: false`. Client sends raw file body via `fetch()` (see `src/lib/uploadFile.js`). Falls back to base64.
 - **Serverless router pattern**: Related endpoints consolidated into single files with `?action=` routing (filemaker.js, tokens.js) to manage Vercel function count.
@@ -207,6 +211,10 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **React Flow fitView sizing**: Node bounding box aspect ratio must approximate the container's aspect ratio. A square bounding box in a portrait panel = tiny nodes. Spread y-positions to match panel height-to-width ratio. Use low `padding` (0.08) in `fitViewOptions`.
 - **Patch application**: Prefer `git apply --3way` over `git am` — patches often target older commits and strict context matching fails. If `git am` gets stuck, `rm -f .git/*.lock` then `git am --abort`.
 - **Smooth hover reveals**: Never conditionally mount (`{show && <el>}`) for animated content — causes layout reflow. Always render the element, toggle with `opacity-0/100` + `max-w-0/max-w-[Npx]` and `transition-all duration-200 ease-out`.
+- **React Flow title as HTML overlay**: Never put a title/header as a React Flow node — it inflates the fitView bounding box and shifts centering. Use a regular `<div>` above the `<ReactFlow>` component.
+- **React Flow annotation positions**: Keep annotation x-positions symmetric around the system node midpoint so fitView centers cleanly. All annotations always in DOM with opacity transitions (never conditional mount) to prevent fitView jumping.
+- **React Flow node readability**: Use `text-text/80` (not `text-muted/70`) for description text — muted gray at reduced opacity compounds to near-invisible when fitView scales down. Minimum `text-xs` for any text that should be readable.
+- **CSS dot grid `background-position`**: Use `background-position` offset (e.g., `10px 10px`) to center `radial-gradient` dots within tiles. Placing dots at `0px 0px` clips 3/4 of each dot at tile edges.
 
 ---
 
@@ -218,7 +226,6 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | react-leaflet pinned to v4.2.1 | v5 requires React 19 context API; crashes on React 18 with "render2 is not a function" |
 | Action Queue as SOP-killer centerpiece | Groups properties by compliance action, one-click mail merge replaces 6-tool manual workflow |
 | ComplianceOverview reads from COMPLIANCE_RULES | Single source of truth; buyer timeline auto-updates when program type changes; no duplicate rule definitions |
-| DataTable shared component upgrade | One file change (headers, zebra, hover, compact prop) cascades to 8+ pages; avoids per-page styling drift |
 | Buyer fields always via `toFM()` | Manual TBD_ guard checks are a DRY violation; `toFM()` handles skipping centrally |
 | FM polling stops when unconfigured | `Layout.jsx` only starts 5-min interval if `data.configured === true`; saves unnecessary network calls during prototype phase |
 | Vercel Blob server-side `put()` over client-upload | Simpler, smaller bundle (no `@vercel/blob/client` in browser), `bodyParser: false` streams directly |
@@ -231,6 +238,10 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | Keyboard shortcuts via Alt+key in Layout | Alt+D/M/Q/P/C for top-5 admin pages; skipped when focus is in form inputs |
 | FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
 | Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
+| HTML overlay title over React Flow node | Title as RF node inflated fitView bounding box, shifted centering, and wasted vertical space |
+| Stacked vertical SystemNode layout (180px wide) | Portrait panel needs tall narrow cards; horizontal layout wasted height. Description at `text-xs text-text/80` for readability |
+| SOP callout annotations frame portal as evolution | Compliance SOP author will view page; all callout text is respectful improvement framing, never attack. No dashes or word "enforcement" |
+| Charter replaces Bitter as heading font | Self-hosted WOFF2 in `public/fonts/`; Bitter removed from Google Fonts load |
 
 ---
 
