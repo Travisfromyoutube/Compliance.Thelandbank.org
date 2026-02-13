@@ -14,11 +14,15 @@ import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
 import { cors } from './_cors.js';
 import { validateOrReject } from '../src/lib/validate.js';
 import { sendEmailBody, batchEmailBody } from '../src/lib/schemas.js';
+import { requireAuth } from '../src/lib/auth.js';
 
 export default async function handler(req, res) {
   if (cors(req, res, { methods: 'POST, OPTIONS' })) return;
   if (!(await applyRateLimit(rateLimiters.emailSend, req, res))) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const session = await requireAuth(req, res);
+  if (!session) return;
 
   const action = req.body?.action || req.query?.action;
 

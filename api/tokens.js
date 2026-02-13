@@ -16,25 +16,21 @@ import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
 import { cors } from './_cors.js';
 import { validateOrReject } from '../src/lib/validate.js';
 import { createTokenBody, revokeTokenQuery } from '../src/lib/schemas.js';
+import { requireAuth } from '../src/lib/auth.js';
 
 export default async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, DELETE, OPTIONS' })) return;
 
   try {
-    // Route: GET ?action=verify — buyer token verification (public)
+    // Route: GET ?action=verify — buyer token verification (public, no auth)
     if (req.method === 'GET' && req.query.action === 'verify') {
       if (!(await applyRateLimit(rateLimiters.tokenVerify, req, res))) return;
       return handleVerify(req, res);
     }
 
-    // All other operations require admin auth
-    const apiKey = process.env.ADMIN_API_KEY;
-    if (apiKey) {
-      const auth = req.headers.authorization;
-      if (auth !== `Bearer ${apiKey}`) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-    }
+    // All other operations require admin auth (Clerk JWT or prototype mode)
+    const session = await requireAuth(req, res);
+    if (!session) return;
 
     // Route: GET — list tokens (admin)
     if (req.method === 'GET') {

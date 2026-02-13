@@ -38,7 +38,7 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 | Analytics | Done | `@vercel/analytics` + `@vercel/speed-insights` wired in `main.jsx` |
 | Code Splitting | Done | React.lazy() — 13 lazy-loaded routes, vendor chunks separated |
 | UX Optimizations | Done | 23 tasks: mobile progress bar, smart photo slots, keyboard shortcuts (Alt+key), Start Here card, Save Indicator toast, page titles, empty states, thread view, quick-actions, send-all, font consolidation |
-| Authentication | Not started | No auth — entire app is open |
+| Authentication | In progress | Clerk JWT auth in middleware + Layout; API endpoints have inline auth gates; prototype mode still works when no keys set |
 | Tests | Not started | No test framework configured |
 
 ---
@@ -198,6 +198,10 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **Serverless router pattern**: Related endpoints consolidated into single files with `?action=` routing (filemaker.js, tokens.js) to manage Vercel function count.
 - **Vercel env vars**: Use `printf 'value' | vercel env add` — never `echo` (adds trailing newline that breaks header-safe values like CRON_SECRET).
 - **Deployment**: `git push origin main` then `npx vercel@50.15.0 --prod`. Vercel Pro uses Turbo Build (30 cores).
+- **StatusPill**: Uses `children` for display text, NOT a `label` prop. `<StatusPill variant="info">{text}</StatusPill>` — never `<StatusPill label={text} />`.
+- **FormField onChange**: `TextInput`/`SelectInput` call `onChange(value, event)` — first arg is the extracted value, not a DOM event. Use `(value) => fn(value)`, not `(e) => fn(e.target.value)`.
+- **FM sync upsert**: Spread full `fromFM()` output with explicit defaults for required fields. Never cherry-pick individual fields — it creates a "field graveyard" where mapped fields don't reach the database. Strip null/undefined keys before upsert to avoid overwriting existing data.
+- **Inline auth gates for mixed-access endpoints**: When a consolidated `?action=` router has both public and admin operations, route the public action first, then add an auth check before admin operations. Don't rely on middleware query-param matching.
 
 ---
 
@@ -220,6 +224,8 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | `db push` over `migrate dev` for schema changes | Project has no migration history (started with `db push`); `migrate dev` would require full DB reset. Non-destructive column additions only. |
 | Font consolidation: 2 fonts only (Inter + Bitter) | Removed Courier Prime and Source Serif 4; `font-mono` remapped to Inter to avoid touching 28+ files |
 | Keyboard shortcuts via Alt+key in Layout | Alt+D/M/Q/P/C for top-5 admin pages; skipped when focus is in form inputs |
+| FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
+| Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
 
 ---
 

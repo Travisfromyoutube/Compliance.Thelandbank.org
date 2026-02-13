@@ -1,8 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { Outlet, NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppIcon } from './ui';
 import ICONS from '../icons/iconMap';
 import { useProperties } from '../context/PropertyContext';
+
+/* ── Clerk user button (lazy — only bundled when key is set) ── */
+const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const ClerkUserButton = CLERK_KEY
+  ? lazy(() => import('@clerk/clerk-react').then((m) => ({ default: m.UserButton })))
+  : null;
 
 /* ══════════════════════════════════════════════════
    Navigation Structure — grouped by mental model
@@ -407,6 +413,23 @@ function Sidebar({ onNavClick }) {
           <AppIcon icon={ICONS.arrowRight} size={11} />
         </a>
       </div>
+
+      {/* ── Clerk user button (when auth is enabled) ── */}
+      {ClerkUserButton && (
+        <div className="px-4 pb-3 flex items-center gap-2.5 border-t border-white/[0.06] pt-3">
+          <Suspense fallback={null}>
+            <ClerkUserButton
+              appearance={{
+                elements: {
+                  avatarBox: 'w-7 h-7',
+                  userButtonPopoverCard: 'shadow-lg',
+                },
+              }}
+            />
+          </Suspense>
+          <span className="text-[12px] text-blue-200/60 truncate">Staff Account</span>
+        </div>
+      )}
 
     </aside>
   );

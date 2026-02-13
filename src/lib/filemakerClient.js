@@ -2,17 +2,125 @@
  * FileMaker Data API client for Vercel serverless functions.
  *
  * Handles session-token auth, request formatting, and FM-specific
- * error codes. Each function invocation logs in fresh (stateless)
- * since Vercel has no persistent memory between requests.
+ * error codes. Session tokens are cached in Upstash Redis (14-min TTL)
+ * to avoid login/logout per request. Circuit breaker backs off after
+ * 3 consecutive failures.
  *
  * Env vars required:
  *   FM_SERVER_URL  — base URL (e.g. https://fm.example.com or Cloudflare Tunnel URL)
  *   FM_DATABASE    — FileMaker database name
  *   FM_USERNAME    — Data API account username
  *   FM_PASSWORD    — Data API account password
+ *
+ * Optional (for session caching):
+ *   UPSTASH_REDIS_REST_URL   — from Task 03
+ *   UPSTASH_REDIS_REST_TOKEN — from Task 03
  */
 
+import { Redis } from '@upstash/redis';
+
 const FM_API_VERSION = 'v1';
+
+/* ── Redis session cache ──────────────────────────────────── */
+
+const FM_SESSION_KEY = 'fm:session';
+const SESSION_TTL_SECONDS = 840; // 14 minutes (FM expires at 15)
+
+const FM_CIRCUIT_KEY = 'fm:circuit';
+const CIRCUIT_OPEN_DURATION_SECONDS = 300; // 5 minutes
+const FAILURE_THRESHOLD = 3;
+
+let redis = null;
+function getRedis() {
+  if (!redis && process.env.UPSTASH_REDIS_REST_URL) {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  }
+  return redis;
+}
+
+/**
+ * Get a cached FM session token, or create a new one.
+ * Cached in Upstash Redis with a 14-minute TTL.
+ * Falls back to a fresh login if Redis is unavailable.
+ */
+async function getCachedToken() {
+  const r = getRedis();
+
+  if (r) {
+    try {
+      const cached = await r.get(FM_SESSION_KEY);
+      if (cached) return cached;
+    } catch (err) {
+      console.error('Redis get failed, creating fresh FM session:', err.message);
+    }
+  }
+
+  // No cached token — create a new session
+  const token = await login();
+
+  if (r) {
+    try {
+      await r.set(FM_SESSION_KEY, token, { ex: SESSION_TTL_SECONDS });
+    } catch (err) {
+      console.error('Redis set failed:', err.message);
+    }
+  }
+
+  return token;
+}
+
+/**
+ * Invalidate the cached session (e.g., after a 401 from FM).
+ */
+async function invalidateCachedToken() {
+  const r = getRedis();
+  if (r) {
+    try { await r.del(FM_SESSION_KEY); } catch { /* best effort */ }
+  }
+}
+
+/* ── Circuit breaker ──────────────────────────────────────── */
+
+/**
+ * Check if the FM circuit breaker is open (FM is down, stop trying).
+ */
+export async function isCircuitOpen() {
+  const r = getRedis();
+  if (!r) return false;
+
+  try {
+    const failures = await r.get(FM_CIRCUIT_KEY);
+    return failures && parseInt(failures, 10) >= FAILURE_THRESHOLD;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Record an FM failure. After FAILURE_THRESHOLD consecutive failures,
+ * the circuit opens for CIRCUIT_OPEN_DURATION_SECONDS.
+ */
+async function recordFailure() {
+  const r = getRedis();
+  if (!r) return;
+
+  try {
+    const count = await r.incr(FM_CIRCUIT_KEY);
+    if (count === 1) {
+      await r.expire(FM_CIRCUIT_KEY, CIRCUIT_OPEN_DURATION_SECONDS);
+    }
+  } catch { /* best effort */ }
+}
+
+/** Reset failure counter on successful FM operation. */
+async function recordSuccess() {
+  const r = getRedis();
+  if (!r) return;
+  try { await r.del(FM_CIRCUIT_KEY); } catch { /* best effort */ }
+}
 
 function getConfig() {
   const server = process.env.FM_SERVER_URL;
@@ -255,8 +363,9 @@ export async function getLayoutMetadata(token, layout) {
 /* ── Convenience: session-scoped operation ──────────────── */
 
 /**
- * Run a callback with an auto-managed FM session.
- * Logs in, passes the token, logs out when done.
+ * Run a callback with a valid FM session token.
+ * Uses cached session if available. Retries once on auth failure.
+ * Circuit breaker prevents hammering a down FM server.
  *
  * @param {(token: string) => Promise<T>} callback
  * @returns {Promise<T>}
@@ -267,10 +376,34 @@ export async function getLayoutMetadata(token, layout) {
  *   });
  */
 export async function withSession(callback) {
-  const token = await login();
+  if (await isCircuitOpen()) {
+    const err = new Error('FileMaker circuit breaker is open — FM appears to be down. Serving from local cache.');
+    err.circuitOpen = true;
+    throw err;
+  }
+
+  let token = await getCachedToken();
+
   try {
-    return await callback(token);
-  } finally {
-    await logout(token);
+    const result = await callback(token);
+    await recordSuccess();
+    return result;
+  } catch (err) {
+    // If FM returned 401/expired (code 952), invalidate and retry once
+    if (err.fmCode === '952' || err.message?.includes('401')) {
+      console.warn('FM session expired, retrying with fresh token');
+      await invalidateCachedToken();
+      token = await getCachedToken();
+      try {
+        const result = await callback(token);
+        await recordSuccess();
+        return result;
+      } catch (retryErr) {
+        await recordFailure();
+        throw retryErr;
+      }
+    }
+    await recordFailure();
+    throw err;
   }
 }

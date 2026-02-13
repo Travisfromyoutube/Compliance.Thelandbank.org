@@ -12,10 +12,14 @@ import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
 import { cors } from './_cors.js';
 import { validateOrReject } from '../src/lib/validate.js';
 import { createTemplateBody, updateTemplateBody } from '../src/lib/schemas.js';
+import { requireAuth } from '../src/lib/auth.js';
 
 export default async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, PUT, DELETE, OPTIONS' })) return;
   if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
+
+  const session = await requireAuth(req, res);
+  if (!session) return;
 
   try {
     /* ── GET — list all templates ──────────────────────── */

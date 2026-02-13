@@ -18,6 +18,7 @@ import {
   updateRecord,
   getLayoutMetadata,
   isConfigured,
+  isCircuitOpen,
 } from '../src/lib/filemakerClient.js';
 import {
   toFM,
@@ -34,9 +35,13 @@ import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
 import { cors } from './_cors.js';
 import { validateOrReject } from '../src/lib/validate.js';
 import { fmPushBody } from '../src/lib/schemas.js';
+import { requireAuth } from '../src/lib/auth.js';
 
 export default async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, OPTIONS' })) return;
+
+  const session = await requireAuth(req, res);
+  if (!session) return;
 
   const action = req.query.action;
 
@@ -69,6 +74,7 @@ export default async function handler(req, res) {
 
 async function handleStatus(req, res) {
   const includeMeta = req.query.meta === 'true';
+  const circuitOpen = await isCircuitOpen();
 
   // Static field mapping — always available regardless of FM connection
   const staticFieldMapping = {
@@ -87,6 +93,7 @@ async function handleStatus(req, res) {
       hint: 'Set FM_SERVER_URL, FM_DATABASE, FM_USERNAME, FM_PASSWORD',
       portal: { recordCount: portalCount },
       fieldMapping: staticFieldMapping,
+      circuitBreaker: { open: circuitOpen },
       lastChecked: new Date().toISOString(),
     });
   }
@@ -149,6 +156,7 @@ async function handleStatus(req, res) {
       },
       ...(fmStatus.fieldMetadata && { fieldMetadata: fmStatus.fieldMetadata }),
       ...(fmStatus.metaError && { metaError: fmStatus.metaError }),
+      circuitBreaker: { open: circuitOpen },
       lastChecked: new Date().toISOString(),
     });
   } catch (error) {
@@ -161,6 +169,7 @@ async function handleStatus(req, res) {
       configured: true,
       error: error.message,
       fmCode: error.fmCode || null,
+      circuitBreaker: { open: error.circuitOpen || circuitOpen },
       latencyMs: Date.now() - startTime,
       portal: { recordCount: portalCount },
       fieldMapping: staticFieldMapping,

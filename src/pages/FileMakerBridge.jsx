@@ -89,114 +89,10 @@ function SystemHealthBar({ status }) {
   );
 }
 
-/* ── Field mapping table ────────────────────── */
-
-function FieldMappingCard({ status }) {
-  const [expanded, setExpanded] = useState(false);
-  const mapping = status?.fieldMapping;
-
-  if (!mapping) return null;
-
-  const fields = mapping.portalFields?.map((portal, i) => ({
-    portal,
-    fm: mapping.fmFields?.[i] || '—',
-  })) || [];
-
-  const displayFields = expanded ? fields : fields.slice(0, 8);
-
-  return (
-    <Card title="Field Mapping" subtitle={`${mapping.mappedFields} fields synced between portal and FileMaker`}>
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left py-2 px-3 font-mono text-muted uppercase tracking-wider text-[10px]">Portal Field</th>
-              <th className="text-center py-2 px-1 text-muted">
-                <AppIcon icon={ICONS.dataFlow} size={12} />
-              </th>
-              <th className="text-left py-2 px-3 font-mono text-muted uppercase tracking-wider text-[10px]">FileMaker Field</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayFields.map(({ portal, fm }) => (
-              <tr key={portal} className="border-b border-border/50 hover:bg-warm-100/30">
-                <td className="py-1.5 px-3 font-mono text-text">{portal}</td>
-                <td className="py-1.5 px-1 text-center text-muted">→</td>
-                <td className="py-1.5 px-3 font-mono text-accent-dark">{fm}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {fields.length > 8 && (
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="mt-3 text-xs text-accent font-medium hover:text-accent-dark transition-colors"
-        >
-          {expanded ? 'Show less' : `Show all ${fields.length} fields`}
-        </button>
-      )}
-    </Card>
-  );
-}
-
-/* ── Sync directions card ───────────────────── */
-
-function SyncDirectionsCard() {
-  const directions = [
-    {
-      direction: 'FileMaker → Portal',
-      trigger: 'Scheduled sync (every 15 min) or manual',
-      data: 'Property records, buyer info, compliance dates, sold status, program type',
-      icon: ICONS.arrowRight,
-    },
-    {
-      direction: 'Portal → FileMaker',
-      trigger: 'On buyer submission',
-      data: 'New submission record, uploaded photos/documents, confirmation ID',
-      icon: ICONS.arrowLeft,
-    },
-    {
-      direction: 'Portal → FileMaker',
-      trigger: 'On compliance email send',
-      data: 'Communication log entry: date, action type, template used, recipient, delivery status',
-      icon: ICONS.arrowLeft,
-    },
-    {
-      direction: 'Portal → FileMaker',
-      trigger: 'On admin field edit',
-      data: 'Single field update to FM property record (compliance level, dates, status changes)',
-      icon: ICONS.arrowLeft,
-    },
-  ];
-
-  return (
-    <Card title="Sync Directions" subtitle="When and what data moves between systems">
-      <div className="space-y-3">
-        {directions.map((d, i) => (
-          <div key={i} className="flex items-start gap-3 p-3 rounded-md bg-warm-100/30">
-            <div className="flex-shrink-0 p-1.5 bg-warm-100 rounded">
-              <AppIcon icon={d.icon} size={12} className="text-muted" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-semibold text-text">{d.direction}</span>
-                <span className="text-[10px] text-muted">· {d.trigger}</span>
-              </div>
-              <p className="text-[11px] text-muted mt-0.5">{d.data}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
 /* ── Main page ──────────────────────────────── */
 
 export default function FileMakerBridge() {
-  usePageTitle('Data Integration & Security');
+  usePageTitle('How This Portal Works');
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -233,9 +129,9 @@ export default function FileMakerBridge() {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Data Integration & Security"
-        subtitle="How property data flows securely between FileMaker and the compliance portal"
-        icon={ICONS.database}
+        title="How This Portal Works"
+        subtitle="A behind-the-scenes look at how property data stays accurate and secure"
+        icon={ICONS.bookOpen}
         actions={
           <SyncButton
             connected={status?.connected}
@@ -245,35 +141,130 @@ export default function FileMakerBridge() {
         }
       />
 
-      <SystemHealthBar status={status} />
+      {/* 1. Hero Explainer */}
+      <div className="animate-fade-slide-up admin-stagger-1">
+        <div className="bg-warm-100 rounded-xl border border-warm-200 p-6 md:p-8">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mt-0.5">
+              <AppIcon icon={ICONS.home} size={20} className="text-accent" />
+            </div>
+            <div className="max-w-2xl">
+              <h2 className="font-heading text-xl font-bold text-text mb-2">
+                One system for compliance, connected to your records
+              </h2>
+              <p className="text-sm text-muted leading-relaxed">
+                This portal replaces the manual spreadsheet-and-email workflow. It pulls
+                property data directly from your FileMaker database, tracks buyer compliance
+                milestones automatically, and sends notices when deadlines pass — all from
+                one place.
+              </p>
+            </div>
+          </div>
 
-      {/* Mac OS Window — hero section at top */}
-      <MacOSWindow />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { icon: ICONS.sync,       label: 'Syncs with FileMaker',  detail: 'Property records stay current without manual re-entry' },
+              { icon: ICONS.clock,      label: 'Tracks Deadlines',      detail: 'Compliance milestones computed automatically from close date' },
+              { icon: ICONS.batchEmail, label: 'Sends Notices',         detail: 'Email outreach from compliance@thelandbank.org in one click' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-3 p-3.5 rounded-lg bg-white/60 border border-warm-200/60">
+                <div className="flex-shrink-0 w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center">
+                  <AppIcon icon={item.icon} size={16} className="text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-text">{item.label}</p>
+                  <p className="text-[11px] text-muted mt-0.5 leading-snug">{item.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-      {/* Data Flow + Security — single card */}
-      <Card className="p-6 lg:p-8">
-        {/* Data Flow */}
-        <div className="mb-8">
-          <h3 className="font-heading text-lg font-bold text-text mb-1">Data Flow</h3>
-          <p className="text-xs text-muted mb-5">How property data moves through 5 system components — from buyer submission to admin action</p>
+      {/* 2. Mac OS Window — signature hero section */}
+      <div className="animate-fade-slide-up admin-stagger-2">
+        <MacOSWindow />
+      </div>
+
+      {/* 3. Data Flow — own section */}
+      <div className="animate-fade-slide-up admin-stagger-3">
+        <div className="mb-4">
+          <h2 className="font-heading text-lg font-semibold text-text">How Data Flows</h2>
+          <p className="text-sm text-muted mt-1">From buyer submission to staff action — five steps, fully automated</p>
+        </div>
+        <Card className="p-6 lg:p-8">
           <DataFlowDiagram />
+        </Card>
+      </div>
+
+      {/* 4. Security — own section */}
+      <div className="animate-fade-slide-up admin-stagger-4">
+        <div className="mb-4">
+          <div className="flex items-center gap-2">
+            <AppIcon icon={ICONS.shieldCheck} size={18} className="text-accent" />
+            <h2 className="font-heading text-lg font-semibold text-text">End-to-End Encryption</h2>
+          </div>
+          <p className="text-sm text-muted mt-1">Four layers of security protect every piece of property data</p>
+        </div>
+        <SecurityLayers />
+      </div>
+
+      {/* 5. What Stays in Sync */}
+      <div className="animate-fade-slide-up admin-stagger-5">
+        <div className="mb-4">
+          <h2 className="font-heading text-lg font-semibold text-text">What Stays in Sync</h2>
+          <p className="text-sm text-muted mt-1">Data flows both ways between FileMaker and the portal</p>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-border/50 my-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* FROM FileMaker */}
+          <Card className="p-5" variant="info">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-info-light flex items-center justify-center">
+                <AppIcon icon={ICONS.arrowRight} size={16} className="text-info" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-text">From FileMaker</h3>
+                <p className="text-[11px] text-muted">Syncs every 15 minutes or on demand</p>
+              </div>
+            </div>
+            <ul className="space-y-2">
+              {['Property records and addresses', 'Buyer names and contact info', 'Sale dates and program types', 'Sold status and parcel details'].map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-muted">
+                  <span className="w-1.5 h-1.5 rounded-full bg-info flex-shrink-0 mt-1.5" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Card>
 
-        {/* Security */}
-        <div>
-          <h3 className="font-heading text-lg font-bold text-text mb-1">Security</h3>
-          <p className="text-xs text-muted mb-5">End-to-end encryption</p>
-          <SecurityLayers />
+          {/* BACK TO FileMaker */}
+          <Card className="p-5" variant="success">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-success-light flex items-center justify-center">
+                <AppIcon icon={ICONS.arrowLeft} size={16} className="text-success" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-text">Back to FileMaker</h3>
+                <p className="text-[11px] text-muted">Updates sent when staff or buyers take action</p>
+              </div>
+            </div>
+            <ul className="space-y-2">
+              {['Buyer compliance submissions and photos', 'Email communication logs', 'Enforcement level changes', 'Staff notes and field edits'].map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-muted">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0 mt-1.5" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Card>
         </div>
-      </Card>
+      </div>
 
-      {/* Directions + Field Mapping */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SyncDirectionsCard />
-        <FieldMappingCard status={status} />
+      {/* 6. System Status — quiet footer */}
+      <div className="animate-fade-slide-up admin-stagger-6">
+        <p className="text-[11px] font-heading font-semibold uppercase tracking-wider text-muted mb-2">System Status</p>
+        <SystemHealthBar status={status} />
       </div>
     </div>
   );

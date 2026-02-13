@@ -3,9 +3,28 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
 import { PropertyProvider } from './context/PropertyContext'
 import Layout from './components/Layout'
 import './index.css'
+
+/* ── Clerk ──────────────────────────────────────────────── */
+const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+/**
+ * ProtectedRoute — wraps admin pages in Clerk auth.
+ * When VITE_CLERK_PUBLISHABLE_KEY is not set, renders children directly
+ * (prototype mode — no auth).
+ */
+function ProtectedRoute({ children }) {
+  if (!CLERK_KEY) return children
+  return (
+    <>
+      <SignedIn>{children}</SignedIn>
+      <SignedOut><RedirectToSignIn /></SignedOut>
+    </>
+  )
+}
 
 /* ── Eager-loaded pages (always in initial bundle) ────── */
 import Dashboard from './pages/Dashboard'
@@ -38,34 +57,50 @@ function PageLoader() {
   )
 }
 
+/**
+ * AppShell — wraps the entire app.
+ * If Clerk key is set, wraps in ClerkProvider.
+ * If not, renders directly (prototype mode).
+ */
+function AppShell({ children }) {
+  if (!CLERK_KEY) return children
+  return (
+    <ClerkProvider publishableKey={CLERK_KEY} afterSignOutUrl="/">
+      {children}
+    </ClerkProvider>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <AppShell>
     <PropertyProvider>
     <BrowserRouter>
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/properties" element={<Properties />} />
-            <Route path="/properties/:id" element={<PropertyDetail />} />
-            <Route path="/milestones" element={<UpcomingMilestones />} />
-            <Route path="/action-queue" element={<ActionQueue />} />
-            <Route path="/compliance" element={<Compliance />} />
-            <Route path="/batch-email" element={<BatchEmail />} />
-            <Route path="/templates" element={<TemplateManager />} />
-            <Route path="/communications" element={<CommunicationLog />} />
-            <Route path="/map" element={<ComplianceMap />} />
-            <Route path="/audit" element={<AuditTrail />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/bridge" element={<FileMakerBridge />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/properties" element={<ProtectedRoute><Properties /></ProtectedRoute>} />
+            <Route path="/properties/:id" element={<ProtectedRoute><PropertyDetail /></ProtectedRoute>} />
+            <Route path="/milestones" element={<ProtectedRoute><UpcomingMilestones /></ProtectedRoute>} />
+            <Route path="/action-queue" element={<ProtectedRoute><ActionQueue /></ProtectedRoute>} />
+            <Route path="/compliance" element={<ProtectedRoute><Compliance /></ProtectedRoute>} />
+            <Route path="/batch-email" element={<ProtectedRoute><BatchEmail /></ProtectedRoute>} />
+            <Route path="/templates" element={<ProtectedRoute><TemplateManager /></ProtectedRoute>} />
+            <Route path="/communications" element={<ProtectedRoute><CommunicationLog /></ProtectedRoute>} />
+            <Route path="/map" element={<ProtectedRoute><ComplianceMap /></ProtectedRoute>} />
+            <Route path="/audit" element={<ProtectedRoute><AuditTrail /></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+            <Route path="/bridge" element={<ProtectedRoute><FileMakerBridge /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Route>
-          {/* Buyer submission is standalone (no sidebar) */}
+          {/* Buyer submission is standalone (no sidebar, no auth) */}
           <Route path="/submit" element={<BuyerSubmission />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
     </PropertyProvider>
+    </AppShell>
     <Analytics />
     <SpeedInsights />
   </React.StrictMode>,

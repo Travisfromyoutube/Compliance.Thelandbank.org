@@ -13,49 +13,49 @@ import ICONS from '../../icons/iconMap';
 const LAYERS = [
   {
     id: 'tls',
-    label: 'HTTPS / TLS 1.3',
+    label: 'Encrypted Connections',
     icon: ICONS.globe,
     items: [
-      'All traffic encrypted in transit',
-      'Automatic SSL certificates',
-      'HSTS headers prevent downgrade attacks',
+      'All data travels through encrypted channels',
+      'Security certificates are managed automatically',
+      'Browsers are required to use secure connections',
     ],
   },
   {
     id: 'cors',
-    label: 'CORS & Edge Middleware',
+    label: 'Access Controls',
     icon: ICONS.shield,
     items: [
-      'API routes gated by ADMIN_API_KEY',
-      'CORS restricts cross-origin requests',
-      'Edge middleware runs before functions',
+      'Staff-only features require authorization',
+      'Only approved applications can access data',
+      'Security checks happen before any data loads',
     ],
   },
   {
     id: 'auth',
-    label: 'API Auth + Buyer Tokens',
+    label: 'Buyer Verification',
     icon: ICONS.outreach,
     items: [
-      'Unique time-limited access links',
-      'Tokens are single-use and expire',
-      'No login required — secure by design',
+      'Each buyer gets a unique, time-limited link',
+      'Links work once and automatically expire',
+      'Buyers never need to create an account',
     ],
   },
   {
     id: 'db',
-    label: 'Encrypted Database',
+    label: 'Encrypted Storage',
     icon: ICONS.database,
     items: [
-      'Neon PostgreSQL: AES-256 at rest',
-      'FileMaker: built-in encryption',
-      'Prisma ORM prevents SQL injection',
+      'Portal database is encrypted at rest',
+      'FileMaker data is encrypted at rest',
+      'Database queries are protected against tampering',
     ],
   },
 ];
 
 function LayerCard({ layer }) {
   return (
-    <div className="flex flex-col items-center text-center px-3 py-3 rounded-lg border border-accent/20 bg-accent/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:bg-accent/10">
+    <div className="flex flex-col items-center text-center px-4 py-4 rounded-lg border border-accent/20 bg-accent/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:bg-accent/10">
       <div className="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center mb-2 shadow-sm">
         <AppIcon icon={layer.icon} size={18} />
       </div>

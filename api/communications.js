@@ -14,11 +14,15 @@
 import prisma from '../src/lib/db.js';
 import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
 import { cors } from './_cors.js';
+import { requireAuth } from '../src/lib/auth.js';
 
 export default async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, OPTIONS' })) return;
   if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+
+  const session = await requireAuth(req, res);
+  if (!session) return;
 
   try {
     // ── Single record lookup ──────────────────────────────

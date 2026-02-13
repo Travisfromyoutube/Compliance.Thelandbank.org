@@ -58,7 +58,7 @@ const TECH_STACK = [
 
 const API_FLOWS = [
   {
-    title: 'FileMaker Data API',
+    title: 'Property Records: FileMaker → Portal',
     steps: [
       { step: '1', label: 'Authenticate', detail: 'Session token from FM Server (15-min TTL)' },
       { step: '2', label: 'getRecords', detail: 'Pull property data from PARC - Form layout' },
@@ -67,7 +67,7 @@ const API_FLOWS = [
     ],
   },
   {
-    title: 'Resend Email API',
+    title: 'Compliance Emails: Portal → Buyer',
     steps: [
       { step: '1', label: 'Template Render', detail: 'Merge buyer data into compliance email template' },
       { step: '2', label: 'Send via Resend', detail: 'From: compliance@thelandbank.org' },
@@ -75,7 +75,7 @@ const API_FLOWS = [
     ],
   },
   {
-    title: 'Buyer Token System',
+    title: 'Buyer Access: Secure One-Time Links',
     steps: [
       { step: '1', label: 'Generate', detail: 'Unique token tied to buyer + property + expiry' },
       { step: '2', label: 'Email Link', detail: 'Token embedded in submission URL' },
@@ -103,11 +103,11 @@ function FileTreeItem({ item, depth = 0 }) {
 
   return (
     <>
-      <div className="flex items-start gap-2.5 py-1 hover:bg-gray-50/80 rounded-sm px-1" style={{ paddingLeft: `${indent + 4}px` }}>
+      <div className="flex items-start gap-2.5 py-1 hover:bg-surface-alt rounded-sm px-1" style={{ paddingLeft: `${indent + 4}px` }}>
         {isFolder ? <span className="macos9-folder mt-0.5" /> : <span className="macos9-document mt-0.5" />}
-        <span className="text-xs font-mono font-semibold text-gray-800">{item.name}</span>
+        <span className="text-xs font-mono font-semibold text-text">{item.name}</span>
         {item.annotation && (
-          <span className="text-[11px] text-gray-500 italic ml-1">{item.annotation}</span>
+          <span className="text-[11px] text-muted italic ml-1">{item.annotation}</span>
         )}
       </div>
       {isFolder && item.children?.map((child, i) => (
@@ -119,94 +119,106 @@ function FileTreeItem({ item, depth = 0 }) {
 
 function FilesTab() {
   return (
-    <div className="space-y-0 max-h-[380px] overflow-y-auto scrollbar-thin">
-      {FILE_TREE.map((item, i) => (
-        <FileTreeItem key={i} item={item} depth={0} />
-      ))}
+    <div>
+      <p className="text-xs text-muted mb-3 italic">The key files that power the portal</p>
+      <div className="space-y-0 max-h-[380px] overflow-y-auto scrollbar-thin">
+        {FILE_TREE.map((item, i) => (
+          <FileTreeItem key={i} item={item} depth={0} />
+        ))}
+      </div>
     </div>
   );
 }
 
 function TechnologyTab() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-      {TECH_STACK.map((tech) => (
-        <div
-          key={tech.name}
-          className="px-3 py-2.5 rounded-md border border-gray-200 bg-gray-50/60 transition-all duration-150 hover:bg-white hover:shadow-sm hover:border-gray-300"
-        >
-          <div className="flex items-baseline justify-between mb-1">
-            <span className="text-xs font-bold text-gray-800">{tech.name}</span>
-            <span className="text-[9px] font-mono text-gray-400 uppercase tracking-wide">{tech.layer}</span>
+    <div>
+      <p className="text-xs text-muted mb-3 italic">The tools and services behind the scenes</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+        {TECH_STACK.map((tech) => (
+          <div
+            key={tech.name}
+            className="px-3 py-2.5 rounded-md border border-border bg-surface-alt transition-all duration-150 hover:bg-surface hover:shadow-sm hover:border-accent/20"
+          >
+            <div className="flex items-baseline justify-between mb-1">
+              <span className="text-xs font-bold text-text">{tech.name}</span>
+              <span className="text-[9px] font-mono text-muted uppercase tracking-wide">{tech.layer}</span>
+            </div>
+            <p className="text-[11px] text-muted leading-relaxed">{tech.aha}</p>
           </div>
-          <p className="text-[11px] text-gray-500 leading-relaxed">{tech.aha}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
 
 function APIsTab() {
   return (
-    <div className="space-y-5">
-      {API_FLOWS.map((flow) => (
-        <div key={flow.title}>
-          <h4 className="text-xs font-bold text-gray-800 mb-2.5 uppercase tracking-wider">{flow.title}</h4>
-          <div className="flex flex-wrap items-start gap-2">
-            {flow.steps.map((s, i) => (
-              <React.Fragment key={s.step}>
-                <div className="flex items-start gap-2 px-3 py-2 bg-gray-50 rounded-md border border-gray-200">
-                  <span className="text-[11px] font-mono font-bold text-accent">{s.step}.</span>
-                  <div>
-                    <span className="text-[11px] font-semibold text-gray-800 block">{s.label}</span>
-                    <span className="text-[10px] text-gray-500">{s.detail}</span>
+    <div>
+      <p className="text-xs text-muted mb-3 italic">How data moves between systems</p>
+      <div className="space-y-5">
+        {API_FLOWS.map((flow) => (
+          <div key={flow.title}>
+            <h4 className="text-xs font-bold text-text mb-2.5 uppercase tracking-wider">{flow.title}</h4>
+            <div className="flex flex-wrap items-start gap-2">
+              {flow.steps.map((s, i) => (
+                <React.Fragment key={s.step}>
+                  <div className="flex items-start gap-2 px-3 py-2 bg-surface-alt rounded-md border border-border">
+                    <span className="text-[11px] font-mono font-bold text-accent">{s.step}.</span>
+                    <div>
+                      <span className="text-[11px] font-semibold text-text block">{s.label}</span>
+                      <span className="text-[10px] text-muted">{s.detail}</span>
+                    </div>
                   </div>
-                </div>
-                {i < flow.steps.length - 1 && (
-                  <span className="text-gray-300 self-center text-sm">&rarr;</span>
-                )}
-              </React.Fragment>
-            ))}
+                  {i < flow.steps.length - 1 && (
+                    <span className="text-muted/40 self-center text-sm">&rarr;</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
 
 function SecurityTab() {
   return (
-    <div className="space-y-4">
-      {/* Security measures in 2-column grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {SECURITY_MEASURES.map((measure) => (
-          <div key={measure.layer} className="px-3 py-2.5 rounded-md border border-gray-200 bg-gray-50/60">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: measure.color }} />
-              <h4 className="text-xs font-bold" style={{ color: measure.color }}>{measure.layer}</h4>
+    <div>
+      <p className="text-xs text-muted mb-3 italic">How your data is protected</p>
+      <div className="space-y-4">
+        {/* Security measures in 2-column grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {SECURITY_MEASURES.map((measure) => (
+            <div key={measure.layer} className="px-3 py-2.5 rounded-md border border-border bg-surface-alt">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: measure.color }} />
+                <h4 className="text-xs font-bold" style={{ color: measure.color }}>{measure.layer}</h4>
+              </div>
+              <ul className="space-y-1 pl-4">
+                {measure.items.map((item, i) => (
+                  <li key={i} className="text-[11px] text-muted flex items-start gap-1.5">
+                    <span className="text-muted/40 mt-px">&#x2022;</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-1 pl-4">
-              {measure.items.map((item, i) => (
-                <li key={i} className="text-[11px] text-gray-600 flex items-start gap-1.5">
-                  <span className="text-gray-400 mt-px">&#x2022;</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      {/* Token lifecycle — full width below */}
-      <div className="px-3.5 py-3 bg-accent/5 rounded-md border border-accent/15">
-        <p className="text-xs font-bold text-accent mb-2.5 uppercase tracking-wider">Buyer Token Lifecycle</p>
-        <div className="flex flex-wrap items-center gap-2 text-[10px]">
-          {['Generate Token', 'Email to Buyer', 'Buyer Clicks Link', 'Token Verified', 'Form Submitted', 'Token Expired'].map((step, i, arr) => (
-            <React.Fragment key={step}>
-              <span className="px-2.5 py-1 bg-white rounded border border-accent/20 text-accent font-medium shadow-sm">{step}</span>
-              {i < arr.length - 1 && <span className="text-accent/30">&rarr;</span>}
-            </React.Fragment>
           ))}
+        </div>
+
+        {/* Token lifecycle — full width below */}
+        <div className="px-3.5 py-3 bg-accent/5 rounded-md border border-accent/15">
+          <p className="text-xs font-bold text-accent mb-2.5 uppercase tracking-wider">Buyer Token Lifecycle</p>
+          <div className="flex flex-wrap items-center gap-2 text-[10px]">
+            {['Generate Token', 'Email to Buyer', 'Buyer Clicks Link', 'Token Verified', 'Form Submitted', 'Token Expired'].map((step, i, arr) => (
+              <React.Fragment key={step}>
+                <span className="px-2.5 py-1 bg-white rounded border border-accent/20 text-accent font-medium shadow-sm">{step}</span>
+                {i < arr.length - 1 && <span className="text-accent/30">&rarr;</span>}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -234,7 +246,7 @@ export default function MacOSWindow() {
           <span className="macos9-btn macos9-btn-close" />
           <span className="macos9-btn macos9-btn-minimize" />
           <span className="macos9-btn macos9-btn-zoom" />
-          <span className="macos9-titlebar-text">Portal File Structure and Technology</span>
+          <span className="macos9-titlebar-text">Inside the Portal</span>
         </div>
 
         {/* Tab bar */}
