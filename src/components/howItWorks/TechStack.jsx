@@ -14,30 +14,30 @@ const LAYERS = [
   {
     label: 'What you see',
     techs: [
-      { name: 'React 18', aha: 'Component-based UI — every card, table, and form is a reusable piece' },
-      { name: 'Tailwind CSS', aha: 'Consistent design tokens — every color and spacing follows the civic theme' },
+      { name: 'React 18', aha: 'Every card, table, and form is a reusable building block' },
+      { name: 'Tailwind CSS', aha: 'All colors, spacing, and fonts come from one shared design system' },
     ],
   },
   {
     label: 'What handles requests',
     techs: [
-      { name: 'Vite 5', aha: 'Sub-second hot reload — changes appear instantly during development' },
-      { name: 'Vercel Serverless', aha: 'Auto-deploy on every push — new features go live in under 60 seconds' },
+      { name: 'Vite 5', aha: 'Changes show up in the browser instantly while developing' },
+      { name: 'Vercel Serverless', aha: 'Push code to GitHub and it\'s live in under 60 seconds' },
     ],
   },
   {
     label: 'Where data lives',
     techs: [
-      { name: 'Prisma', aha: 'Type-safe database queries — prevents data mismatch bugs before they happen' },
-      { name: 'Neon PostgreSQL', aha: 'Serverless database — scales automatically, connects from any edge location' },
-      { name: 'FileMaker', aha: 'Master property database — reads and writes records securely over HTTPS' },
+      { name: 'Prisma', aha: 'Catches data mismatch bugs before they happen, not after' },
+      { name: 'Neon PostgreSQL', aha: 'The portal\'s own database — always on, scales on its own' },
+      { name: 'FileMaker', aha: 'GCLBA\'s master property database — the portal reads and writes to it over HTTPS' },
     ],
   },
   {
     label: 'Services that help',
     techs: [
-      { name: 'Resend', aha: 'Transactional email from compliance@thelandbank.org — direct to Outlook' },
-      { name: 'Leaflet', aha: 'Interactive map with color-coded pins — visualize compliance across Genesee County' },
+      { name: 'Resend', aha: 'Sends compliance emails from compliance@thelandbank.org — lands right in Outlook' },
+      { name: 'Leaflet', aha: 'The map page — color-coded pins show compliance status across the county' },
     ],
   },
 ];
@@ -52,7 +52,7 @@ export default function TechStack() {
       <ChapterHeader
         icon={ICONS.zap}
         title="The Tech Behind It"
-        subtitle="The tools and services that make it work"
+        subtitle="What's running under the hood — click any chip to learn more"
       />
       <div className="space-y-3">
         {LAYERS.map((layer, layerIdx) => (

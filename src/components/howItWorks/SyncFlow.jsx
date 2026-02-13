@@ -97,7 +97,7 @@ export default function SyncFlow() {
       <ChapterHeader
         icon={ICONS.sync}
         title="What Stays in Sync"
-        subtitle="Data flows both ways between FileMaker and the portal"
+        subtitle="FileMaker and the portal keep each other up to date — here's what moves"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
@@ -169,7 +169,7 @@ export default function SyncFlow() {
         <div className="flex items-center gap-2">
           <span className={`w-2.5 h-2.5 rounded-full ${status?.connected ? 'bg-accent' : 'bg-danger'}`} />
           <span className={`text-sm font-medium ${status?.connected ? 'text-accent' : 'text-danger'}`}>
-            {status?.connected ? 'All systems operational' : 'Some systems need attention'}
+            {status?.connected ? 'Everything\'s connected' : 'Something needs attention'}
           </span>
         </div>
         <div className="flex items-center gap-4">

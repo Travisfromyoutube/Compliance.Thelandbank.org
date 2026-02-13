@@ -96,7 +96,7 @@ export default function HowItWorks() {
     <div className="space-y-0">
       <AdminPageHeader
         title="How This Portal Works"
-        subtitle="A behind-the-scenes look at how the system works"
+        subtitle="What's actually happening under the hood"
         icon={ICONS.bookOpen}
       />
 

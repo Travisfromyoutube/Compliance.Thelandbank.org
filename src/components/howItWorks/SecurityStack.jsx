@@ -21,9 +21,9 @@ const LAYERS = [
     icon: ICONS.globe,
     color: '#2d7a4a',
     items: [
-      'All traffic is encrypted in transit.',
-      'Security certificates are automatic.',
-      'Browsers must use secure connections.',
+      'Everything between your browser and the server is encrypted.',
+      'Security certificates renew automatically — nothing to manage.',
+      'Plain HTTP connections get redirected to HTTPS.',
     ],
   },
   {
@@ -32,9 +32,9 @@ const LAYERS = [
     icon: ICONS.shield,
     color: '#2b5f8a',
     items: [
-      'Staff features require authorization.',
-      'Only approved apps can access data.',
-      'Security checks run before any data loads.',
+      'Staff pages are locked behind login.',
+      'Only the portal itself can talk to its own API.',
+      'Every request gets checked before any data loads.',
     ],
   },
   {
@@ -43,9 +43,9 @@ const LAYERS = [
     icon: ICONS.outreach,
     color: '#b07d2e',
     items: [
-      'Each buyer gets a unique, time-limited link.',
-      'Links work once and expire automatically.',
-      'No account creation needed.',
+      'Buyers get a unique link that\'s tied to their property.',
+      'Once used (or after it times out), the link stops working.',
+      'No passwords, no accounts — just click and submit.',
     ],
   },
   {
@@ -54,9 +54,9 @@ const LAYERS = [
     icon: ICONS.database,
     color: '#7c3aed',
     items: [
-      'Portal database is encrypted at rest.',
-      'FileMaker data is encrypted at rest.',
-      'Queries are protected against tampering.',
+      'The portal\'s database is encrypted even when nothing\'s running.',
+      'FileMaker\'s data is encrypted the same way.',
+      'All database queries are parameterized — no SQL injection.',
     ],
   },
 ];
@@ -75,7 +75,7 @@ export default function SecurityStack() {
       <ChapterHeader
         icon={ICONS.shieldCheck}
         title="How Data Stays Safe"
-        subtitle="Four layers of protection, from network to storage"
+        subtitle="Peel back each layer to see how buyer and property data is protected"
       />
 
       <div className="flex gap-6">

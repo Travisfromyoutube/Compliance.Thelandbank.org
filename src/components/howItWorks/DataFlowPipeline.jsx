@@ -16,30 +16,30 @@ const FLOWS = [
     id: 'sync',
     label: 'Property Sync',
     steps: [
-      { label: 'Authenticate', detail: 'Portal logs into FileMaker with a 15-minute session token.' },
-      { label: 'Pull Records', detail: 'Reads property data from the PARC layout.' },
-      { label: 'Translate Fields', detail: 'filemakerFieldMap.js converts 50+ field names between systems.' },
-      { label: 'Store Locally', detail: 'Prisma upserts records into the Neon database cache.' },
+      { label: 'Log In', detail: 'The portal connects to FileMaker using a session token that lasts 15 minutes.' },
+      { label: 'Pull Records', detail: 'Grabs property data from the PARC layout in FileMaker.' },
+      { label: 'Translate Fields', detail: 'FileMaker and the portal use different field names — a mapping file translates 50+ of them.' },
+      { label: 'Save Locally', detail: 'Records get saved to the portal\'s own database so pages load fast.' },
     ],
   },
   {
     id: 'email',
     label: 'Compliance Emails',
     steps: [
-      { label: 'Pick Template', detail: 'Each enforcement step (Attempt 1, Warning, Default Notice) has a pre-written template.' },
-      { label: 'Merge Data', detail: 'Buyer name, address, and deadline are inserted into the template.' },
-      { label: 'Send via Resend', detail: 'Email dispatched from compliance@thelandbank.org.' },
+      { label: 'Pick Template', detail: 'Each enforcement step — Attempt 1, Warning, Default Notice — has a ready-to-go template.' },
+      { label: 'Fill In Details', detail: 'The buyer\'s name, address, and deadline get dropped into the template automatically.' },
+      { label: 'Send It', detail: 'Email goes out from compliance@thelandbank.org through Resend.' },
     ],
   },
   {
     id: 'token',
     label: 'Buyer Access Links',
     steps: [
-      { label: 'Generate Token', detail: 'A unique code tied to one buyer, one property, with an expiration.' },
-      { label: 'Email the Link', detail: 'Token embedded in the submission URL.' },
-      { label: 'Buyer Clicks', detail: 'Portal verifies the token is valid and unused.' },
-      { label: 'Submit Updates', detail: 'Buyer uploads photos and docs through the verified form.' },
-      { label: 'Token Expires', detail: 'After use or timeout, the link stops working.' },
+      { label: 'Create a Token', detail: 'A unique code gets generated — tied to one buyer, one property, with an expiration date.' },
+      { label: 'Email the Link', detail: 'The token is embedded in the submission URL and sent to the buyer.' },
+      { label: 'Buyer Clicks', detail: 'The portal checks that the token is valid and hasn\'t been used yet.' },
+      { label: 'Submit Updates', detail: 'Buyer uploads their photos and documents through the verified form.' },
+      { label: 'Link Dies', detail: 'Once used or timed out, the link stops working. No reuse.' },
     ],
   },
 ];
@@ -87,7 +87,7 @@ export default function DataFlowPipeline() {
       <ChapterHeader
         icon={ICONS.dataFlow}
         title="How Data Moves"
-        subtitle="Step through three key workflows"
+        subtitle="Pick a workflow and walk through it step by step"
       />
 
       {/* Flow selector tabs */}

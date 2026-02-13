@@ -18,7 +18,7 @@ const CARDS = [
     frontTitle: 'Syncs Records',
     frontDetail: 'FileMaker records and this portal talk to each other automatically. No copy-pasting.',
     backTitle: 'How it works',
-    backDetail: 'Portal connects to FileMaker\'s Data API every 15 minutes. Field names are translated automatically. New properties appear here within one sync cycle.',
+    backDetail: 'The portal connects to FileMaker\'s Data API every 15 minutes. Field names get translated automatically, so new properties show up here after one sync.',
   },
   {
     id: 'deadlines',
@@ -26,7 +26,7 @@ const CARDS = [
     frontTitle: 'Tracks Deadlines',
     frontDetail: 'Compliance milestones are computed from the close date. The system knows what\'s due before you do.',
     backTitle: 'How it works',
-    backDetail: 'Each program (Featured Homes, R4R, Demolition, VIP) has a built-in schedule. An hourly check flags anything overdue and escalates the enforcement level.',
+    backDetail: 'Each program — Featured Homes, R4R, Demolition, VIP — has its own built-in schedule. An hourly check flags anything overdue and bumps the enforcement level.',
   },
   {
     id: 'notices',
@@ -34,7 +34,7 @@ const CARDS = [
     frontTitle: 'Sends Notices',
     frontDetail: 'One click sends a compliance email from compliance@thelandbank.org. No switching to Outlook.',
     backTitle: 'How it works',
-    backDetail: 'Email templates are pre-written for each enforcement step. The Action Queue groups properties by what\'s due, so you can send 20 notices in one batch.',
+    backDetail: 'Templates are pre-written for each enforcement step. The Action Queue groups properties by what\'s due — send 20 notices in one batch instead of one at a time.',
   },
 ];
 
@@ -73,7 +73,7 @@ export default function FlipCards() {
       <ChapterHeader
         icon={ICONS.home}
         title="What This System Does"
-        subtitle="Three things the portal handles so staff don't have to"
+        subtitle="The stuff you used to do by hand — now handled automatically"
       />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {CARDS.map((card) => (

@@ -132,7 +132,7 @@ export default function FileExplorer() {
       <ChapterHeader
         icon={ICONS.file}
         title="What's Inside"
-        subtitle="The key files that power the portal"
+        subtitle="Where things actually live in the codebase"
       />
       <MacOSWindow title="Inside the Portal">
         <div className="flex gap-0">
