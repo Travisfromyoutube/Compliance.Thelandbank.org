@@ -39,13 +39,13 @@ const CHAPTER_EDGE_MAP = {
 };
 
 const BASE_NODES = [
-  { id: 'buyer',      position: { x: 20,  y: 20  }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',   icon: ICONS.user } },
-  { id: 'admin',      position: { x: 200, y: 20  }, data: { label: 'Admin Portal',      subtitle: '14 pages',      icon: ICONS.dashboard } },
-  { id: 'api',        position: { x: 110, y: 140 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',   icon: ICONS.zap } },
-  { id: 'neon',       position: { x: 20,  y: 270 }, data: { label: 'Neon Database',     subtitle: '9 tables',      icon: ICONS.database } },
-  { id: 'filemaker',  position: { x: 200, y: 270 }, data: { label: 'FileMaker',         subtitle: 'Master records', icon: ICONS.sync } },
-  { id: 'compliance', position: { x: 20,  y: 390 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',  icon: ICONS.shieldCheck } },
-  { id: 'resend',     position: { x: 200, y: 390 }, data: { label: 'Resend Email',      subtitle: 'Notices',       icon: ICONS.batchEmail } },
+  { id: 'buyer',      position: { x: 0,   y: 0   }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',   icon: ICONS.user } },
+  { id: 'admin',      position: { x: 260, y: 0   }, data: { label: 'Admin Portal',      subtitle: '14 pages',      icon: ICONS.dashboard } },
+  { id: 'api',        position: { x: 130, y: 110 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',   icon: ICONS.zap } },
+  { id: 'neon',       position: { x: 0,   y: 220 }, data: { label: 'Neon Database',     subtitle: '9 tables',      icon: ICONS.database } },
+  { id: 'filemaker',  position: { x: 260, y: 220 }, data: { label: 'FileMaker',         subtitle: 'Master records', icon: ICONS.sync } },
+  { id: 'compliance', position: { x: 0,   y: 330 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',  icon: ICONS.shieldCheck } },
+  { id: 'resend',     position: { x: 260, y: 330 }, data: { label: 'Resend Email',      subtitle: 'Notices',       icon: ICONS.batchEmail } },
 ];
 
 const BASE_EDGES = [
@@ -88,7 +88,7 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         strokeDasharray: '6 3',
       },
       markerEnd: { type: MarkerType.ArrowClosed, color: activeEdgeIds.includes(e.id) ? '#2d7a4a' : '#e2e0dc' },
-      labelStyle: { fontSize: 9, fill: '#8c8c8c', fontWeight: 600 },
+      labelStyle: { fontSize: 11, fill: '#8c8c8c', fontWeight: 600 },
       labelBgStyle: { fill: '#f4f6f5', fillOpacity: 0.85 },
     })),
     [activeChapter, activeEdgeIds]
@@ -101,7 +101,7 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         edges={edges}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.3 }}
+        fitViewOptions={{ padding: 0.08 }}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={false}
