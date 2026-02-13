@@ -10,7 +10,7 @@ import { AppIcon } from '../ui';
  * Handles on all 4 sides for flexible edge routing.
  */
 export default function SystemNode({ data }) {
-  const { label, subtitle, icon, active, dimmed, onClick } = data;
+  const { label, subtitle, description, icon, active, dimmed, onClick } = data;
 
   return (
     <div
@@ -33,6 +33,9 @@ export default function SystemNode({ data }) {
         <p className="font-heading text-sm font-semibold text-text leading-tight truncate">{label}</p>
         {subtitle && (
           <p className="text-xs text-muted leading-tight truncate">{subtitle}</p>
+        )}
+        {description && (
+          <p className="text-[9px] text-muted/70 leading-snug mt-0.5 line-clamp-2">{description}</p>
         )}
       </div>
       <Handle type="target" position={Position.Top} className="!bg-accent/30 !w-2 !h-2 !border-0" />

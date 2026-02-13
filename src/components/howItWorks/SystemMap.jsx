@@ -3,20 +3,22 @@ import { ReactFlow, MarkerType } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import ICONS from '../../icons/iconMap';
 import SystemNode from './SystemNode';
+import TitleNode from './TitleNode';
+import AnnotationNode from './AnnotationNode';
 
 /**
  * SystemMap - React Flow architecture diagram (persistent left panel).
  *
- * 7 nodes representing system components, 8 edges showing data flow.
- * Accepts activeChapter to highlight relevant nodes/edges.
- * Accepts onNodeClick to scroll the right panel to the matching chapter.
+ * 7 system nodes, 1 title node, and dynamic annotation nodes.
+ * Annotations change content based on activeChapter to show how
+ * the portal streamlines the previous compliance SOP.
  *
  * All interactivity (drag, zoom, pan) is disabled - this is a read-only
  * spatial anchor, not an editor. preventScrolling=false lets native
  * scroll pass through so the right panel can scroll normally.
  */
 
-const nodeTypes = { system: SystemNode };
+const nodeTypes = { system: SystemNode, title: TitleNode, annotation: AnnotationNode };
 
 /* ── Chapter-to-node mapping ───────────────── */
 const CHAPTER_NODE_MAP = {
@@ -38,14 +40,64 @@ const CHAPTER_EDGE_MAP = {
   'what-stays-sync': ['e-fm-api', 'e-api-neon'],
 };
 
+/* ── Chapter-to-annotation callout mapping ──── */
+const CHAPTER_ANNOTATIONS = {
+  'what-it-does': [
+    { targetNode: 'admin', text: 'Compliance reports used to start with an Excel export. Now they\'re always live.' },
+    { targetNode: 'resend', text: 'Mail merge across Word and Outlook → one click batch send' },
+  ],
+  'whats-inside': [
+    { targetNode: 'api', text: 'One system handles what used to take FileMaker reports, Excel sorting, and Word templates' },
+    { targetNode: 'neon', text: 'Property data stays current. No more saving spreadsheets to the K: drive' },
+  ],
+  'tech-behind-it': [
+    { targetNode: 'filemaker', text: 'Still the master record. The portal reads from it and writes back.' },
+    { targetNode: 'api', text: 'Runs the logic that used to live in Excel formulas and Word merge fields' },
+  ],
+  'how-data-moves': [
+    { targetNode: 'resend', text: 'Emails go out from compliance@. No more saving Outlook PDFs to property folders' },
+    { targetNode: 'buyer', text: 'Buyers submit directly through a secure link. No phone tag or paper forms' },
+  ],
+  'data-stays-safe': [
+    { targetNode: 'compliance', text: 'Levels update automatically. No split screen FM updates after each send' },
+    { targetNode: 'api', text: 'Every action is logged. No manual field entry per record' },
+  ],
+  'what-stays-sync': [
+    { targetNode: 'filemaker', text: 'Same FM layouts, same data. The portal handles the back and forth' },
+    { targetNode: 'neon', text: 'Portal keeps its own copy so pages load fast between syncs' },
+  ],
+};
+
+/* ── Annotation positions (absolute canvas coords) ── */
+const ANNOTATION_POSITIONS = {
+  buyer:      { x: -200, y: 50  },
+  admin:      { x: 450,  y: 50  },
+  api:        { x: -70,  y: 280 },
+  neon:       { x: -200, y: 420 },
+  filemaker:  { x: 450,  y: 420 },
+  compliance: { x: -200, y: 600 },
+  resend:     { x: 450,  y: 600 },
+};
+
+/* ── Title node ─────────────────────────────── */
+const TITLE_NODE = {
+  id: 'title',
+  type: 'title',
+  position: { x: 50, y: -90 },
+  data: { title: 'System Architecture', subtitle: 'How each piece streamlines the compliance workflow' },
+  selectable: false,
+  draggable: false,
+};
+
+/* ── System nodes with descriptions ─────────── */
 const BASE_NODES = [
-  { id: 'buyer',      position: { x: 0,   y: 0   }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',   icon: ICONS.user } },
-  { id: 'admin',      position: { x: 260, y: 0   }, data: { label: 'Admin Portal',      subtitle: '14 pages',      icon: ICONS.dashboard } },
-  { id: 'api',        position: { x: 130, y: 180 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',   icon: ICONS.zap } },
-  { id: 'neon',       position: { x: 0,   y: 360 }, data: { label: 'Neon Database',     subtitle: '9 tables',      icon: ICONS.database } },
-  { id: 'filemaker',  position: { x: 260, y: 360 }, data: { label: 'FileMaker',         subtitle: 'Master records', icon: ICONS.sync } },
-  { id: 'compliance', position: { x: 0,   y: 540 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',  icon: ICONS.shieldCheck } },
-  { id: 'resend',     position: { x: 260, y: 540 }, data: { label: 'Resend Email',      subtitle: 'Notices',       icon: ICONS.batchEmail } },
+  { id: 'buyer',      position: { x: 0,   y: 40  }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',    description: 'Buyers get a secure link, upload documents, and confirm occupancy', icon: ICONS.user } },
+  { id: 'admin',      position: { x: 260, y: 40  }, data: { label: 'Admin Portal',      subtitle: '14 pages',       description: 'Where we pull reports, review compliance status, and send batch mail', icon: ICONS.dashboard } },
+  { id: 'api',        position: { x: 130, y: 220 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between the portals, FileMaker, and email', icon: ICONS.zap } },
+  { id: 'neon',       position: { x: 0,   y: 400 }, data: { label: 'Neon Database',     subtitle: '9 tables',       description: 'Local cache so pages load fast between syncs', icon: ICONS.database } },
+  { id: 'filemaker',  position: { x: 260, y: 400 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record. The portal reads from it and writes back to it', icon: ICONS.sync } },
+  { id: 'compliance', position: { x: 0,   y: 580 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Calculates milestones from the close date and updates levels automatically', icon: ICONS.shieldCheck } },
+  { id: 'resend',     position: { x: 260, y: 580 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Write and send emails from compliance@ without leaving the portal', icon: ICONS.batchEmail } },
 ];
 
 const BASE_EDGES = [
@@ -63,8 +115,9 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
   const activeNodeIds = CHAPTER_NODE_MAP[activeChapter] || [];
   const activeEdgeIds = CHAPTER_EDGE_MAP[activeChapter] || [];
 
-  const nodes = useMemo(() =>
-    BASE_NODES.map((n) => ({
+  const nodes = useMemo(() => {
+    // System nodes with active/dimmed state + descriptions
+    const systemNodes = BASE_NODES.map((n) => ({
       ...n,
       type: 'system',
       data: {
@@ -73,9 +126,27 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         dimmed: activeChapter && !activeNodeIds.includes(n.id),
         onClick: () => onNodeClick?.(n.id),
       },
-    })),
-    [activeChapter, activeNodeIds, onNodeClick]
-  );
+    }));
+
+    // Annotation nodes: all are always in the DOM for smooth opacity transitions.
+    // Only the active chapter's annotations are visible.
+    const annotationNodes = Object.entries(CHAPTER_ANNOTATIONS).flatMap(
+      ([chapter, annotations]) =>
+        annotations.map((ann, i) => {
+          const pos = ANNOTATION_POSITIONS[ann.targetNode] || { x: 0, y: 0 };
+          return {
+            id: `ann-${chapter}-${i}`,
+            type: 'annotation',
+            position: { x: pos.x, y: pos.y },
+            data: { text: ann.text, visible: activeChapter === chapter },
+            selectable: false,
+            draggable: false,
+          };
+        })
+    );
+
+    return [TITLE_NODE, ...systemNodes, ...annotationNodes];
+  }, [activeChapter, activeNodeIds, onNodeClick]);
 
   const edges = useMemo(() =>
     BASE_EDGES.map((e) => ({
@@ -101,7 +172,7 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         edges={edges}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.08 }}
+        fitViewOptions={{ padding: 0.12 }}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={false}
