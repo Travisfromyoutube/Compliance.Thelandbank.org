@@ -3,7 +3,7 @@
 Compliance management system for the Genesee County Land Bank Authority (Flint, MI). Tracks property buyers across four programs (Featured Homes, Ready4Rehab, Demolition, VIP) through graduated enforcement levels (0-4), milestone schedules, and automated communications.
 
 **Repo:** https://github.com/Travisfromyoutube/Compliance.Thelandbank.org.git
-**Live:** https://compliance-thelandbank-org.vercel.app
+**Live:** https://compliance.thelandbank.org
 **Version:** 1.1.0 (prototype, no auth)
 
 Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
@@ -38,6 +38,7 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 | Analytics | Done | `@vercel/analytics` + `@vercel/speed-insights` wired in `main.jsx` |
 | Code Splitting | Done | React.lazy() — 13 lazy-loaded routes, vendor chunks separated |
 | UX Optimizations | Done | 23 tasks: mobile progress bar, smart photo slots, keyboard shortcuts (Alt+key), Start Here card, Save Indicator toast, page titles, empty states, thread view, quick-actions, send-all, font consolidation |
+| How It Works Page | Done | Split-panel (30/70): sticky React Flow architecture diagram (left) + scrollable chapters (right). Scroll-sync via IntersectionObserver. 12 components in `src/components/howItWorks/` |
 | Authentication | In progress | Clerk JWT auth in middleware + Layout; API endpoints have inline auth gates; prototype mode still works when no keys set |
 | Tests | Not started | No test framework configured |
 
@@ -104,7 +105,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 ### Design System
 
 - **Tailwind tokens** in `tailwind.config.js`: civic green (`accent`), civic blue (`accent-blue`), warm neutrals (`bg`, `surface`, `warm-100/200`), semantic status colors
-- **Fonts**: Inter (`font-sans`, `font-mono`), Bitter (`font-heading`). `font-mono` is remapped to Inter (not monospace) — use `tabular-nums` for aligned numeric displays.
+- **Fonts**: Inter (`font-sans`, `font-mono`), Charter (`font-heading`, self-hosted WOFF2 in `public/fonts/`). `font-mono` is remapped to Inter (not monospace) — use `tabular-nums` for aligned numeric displays.
 - **Reusable UI** in `src/components/ui/`: `Card`, `StatCard`, `StatusPill`, `DataTable`, `AdminPageHeader`, `AppIcon`, `FormField`, `EmptyState`
 - **Buyer components** in `src/components/buyer/`: `BuyerHero`, `BuyerSection`, `BuyerProgressSpine`, `ComplianceOverview`, `PhotoSlot`, `DropZone`, `FileListItem`, `AnimatedCheck`, `BuyerConfirmation`, `SaveIndicator`
 - **Icon system**: `src/icons/iconMap.js` maps semantic names to Lucide React components; always use `<AppIcon>` wrapper
@@ -181,7 +182,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **State updates**: Dispatch to PropertyContext reducer, then fire-and-forget API patch. Local state is source of truth during session.
 - **API responses**: Flatten Prisma includes to match the shape PropertyContext expects (buyerName as single string, dates as ISO strings).
 - **Program types**: Use display names in UI/mockData, rule keys in compliance engine. Convert with `toRuleKey()` / `toDisplayName()`.
-- **Fonts**: Headings use `font-heading` (Bitter), stats/dates/IDs use `font-mono` (Inter + `tabular-nums`), body uses `font-sans` (Inter).
+- **Fonts**: Headings use `font-heading` (Charter), stats/dates/IDs use `font-mono` (Inter + `tabular-nums`), body uses `font-sans` (Inter).
 - **Vite cache**: After changing major dependency versions, clear `node_modules/.vite` and restart dev server.
 - **Mock data**: `allProperties` merges hand-curated (10) + generated (30) properties. Import from `src/data/mockData.js`.
 - **DataTable compact prop**: Pass `compact` to DataTable for embedded tables (e.g., Dashboard). Default is spacious (`px-5 py-4`); compact is tighter (`px-4 py-3`).
@@ -226,7 +227,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | Edge cache: properties 30s, compliance 5min, templates 1hr | SWR pattern — edge serves stale while revalidating in background |
 | Hourly cron (Pro plan) over daily | Staff gets fresher compliance data during business hours |
 | `db push` over `migrate dev` for schema changes | Project has no migration history (started with `db push`); `migrate dev` would require full DB reset. Non-destructive column additions only. |
-| Font consolidation: 2 fonts only (Inter + Bitter) | Removed Courier Prime and Source Serif 4; `font-mono` remapped to Inter to avoid touching 28+ files |
+| Font consolidation: 2 fonts only (Inter + Charter) | Charter replaces Bitter as heading font (self-hosted WOFF2); `font-mono` remapped to Inter to avoid touching 28+ files |
 | Keyboard shortcuts via Alt+key in Layout | Alt+D/M/Q/P/C for top-5 admin pages; skipped when focus is in form inputs |
 | FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
 | Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
