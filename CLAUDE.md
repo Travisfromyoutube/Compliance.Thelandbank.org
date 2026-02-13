@@ -146,9 +146,9 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | `api/cron/compliance-check.js` | Hourly compliance monitoring cron job |
 | `middleware.js` | Edge Middleware — API route auth gating |
 | `src/lib/uploadFile.js` | Browser-side upload helper (plain `fetch()` to `/api/upload`) |
-| `src/pages/HowItWorks.jsx` | Split-panel page: 30% sticky diagram + 70% scrollable chapters, IntersectionObserver sync |
-| `src/components/howItWorks/SystemMap.jsx` | React Flow diagram: 7 system nodes, dynamic annotation nodes, chapter-driven highlighting |
-| `src/components/howItWorks/SystemNode.jsx` | Stacked vertical node card (180px wide): icon → label → subtitle → description |
+| `src/pages/HowItWorks.jsx` | Two-part page: full-width hero diagram with click-through step nav + Deep Dive scrollable reference |
+| `src/components/howItWorks/SystemMap.jsx` | React Flow landscape diagram: anchor portals (left/right bookends), service nodes (center 2x2), chapter-driven highlighting + annotations |
+| `src/components/howItWorks/SystemNode.jsx` | Horizontal node card with anchor/service dual sizing (260px/220px), content-level dimming |
 | `src/components/howItWorks/AnnotationNode.jsx` | SOP callout nodes: fade in/out per active chapter, dashed left-border accent |
 | `vite.config.js` | Build config with manual chunks (vendor-react, vendor-map, vendor-flow) |
 
@@ -191,6 +191,8 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **React Flow annotation positions**: Keep annotation x-positions symmetric around the system node midpoint so fitView centers cleanly. All annotations always in DOM with opacity transitions (never conditional mount) to prevent fitView jumping.
 - **React Flow node readability**: Use `text-text/80` (not `text-muted/70`) for description text — muted gray at reduced opacity compounds to near-invisible when fitView scales down. Minimum `text-xs` for any text that should be readable.
 - **CSS dot grid `background-position`**: Use `background-position` offset (e.g., `10px 10px`) to center `radial-gradient` dots within tiles. Placing dots at `0px 0px` clips 3/4 of each dot at tile edges.
+- **React Flow node dimming**: Never use container-level `opacity` for dimmed/inactive nodes — it makes `bg-white` transparent, letting edges bleed through. Instead dim individual content elements (text→gray-300, icon→gray-300) while keeping the card background solid white.
+- **React Flow anchor node pattern**: Use `anchor: true` data flag for visually prominent bookend nodes (portals). Anchor nodes get larger sizing (260px), bigger text, accent-tinted borders. Service nodes get standard sizing (220px). Same SystemNode component handles both via conditional rendering.
 
 ---
 
@@ -205,6 +207,8 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
 | Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
 | SOP callout annotations frame portal as evolution | Compliance SOP author will view page; all callout text is respectful improvement framing, never attack. No dashes or word "enforcement" |
+| How It Works: click-through nav over scroll-sync | Single `useState(activeStep)` drives node highlights, edge animation, and chapter content — replaced bidirectional IntersectionObserver which had sync edge cases. Simpler, more reliable |
+| How It Works: two-part page (hero + Deep Dive) | Interactive hero is guided tour (click steps); scrollable Deep Dive below renders all chapters for reference. Same content, two consumption modes |
 
 ---
 
