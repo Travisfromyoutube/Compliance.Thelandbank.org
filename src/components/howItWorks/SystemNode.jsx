@@ -4,51 +4,61 @@ import { AppIcon } from '../ui';
 /**
  * SystemNode - Custom React Flow node for the system architecture diagram.
  *
- * Horizontal card layout: icon (left) + text (right).
- * 240px wide for the landscape full-width hero card.
+ * Two sizes:
+ * - Anchor nodes (portals): 260px wide, larger icon/text, accent-tinted border
+ * - Service nodes: 220px wide, standard sizing
  *
- * States:
- * - Active: green ring + accent background (this node is relevant to the current step)
- * - Dimmed: faded out (another step is active, this node isn't relevant)
- * - Default: neutral border, hover effects
+ * Anchor nodes are Buyer Portal and Admin Portal — the visual bookends
+ * of the diagram that frame the entire system.
  *
+ * States: active (green ring), dimmed (faded), default (hover effects)
  * Handles on all 4 sides for flexible edge routing.
  */
 export default function SystemNode({ data }) {
-  const { label, subtitle, description, icon, active, dimmed, onClick } = data;
+  const { label, subtitle, description, icon, active, dimmed, anchor, onClick } = data;
 
   return (
     <div
       onClick={onClick}
       className={`
-        flex items-start gap-3 w-[240px]
-        px-4 py-3.5 rounded-lg border bg-white
+        flex items-start gap-3
+        ${anchor ? 'w-[260px] px-4 py-4' : 'w-[220px] px-3.5 py-3'}
+        rounded-lg border bg-white
         transition-all duration-300 cursor-pointer select-none
         ${active
           ? 'ring-2 ring-accent/40 bg-accent/5 border-accent shadow-lg scale-[1.02]'
           : dimmed
             ? 'border-border/40 opacity-30'
-            : 'border-border hover:border-accent hover:shadow-md hover:scale-[1.02]'
+            : anchor
+              ? 'border-accent/20 shadow-sm hover:border-accent hover:shadow-md hover:scale-[1.02]'
+              : 'border-border hover:border-accent hover:shadow-md hover:scale-[1.02]'
         }
       `}
     >
       {/* Icon */}
       <div className={`
-        flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center mt-0.5
+        flex-shrink-0 rounded-md flex items-center justify-center mt-0.5
         transition-colors duration-300
-        ${active ? 'bg-accent/20' : 'bg-accent/10'}
+        ${anchor ? 'w-11 h-11' : 'w-9 h-9'}
+        ${active ? 'bg-accent/20' : anchor ? 'bg-accent/15' : 'bg-accent/10'}
       `}>
-        <AppIcon icon={icon} size={20} className="text-accent" />
+        <AppIcon icon={icon} size={anchor ? 22 : 18} className="text-accent" />
       </div>
 
       {/* Text */}
       <div className="min-w-0 flex-1">
-        <p className="font-heading text-base font-bold text-text leading-tight">{label}</p>
+        <p className={`font-heading font-bold text-text leading-tight ${anchor ? 'text-lg' : 'text-sm'}`}>
+          {label}
+        </p>
         {subtitle && (
-          <p className="text-xs text-muted font-medium leading-tight mt-0.5">{subtitle}</p>
+          <p className={`text-muted font-medium leading-tight mt-0.5 ${anchor ? 'text-sm' : 'text-xs'}`}>
+            {subtitle}
+          </p>
         )}
         {description && (
-          <p className="text-[11px] text-text/75 leading-snug mt-1.5 line-clamp-2">{description}</p>
+          <p className={`text-text/75 leading-snug line-clamp-2 ${anchor ? 'text-xs mt-2' : 'text-[11px] mt-1'}`}>
+            {description}
+          </p>
         )}
       </div>
 

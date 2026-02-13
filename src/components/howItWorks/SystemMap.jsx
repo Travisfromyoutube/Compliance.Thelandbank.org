@@ -68,44 +68,49 @@ const CHAPTER_ANNOTATIONS = {
 };
 
 /* ── Landscape node positions ─────────────────
-   Full-width card. 3 tiers spread wide:
-   Tier 1 (y:0):   Buyer Portal (left), Admin Portal (right)
-   Tier 2 (y:170): API (centered between portals)
-   Tier 3 (y:340): Neon DB, Compliance Engine, FileMaker, Resend Email
-   Nodes are 240px wide. ~80px gap between tier-3 nodes.
-   Buyer on left, Admin on right = intuitive data flow direction. */
+   Anchor layout: portals are the visual bookends at far left and far right,
+   vertically centered. Services flow in the middle across 2 rows.
+
+   ┌─────────┐                                         ┌─────────┐
+   │  Buyer  │───→  API Hub  ←───  FileMaker           │  Admin  │
+   │ (anchor)│          │              │                │(anchor) │
+   └─────────┘    Neon   Compliance   Resend            └─────────┘
+
+   Anchor nodes: 260px wide (larger, accent-tinted)
+   Service nodes: 220px wide (standard)
+   Portals at x:0 and x:840 — true left/right anchors */
 const BASE_NODES = [
-  // Tier 1: Portals (buyer left, admin right)
-  { id: 'buyer',      position: { x: 60,  y: 0   }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',    description: 'Secure link for documents and occupancy confirmation', icon: ICONS.user } },
-  { id: 'admin',      position: { x: 780, y: 0   }, data: { label: 'Admin Portal',      subtitle: '14 pages',       description: 'Reports, compliance status, and batch mail', icon: ICONS.dashboard } },
-  // Tier 2: API Hub (centered)
-  { id: 'api',        position: { x: 420, y: 170  }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between portals, FileMaker, and email', icon: ICONS.zap } },
-  // Tier 3: Services (evenly distributed)
-  { id: 'neon',       position: { x: 0,   y: 340  }, data: { label: 'Neon Database',     subtitle: '9 tables',       description: 'Fast local cache between syncs', icon: ICONS.database } },
-  { id: 'compliance', position: { x: 270, y: 340  }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Auto-calculates milestones and levels', icon: ICONS.shieldCheck } },
-  { id: 'filemaker',  position: { x: 550, y: 340  }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record system', icon: ICONS.sync } },
-  { id: 'resend',     position: { x: 830, y: 340  }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Compliance emails without Outlook', icon: ICONS.batchEmail } },
+  // Anchors: Portals (vertically centered at far left and far right)
+  { id: 'buyer', position: { x: 0,   y: 110 }, data: { label: 'Buyer Portal', subtitle: 'Submissions', description: 'Secure link for documents and occupancy confirmation', icon: ICONS.user, anchor: true } },
+  { id: 'admin', position: { x: 840, y: 110 }, data: { label: 'Admin Portal', subtitle: '14 pages',    description: 'Reports, compliance status, and batch mail',        icon: ICONS.dashboard, anchor: true } },
+  // Row 1: API Hub (centered between anchors)
+  { id: 'api',        position: { x: 440, y: 0   }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between portals, FileMaker, and email', icon: ICONS.zap } },
+  // Row 2: Services (spread across center)
+  { id: 'neon',       position: { x: 290, y: 200 }, data: { label: 'Neon Database',     subtitle: '9 tables',       description: 'Fast local cache between syncs', icon: ICONS.database } },
+  { id: 'compliance', position: { x: 290, y: 330 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Auto-calculates milestones and levels', icon: ICONS.shieldCheck } },
+  { id: 'filemaker',  position: { x: 570, y: 200 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record system', icon: ICONS.sync } },
+  { id: 'resend',     position: { x: 570, y: 330 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Compliance emails without Outlook', icon: ICONS.batchEmail } },
 ];
 
 /* ── Annotation positions (near their target node) ── */
 const ANNOTATION_POSITIONS = {
-  buyer:      { x: -130, y: -40  },
-  admin:      { x: 1010, y: -40  },
-  api:        { x: 660,  y: 140  },
-  neon:       { x: -130, y: 390  },
-  filemaker:  { x: 550,  y: 450  },
-  compliance: { x: 190,  y: 450  },
-  resend:     { x: 850,  y: 450  },
+  buyer:      { x: -10,  y: -40  },
+  admin:      { x: 850,  y: -40  },
+  api:        { x: 660,  y: -30  },
+  neon:       { x: 80,   y: 200  },
+  filemaker:  { x: 790,  y: 200  },
+  compliance: { x: 80,   y: 340  },
+  resend:     { x: 790,  y: 340  },
 };
 
 const BASE_EDGES = [
-  { id: 'e-buyer-api',  source: 'buyer',      target: 'api',        label: 'Submit' },
-  { id: 'e-admin-api',  source: 'admin',      target: 'api',        label: 'Review' },
+  { id: 'e-buyer-api',  source: 'buyer',      target: 'api',        sourceHandle: 'right', targetHandle: 'left', label: 'Submit' },
+  { id: 'e-admin-api',  source: 'admin',      target: 'api',        sourceHandle: 'left',  targetHandle: 'right', label: 'Review' },
   { id: 'e-api-neon',   source: 'api',        target: 'neon',       label: 'Store' },
   { id: 'e-fm-api',     source: 'filemaker',  target: 'api',        label: 'Sync' },
   { id: 'e-api-resend', source: 'api',        target: 'resend',     label: 'Send' },
   { id: 'e-comp-admin', source: 'compliance', target: 'admin',      sourceHandle: 'right', targetHandle: 'left', label: 'Alert' },
-  { id: 'e-comp-neon',  source: 'compliance', target: 'neon',       sourceHandle: 'left',  targetHandle: 'right', label: 'Check' },
+  { id: 'e-comp-neon',  source: 'compliance', target: 'neon',       label: 'Check' },
   { id: 'e-api-buyer',  source: 'api',        target: 'buyer',      sourceHandle: 'left',  targetHandle: 'right', label: 'Token' },
 ];
 
