@@ -29,13 +29,12 @@ import {
   joinNameForFM,
   getLayouts,
 } from '../src/config/filemakerFieldMap.js';
+import { toDisplayName } from '../src/lib/programTypeMapper.js';
+import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
+import { cors } from './_cors.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (cors(req, res, { methods: 'GET, POST, OPTIONS' })) return;
 
   const action = req.query.action;
 
@@ -52,6 +51,7 @@ export default async function handler(req, res) {
       return handleStatus(req, res);
     case 'sync':
       if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+      if (!(await applyRateLimit(rateLimiters.fmSync, req, res))) return;
       return handleSync(req, res);
     case 'push':
       if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -244,6 +244,11 @@ async function handleSync(req, res) {
         const propertyData = fromFM(fmRecord.fieldData, PROPERTY_FIELD_MAP);
         const buyerData = fromFM(fmRecord.fieldData, BUYER_FIELD_MAP);
 
+        // Normalize programType from rule key to display name (UI expects display names)
+        if (propertyData.programType) {
+          propertyData.programType = toDisplayName(propertyData.programType);
+        }
+
         if (!propertyData.parcelId) {
           stats.skipped++;
           stats.errors.push({ fmRecordId: fmRecord.recordId, error: 'Missing ParcelID' });
@@ -281,13 +286,46 @@ async function handleSync(req, res) {
             buyerId = newBuyer.id;
           }
         } else {
-          const newBuyer = await prisma.buyer.create({
-            data: {
-              firstName: buyerData.firstName || 'Unknown',
-              lastName: buyerData.lastName || 'Buyer',
-            },
+          // No email — reuse existing buyer linked to this property if possible
+          const existingProp = await prisma.property.findUnique({
+            where: { parcelId: propertyData.parcelId },
+            select: { buyerId: true, buyer: true },
           });
-          buyerId = newBuyer.id;
+
+          if (existingProp?.buyerId) {
+            buyerId = existingProp.buyerId;
+            await prisma.buyer.update({
+              where: { id: buyerId },
+              data: {
+                firstName: buyerData.firstName || existingProp.buyer?.firstName,
+                lastName: buyerData.lastName || existingProp.buyer?.lastName,
+              },
+            });
+          } else if (buyerData.firstName && buyerData.lastName) {
+            // Fallback: try name match to avoid duplicates
+            const nameMatch = await prisma.buyer.findFirst({
+              where: { firstName: buyerData.firstName, lastName: buyerData.lastName },
+            });
+            if (nameMatch) {
+              buyerId = nameMatch.id;
+            } else {
+              const newBuyer = await prisma.buyer.create({
+                data: {
+                  firstName: buyerData.firstName,
+                  lastName: buyerData.lastName,
+                },
+              });
+              buyerId = newBuyer.id;
+            }
+          } else {
+            const newBuyer = await prisma.buyer.create({
+              data: {
+                firstName: buyerData.firstName || 'Unknown',
+                lastName: buyerData.lastName || 'Buyer',
+              },
+            });
+            buyerId = newBuyer.id;
+          }
         }
 
         // Resolve program
@@ -309,10 +347,12 @@ async function handleSync(req, res) {
           continue;
         }
 
-        // Build property data for upsert
+        // Build property data for upsert — spread all fromFM() fields with explicit defaults
         const { parcelId, status, ...restPropertyData } = propertyData;
 
         const upsertData = {
+          ...restPropertyData,
+          // Explicit defaults for required/core fields
           address: restPropertyData.address || '',
           programType: restPropertyData.programType || programKey,
           dateSold: restPropertyData.dateSold || new Date(),
@@ -320,7 +360,7 @@ async function handleSync(req, res) {
           status: status || 'active',
           percentComplete: restPropertyData.percentComplete ?? 0,
           insuranceReceived: restPropertyData.insuranceReceived ?? false,
-          occupancyEstablished: restPropertyData.occupancyEstablished ?? false,
+          occupancyEstablished: restPropertyData.occupancyEstablished ?? 'No',
           scopeOfWorkApproved: restPropertyData.scopeOfWorkApproved ?? false,
           buildingPermitObtained: restPropertyData.buildingPermitObtained ?? false,
           bondRequired: restPropertyData.bondRequired ?? false,
@@ -328,24 +368,12 @@ async function handleSync(req, res) {
           programId,
         };
 
-        // Add optional date fields only if they have values
-        const optionalDates = [
-          'occupancyDeadline', 'insuranceDueDate', 'minimumHoldExpiry',
-          'dateProofOfInvestProvided', 'compliance1stAttempt', 'compliance2ndAttempt',
-          'lastContactDate', 'rehabDeadline', 'demoFinalCertDate',
-          'referredToLISC', 'liscRecommendReceived', 'liscRecommendSale',
-        ];
-        for (const field of optionalDates) {
-          if (restPropertyData[field]) {
-            upsertData[field] = restPropertyData[field];
+        // Strip null/undefined to avoid overwriting existing data with blanks
+        for (const key of Object.keys(upsertData)) {
+          if (upsertData[key] === null || upsertData[key] === undefined) {
+            delete upsertData[key];
           }
         }
-
-        // Add optional string fields
-        if (restPropertyData.offerType) upsertData.offerType = restPropertyData.offerType;
-        if (restPropertyData.purchaseType) upsertData.purchaseType = restPropertyData.purchaseType;
-        if (restPropertyData.complianceType) upsertData.complianceType = restPropertyData.complianceType;
-        if (restPropertyData.bondAmount) upsertData.bondAmount = restPropertyData.bondAmount;
 
         // Upsert on parcelId
         const existing = await prisma.property.findUnique({ where: { parcelId } });

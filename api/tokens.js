@@ -12,18 +12,26 @@
 
 import prisma from '../src/lib/db.js';
 import { generateToken, defaultExpiration } from '../src/lib/tokenGenerator.js';
+import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
+import { cors } from './_cors.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (cors(req, res, { methods: 'GET, POST, DELETE, OPTIONS' })) return;
 
   try {
-    // Route: GET ?action=verify — buyer token verification
+    // Route: GET ?action=verify — buyer token verification (public)
     if (req.method === 'GET' && req.query.action === 'verify') {
+      if (!(await applyRateLimit(rateLimiters.tokenVerify, req, res))) return;
       return handleVerify(req, res);
+    }
+
+    // All other operations require admin auth
+    const apiKey = process.env.ADMIN_API_KEY;
+    if (apiKey) {
+      const auth = req.headers.authorization;
+      if (auth !== `Bearer ${apiKey}`) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
     }
 
     // Route: GET — list tokens (admin)
@@ -33,6 +41,7 @@ export default async function handler(req, res) {
 
     // Route: POST — create token (admin)
     if (req.method === 'POST') {
+      if (!(await applyRateLimit(rateLimiters.tokenCreate, req, res))) return;
       return handleCreate(req, res);
     }
 

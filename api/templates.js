@@ -8,13 +8,12 @@
  */
 
 import prisma from '../src/lib/db.js';
+import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
+import { cors } from './_cors.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (cors(req, res, { methods: 'GET, POST, PUT, DELETE, OPTIONS' })) return;
+  if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
 
   try {
     /* ── GET — list all templates ──────────────────────── */

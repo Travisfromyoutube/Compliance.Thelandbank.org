@@ -8,13 +8,12 @@
  */
 
 import prisma from '../src/lib/db.js';
+import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
+import { cors } from './_cors.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (cors(req, res, { methods: 'GET, OPTIONS' })) return;
+  if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
@@ -30,6 +29,20 @@ export default async function handler(req, res) {
       include: {
         buyer: true,
         program: true,
+        communications: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          select: {
+            id: true,
+            action: true,
+            channel: true,
+            status: true,
+            sentAt: true,
+            subject: true,
+            templateName: true,
+            createdAt: true,
+          },
+        },
         _count: {
           select: { communications: true, submissions: true },
         },
@@ -71,6 +84,40 @@ export default async function handler(req, res) {
       extras: p.extras || null,
       enforcementLevel: p.enforcementLevel,
       status: p.status,
+      // Physical details
+      bedrooms: p.bedrooms,
+      baths: p.baths,
+      sqFt: p.sqFt,
+      yearBuilt: p.yearBuilt,
+      stories: p.stories,
+      garageSize: p.garageSize,
+      basementSize: p.basementSize,
+      lotSize: p.lotSize,
+      school: p.school,
+      // FM metadata
+      soldStatus: p.soldStatus || null,
+      gclbOwned: p.gclbOwned,
+      sev: p.sev,
+      availability: p.availability || null,
+      flintAreaName: p.flintAreaName || null,
+      parcelIdDashed: p.parcelIdDashed || null,
+      minimumBid: p.minimumBid,
+      category: p.category || null,
+      conditions: p.conditions || null,
+      // Buyer metadata
+      buyerPhone: p.buyer.phone || '',
+      // FM sale fields
+      bondRequired: p.bondRequired,
+      bondAmount: p.bondAmount,
+      referredToLISC: p.referredToLISC?.toISOString().slice(0, 10) || null,
+      liscRecommendReceived: p.liscRecommendReceived?.toISOString().slice(0, 10) || null,
+      liscRecommendSale: p.liscRecommendSale?.toISOString().slice(0, 10) || null,
+      // Communications (last 5)
+      communications: p.communications.map((c) => ({
+        ...c,
+        sentAt: c.sentAt?.toISOString() || null,
+        createdAt: c.createdAt.toISOString(),
+      })),
       // Counts
       communicationCount: p._count.communications,
       submissionCount: p._count.submissions,

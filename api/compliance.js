@@ -10,13 +10,12 @@
 
 import prisma from '../src/lib/db.js';
 import { computeComplianceTimingServer } from '../src/lib/computeDueNow.server.js';
+import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
+import { cors } from './_cors.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (cors(req, res, { methods: 'GET, OPTIONS' })) return;
+  if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const type = req.query.type || 'due-now';
