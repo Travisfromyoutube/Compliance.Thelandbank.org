@@ -3,7 +3,7 @@ import ICONS from '../icons/iconMap';
 import { Card, AdminPageHeader } from '../components/ui';
 import { AppIcon } from '../components/ui';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { CircularDataFlow, ConcentricSecurityRings, MacOSWindow } from '../components/bridge';
+import { DataFlowDiagram, SecurityLayers, MacOSWindow } from '../components/bridge';
 
 /* ── Status indicator dot ───────────────────── */
 
@@ -23,29 +23,28 @@ function StatusDot({ connected, size = 'md' }) {
   );
 }
 
-/* ── Architecture + Diagrams section ───────────────── */
+/* ── Architecture sections ────────────────────────── */
 
-function ArchitectureSection() {
+function DataFlowSection() {
   return (
     <Card className="p-6 lg:p-8">
-      {/* Diagrams: title + diagram as unified columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-10">
-        {/* Left column: Database Integration */}
-        <div className="text-center">
-          <h3 className="font-heading text-xl font-bold text-text">Database Integration</h3>
-          <p className="text-sm text-muted mt-1 mb-6">How data flows between FileMaker and the portal</p>
-          <CircularDataFlow />
-        </div>
-        {/* Right column: Security */}
-        <div className="text-center">
-          <h3 className="font-heading text-xl font-bold text-text">Security</h3>
-          <p className="text-sm text-muted mt-1 mb-6">Four layers of defense around your data</p>
-          <ConcentricSecurityRings />
-        </div>
+      <div className="mb-6">
+        <h3 className="font-heading text-xl font-bold text-text">Data Flow</h3>
+        <p className="text-sm text-muted mt-1">How property data moves through 5 system components — from buyer submission to admin action</p>
       </div>
+      <DataFlowDiagram />
+    </Card>
+  );
+}
 
-      {/* Mac OS 9 Window (full width) */}
-      <MacOSWindow />
+function SecuritySection() {
+  return (
+    <Card className="p-6 lg:p-8">
+      <div className="mb-6">
+        <h3 className="font-heading text-xl font-bold text-text">Security Architecture</h3>
+        <p className="text-sm text-muted mt-1">Four layers of defense-in-depth protect every request and every record</p>
+      </div>
+      <SecurityLayers />
     </Card>
   );
 }
@@ -229,8 +228,16 @@ export default function FileMakerBridge() {
 
       <SystemHealthBar status={status} />
 
-      {/* Architecture + Diagrams */}
-      <ArchitectureSection />
+      {/* Data Flow Diagram */}
+      <DataFlowSection />
+
+      {/* Security Architecture */}
+      <SecuritySection />
+
+      {/* Portal File Structure & Technology */}
+      <Card className="p-6 lg:p-8">
+        <MacOSWindow />
+      </Card>
 
       {/* Directions + Field Mapping */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
