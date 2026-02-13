@@ -34,7 +34,7 @@ These are static descriptions that live below each system node's subtitle. They 
 
 | Node | Description |
 |------|-------------|
-| Admin Portal | Where staff pull reports, review compliance status, and send batch mail |
+| Admin Portal | Where we pull reports, review compliance status, and send batch mail |
 | Buyer Portal | Buyers get a secure link, upload documents, and confirm occupancy |
 | Vercel API | Routes requests between the portals, FileMaker, and email. All business logic lives here |
 | FileMaker | The master record. The portal reads from it and writes back to it |
