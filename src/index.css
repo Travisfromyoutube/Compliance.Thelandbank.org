@@ -355,3 +355,19 @@
 .sync-arrow-left {
   animation: dashFlow 0.8s linear infinite reverse;
 }
+
+/* ── React Flow active edge animation ──────── */
+/* Enhances the default animated edge with a glow effect */
+.edge-flow-active path {
+  filter: drop-shadow(0 0 3px rgba(45, 122, 74, 0.3));
+}
+
+/* Smooth transitions when edges activate/deactivate */
+.react-flow__edge path {
+  transition: stroke 0.4s ease, stroke-width 0.3s ease, opacity 0.3s ease;
+}
+
+/* Active edge marker animation */
+.edge-flow-active .react-flow__edge-interaction {
+  pointer-events: none;
+}
