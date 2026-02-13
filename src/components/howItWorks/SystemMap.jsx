@@ -3,13 +3,12 @@ import { ReactFlow, MarkerType } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import ICONS from '../../icons/iconMap';
 import SystemNode from './SystemNode';
-import TitleNode from './TitleNode';
 import AnnotationNode from './AnnotationNode';
 
 /**
  * SystemMap - React Flow architecture diagram (persistent left panel).
  *
- * 7 system nodes, 1 title node, and dynamic annotation nodes.
+ * 7 system nodes, HTML overlay title, and dynamic annotation nodes.
  * Annotations change content based on activeChapter to show how
  * the portal streamlines the previous compliance SOP.
  *
@@ -18,7 +17,7 @@ import AnnotationNode from './AnnotationNode';
  * scroll pass through so the right panel can scroll normally.
  */
 
-const nodeTypes = { system: SystemNode, title: TitleNode, annotation: AnnotationNode };
+const nodeTypes = { system: SystemNode, annotation: AnnotationNode };
 
 /* ── Chapter-to-node mapping ───────────────── */
 const CHAPTER_NODE_MAP = {
@@ -69,35 +68,27 @@ const CHAPTER_ANNOTATIONS = {
 };
 
 /* ── Annotation positions (absolute canvas coords) ── */
+/* Kept symmetric around node range (0–300) so fitView centers cleanly */
 const ANNOTATION_POSITIONS = {
-  buyer:      { x: -200, y: 50  },
-  admin:      { x: 450,  y: 50  },
-  api:        { x: -70,  y: 280 },
-  neon:       { x: -200, y: 420 },
-  filemaker:  { x: 450,  y: 420 },
-  compliance: { x: -200, y: 600 },
-  resend:     { x: 450,  y: 600 },
-};
-
-/* ── Title node ─────────────────────────────── */
-const TITLE_NODE = {
-  id: 'title',
-  type: 'title',
-  position: { x: 50, y: -90 },
-  data: { title: 'System Architecture', subtitle: 'How each piece streamlines the compliance workflow' },
-  selectable: false,
-  draggable: false,
+  buyer:      { x: -190, y: 30  },
+  admin:      { x: 490,  y: 30  },
+  api:        { x: 490,  y: 250 },
+  neon:       { x: -190, y: 460 },
+  filemaker:  { x: 490,  y: 460 },
+  compliance: { x: -190, y: 680 },
+  resend:     { x: 490,  y: 680 },
 };
 
 /* ── System nodes with descriptions ─────────── */
+/* y-range stretched to ~750 to fill the tall portrait panel */
 const BASE_NODES = [
-  { id: 'buyer',      position: { x: 0,   y: 40  }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',    description: 'Buyers get a secure link, upload documents, and confirm occupancy', icon: ICONS.user } },
-  { id: 'admin',      position: { x: 260, y: 40  }, data: { label: 'Admin Portal',      subtitle: '14 pages',       description: 'Where we pull reports, review compliance status, and send batch mail', icon: ICONS.dashboard } },
-  { id: 'api',        position: { x: 130, y: 220 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between the portals, FileMaker, and email', icon: ICONS.zap } },
+  { id: 'buyer',      position: { x: 0,   y: 0   }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',    description: 'Buyers get a secure link, upload documents, and confirm occupancy', icon: ICONS.user } },
+  { id: 'admin',      position: { x: 300, y: 0   }, data: { label: 'Admin Portal',      subtitle: '14 pages',       description: 'Where we pull reports, review compliance status, and send batch mail', icon: ICONS.dashboard } },
+  { id: 'api',        position: { x: 150, y: 190 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between the portals, FileMaker, and email', icon: ICONS.zap } },
   { id: 'neon',       position: { x: 0,   y: 400 }, data: { label: 'Neon Database',     subtitle: '9 tables',       description: 'Local cache so pages load fast between syncs', icon: ICONS.database } },
-  { id: 'filemaker',  position: { x: 260, y: 400 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record. The portal reads from it and writes back to it', icon: ICONS.sync } },
-  { id: 'compliance', position: { x: 0,   y: 580 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Calculates milestones from the close date and updates levels automatically', icon: ICONS.shieldCheck } },
-  { id: 'resend',     position: { x: 260, y: 580 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Write and send emails from compliance@ without leaving the portal', icon: ICONS.batchEmail } },
+  { id: 'filemaker',  position: { x: 300, y: 400 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record. The portal reads from it and writes back to it', icon: ICONS.sync } },
+  { id: 'compliance', position: { x: 0,   y: 620 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Calculates milestones from the close date and updates levels automatically', icon: ICONS.shieldCheck } },
+  { id: 'resend',     position: { x: 300, y: 620 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Write and send emails from compliance@ without leaving the portal', icon: ICONS.batchEmail } },
 ];
 
 const BASE_EDGES = [
@@ -145,7 +136,7 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         })
     );
 
-    return [TITLE_NODE, ...systemNodes, ...annotationNodes];
+    return [...systemNodes, ...annotationNodes];
   }, [activeChapter, activeNodeIds, onNodeClick]);
 
   const edges = useMemo(() =>
@@ -166,23 +157,34 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
   );
 
   return (
-    <div className="w-full h-full">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        fitView
-        fitViewOptions={{ padding: 0.12 }}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={false}
-        panOnDrag={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
-        preventScrolling={false}
-        proOptions={{ hideAttribution: true }}
-      />
+    <div className="w-full h-full relative flex flex-col">
+      {/* HTML overlay title — outside React Flow so it doesn't affect fitView bounding box */}
+      <div className="flex-shrink-0 text-center px-4 pt-4 pb-2">
+        <h2 className="font-heading text-base font-bold text-text leading-tight">
+          System Architecture
+        </h2>
+        <p className="text-[11px] text-muted italic mt-0.5">
+          How each piece streamlines the compliance workflow
+        </p>
+      </div>
+      <div className="flex-1 min-h-0">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          fitView
+          fitViewOptions={{ padding: 0.08 }}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable={false}
+          panOnDrag={false}
+          zoomOnScroll={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+          preventScrolling={false}
+          proOptions={{ hideAttribution: true }}
+        />
+      </div>
     </div>
   );
 }
