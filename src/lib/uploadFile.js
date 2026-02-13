@@ -4,7 +4,7 @@
  * Sends the raw file body to /api/upload with filename in a header.
  * The server streams it directly to Vercel Blob storage.
  *
- * @param {File} file — the File object from an <input> or drag-and-drop
+ * @param {File} file - the File object from an <input> or drag-and-drop
  * @param {{ accessToken?: string }} [opts]
  * @returns {Promise<{ url: string, pathname: string }>}
  */

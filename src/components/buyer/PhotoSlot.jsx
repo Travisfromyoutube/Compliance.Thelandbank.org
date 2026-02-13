@@ -32,7 +32,7 @@ export default function PhotoSlot({ label, photo, onUpload, onRemove }) {
       onUpload({ name: file.name, data: url, blobUrl: url, size: file.size });
     } catch (err) {
       console.error(`Photo upload failed for ${label}:`, err);
-      setUploadError('Upload failed — saved locally');
+      setUploadError('Upload failed - saved locally');
       // Fallback to local data URL
       const reader = new FileReader();
       reader.onload = (ev) => {
@@ -80,7 +80,7 @@ export default function PhotoSlot({ label, photo, onUpload, onRemove }) {
               Replace
             </span>
           </div>
-          {/* Remove button — always visible on mobile, hover on desktop */}
+          {/* Remove button - always visible on mobile, hover on desktop */}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onRemove(); }}

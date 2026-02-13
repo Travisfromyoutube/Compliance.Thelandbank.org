@@ -90,7 +90,7 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
 
               <div>
                 <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Organization</p>
-                <p className="text-text-primary">{property.organization || '—'}</p>
+                <p className="text-text-primary">{property.organization || '-'}</p>
               </div>
 
               <div className="pt-2 flex flex-wrap gap-2">
@@ -117,7 +117,7 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
               <div>
                 <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Due Date</p>
                 <p className="text-text-primary">
-                  {timing.dueDate ? formatDate(timing.dueDate) : '—'}
+                  {timing.dueDate ? formatDate(timing.dueDate) : '-'}
                 </p>
               </div>
 
@@ -136,20 +136,20 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
               <div>
                 <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Next Action</p>
                 <p className="text-text-primary">
-                  {timing.nextAction ? ACTION_LABELS[timing.nextAction] : '—'}
+                  {timing.nextAction ? ACTION_LABELS[timing.nextAction] : '-'}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Next Due Date</p>
                 <p className="text-text-primary">
-                  {timing.nextDueDate ? formatDate(timing.nextDueDate) : '—'}
+                  {timing.nextDueDate ? formatDate(timing.nextDueDate) : '-'}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Recommended Level</p>
-                <p className="text-text-primary font-medium font-mono">{timing.recommendedEnforcementLevel || '—'}</p>
+                <p className="text-text-primary font-medium font-mono">{timing.recommendedEnforcementLevel || '-'}</p>
               </div>
             </div>
           </Card>

@@ -1,5 +1,5 @@
 /**
- * GCLBA Program Policies — Real data sourced from thelandbank.org
+ * GCLBA Program Policies - Real data sourced from thelandbank.org
  *
  * Single source of truth for program descriptions, buyer requirements,
  * and compliance summaries displayed across the portal.
@@ -10,17 +10,17 @@ export const PROGRAM_POLICIES = {
     label: 'Featured Homes',
     tagline: 'Move-in ready homes at affordable prices',
     description:
-      'Featured Homes are properties in conditions that allow them to be immediately available for sale. These homes include new kitchens, new bathrooms, new energy-efficient appliances, security systems, low monthly payments, and low utility costs. The Land Bank holds open houses weekly — interested parties can show up, view the home, and make an offer on the spot.',
+      'Featured Homes are properties in conditions that allow them to be immediately available for sale. These homes include new kitchens, new bathrooms, new energy-efficient appliances, security systems, low monthly payments, and low utility costs. The Land Bank holds open houses weekly - interested parties can show up, view the home, and make an offer on the spot.',
     purchaseProcess: [
       'Attend a scheduled open house (bring photo ID).',
       'Check in with the Land Bank representative and sign a liability release.',
       'View the property; obtain an offer sheet from the Land Bank employee if interested.',
       'Submit your Highest & Best offer by fax (810-257-3090), email (offers@thelandbank.org), or drop box by the stated deadline.',
-      'Include all required documentation — incomplete offers will not be accepted.',
+      'Include all required documentation - incomplete offers will not be accepted.',
       'If accepted, closing must occur within 21 days.',
     ],
     eligibility: [
-      'Must attend the open house in person — offers are only accepted from attendees.',
+      'Must attend the open house in person - offers are only accepted from attendees.',
       'Must provide proof of income with offer.',
       'Housing expenses must not exceed 30% of take-home income (payment + taxes + water + utilities).',
       'No delinquent property taxes or property tax foreclosure within the last 5 years.',
@@ -50,7 +50,7 @@ export const PROGRAM_POLICIES = {
     },
     complianceAfterPurchase:
       'Buyers must submit monthly progress updates showing that the property is being maintained and improved. Updates include photos of all major areas and any relevant documentation such as permits and contractor agreements.',
-    offerMethod: 'Highest & Best — one opportunity per party to make an offer.',
+    offerMethod: 'Highest & Best - one opportunity per party to make an offer.',
     contactEmail: 'offers@thelandbank.org',
     contactFax: '810-257-3090',
   },
@@ -59,17 +59,17 @@ export const PROGRAM_POLICIES = {
     label: 'Ready for Rehab',
     tagline: 'Affordable homes in need of renovation',
     description:
-      'Ready for Rehab homes are properties in poor or fair condition, sold as-is and often in need of significant repair and improvement. These are ideal for buyers ready to invest in renovations. The Land Bank holds open houses — no appointment necessary.',
+      'Ready for Rehab homes are properties in poor or fair condition, sold as-is and often in need of significant repair and improvement. These are ideal for buyers ready to invest in renovations. The Land Bank holds open houses - no appointment necessary.',
     purchaseProcess: [
       'Attend a scheduled open house (bring photo ID, no appointment needed).',
       'Check in with the Land Bank representative and sign a liability release.',
       'View the property; obtain an offer sheet from the Land Bank employee if interested.',
       'Gather proof of funds/income as detailed on the form.',
       'Submit your Highest & Best offer by fax (810-257-3090), email (offers@thelandbank.org), or drop box by the stated deadline.',
-      'Include all required documentation — incomplete or late offers will not be considered.',
+      'Include all required documentation - incomplete or late offers will not be considered.',
     ],
     eligibility: [
-      'Must attend the open house in person — offers are only accepted from attendees.',
+      'Must attend the open house in person - offers are only accepted from attendees.',
       'GCLBA staff review renovation cost estimates, proof of adequate funding, and documentation of previous investment in Land Bank properties.',
       'No delinquent property taxes or property tax foreclosure within the last 5 years.',
       'Having the highest offer does not guarantee acceptance.',
@@ -88,17 +88,17 @@ export const PROGRAM_POLICIES = {
       'Buyers must submit monthly progress updates demonstrating active renovation. Updates include photos of all major areas, permits (if applicable), and contractor agreements. Properties on the local condemnation list require permits and inspections to clear violations.',
     specialNotes: [
       'Houses are sold as-is.',
-      'Many properties are on the local unit of government condemnation list — permits and inspections will be required to clear violations.',
+      'Many properties are on the local unit of government condemnation list - permits and inspections will be required to clear violations.',
       'Refer to the Land Bank Renovation Cost Guide for typical estimated repair costs.',
     ],
-    offerMethod: 'Highest & Best — one opportunity per party to make an offer.',
+    offerMethod: 'Highest & Best - one opportunity per party to make an offer.',
     contactEmail: 'offers@thelandbank.org',
     contactFax: '810-257-3090',
   },
 
   VIP: {
     label: 'VIP Spotlight',
-    tagline: 'Very Interesting Properties — unique reinvestment opportunities',
+    tagline: 'Very Interesting Properties - unique reinvestment opportunities',
     description:
       'VIP Spotlight properties present unique opportunities to reinvest in the community. The Land Bank welcomes new and innovative plans for these remarkable properties. These are often larger-scale or distinctive properties that require a proposal-based review rather than a simple offer.',
     purchaseProcess: [
@@ -142,7 +142,7 @@ export const PROGRAM_POLICIES = {
     },
     complianceAfterPurchase:
       'VIP buyers submit quarterly progress reports demonstrating progress against their approved development plan. Updates include exterior photos and proof of current insurance.',
-    offerMethod: 'Proposal-based — scored by Land Bank staff using published criteria.',
+    offerMethod: 'Proposal-based - scored by Land Bank staff using published criteria.',
     contactEmail: 'offers@thelandbank.org',
     contactFax: '810-257-3090',
   },
@@ -153,7 +153,7 @@ export const PROGRAM_POLICIES = {
     description:
       'The Land Bank demolishes blighted structures that have deteriorated beyond repair. Demolition follows strict federal environmental clean-up standards including asbestos and hazardous material removal, dust control, advance neighbor notification, and contractor accountability.',
     complianceAfterPurchase:
-      'Demolition buyers must submit milestone-based reports including site photos (before, during, after), contractor agreements, and disposal receipts. There is no grace period — documentation is due on the stated deadlines.',
+      'Demolition buyers must submit milestone-based reports including site photos (before, during, after), contractor agreements, and disposal receipts. There is no grace period - documentation is due on the stated deadlines.',
     specialNotes: [
       'All demolitions must comply with federal and state environmental requirements.',
       'Contractors must remove asbestos and hazardous materials prior to demolition.',
@@ -184,7 +184,7 @@ export const GENERAL_POLICIES = {
 };
 
 /**
- * Enforcement levels — graduated compliance for all programs.
+ * Enforcement levels - graduated compliance for all programs.
  * Used by ComplianceOverview.jsx
  */
 export const ENFORCEMENT_LEVELS = [

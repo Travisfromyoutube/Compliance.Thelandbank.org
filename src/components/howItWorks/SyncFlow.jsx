@@ -4,7 +4,7 @@ import { AppIcon } from '../ui';
 import ChapterHeader from './ChapterHeader';
 
 /**
- * SyncFlow — Chapter 6: "What Stays in Sync"
+ * SyncFlow - Chapter 6: "What Stays in Sync"
  *
  * Bidirectional flow showing data moving from FileMaker → Portal and
  * Portal → FileMaker. Hover rows to see concrete examples.
@@ -13,10 +13,10 @@ import ChapterHeader from './ChapterHeader';
  */
 
 const FROM_FM = [
-  { label: 'Property records and addresses', example: '1234 Elm St, Flint — parcel 46-35-457-003' },
-  { label: 'Buyer names and contact info', example: 'John Smith — jsmith@email.com' },
-  { label: 'Sale dates and program types', example: 'Closed 2025-11-15 — Featured Homes' },
-  { label: 'Sold status and parcel details', example: 'Status: Sold — SEV: $12,500' },
+  { label: 'Property records and addresses', example: '1234 Elm St, Flint - parcel 46-35-457-003' },
+  { label: 'Buyer names and contact info', example: 'John Smith - jsmith@email.com' },
+  { label: 'Sale dates and program types', example: 'Closed 2025-11-15 - Featured Homes' },
+  { label: 'Sold status and parcel details', example: 'Status: Sold - SEV: $12,500' },
 ];
 
 const TO_FM = [
@@ -97,7 +97,7 @@ export default function SyncFlow() {
       <ChapterHeader
         icon={ICONS.sync}
         title="What Stays in Sync"
-        subtitle="FileMaker and the portal keep each other up to date — here's what moves"
+        subtitle="FileMaker and the portal keep each other up to date - here's what moves"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">

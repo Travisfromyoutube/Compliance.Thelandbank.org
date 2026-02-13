@@ -2,7 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 import { AppIcon } from '../ui';
 
 /**
- * SystemNode — Custom React Flow node for the system architecture diagram.
+ * SystemNode - Custom React Flow node for the system architecture diagram.
  *
  * Receives data props: label, subtitle, icon, active, dimmed, onClick.
  * Active state = green ring + accent background (chapter is viewing this node).

@@ -12,7 +12,7 @@ import SecurityStack from '../components/howItWorks/SecurityStack';
 import SyncFlow from '../components/howItWorks/SyncFlow';
 
 /**
- * HowItWorks — "How This Portal Works" page
+ * HowItWorks - "How This Portal Works" page
  *
  * Split-panel layout:
  * - Left (40%): Persistent React Flow system architecture diagram

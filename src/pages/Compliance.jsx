@@ -164,7 +164,7 @@ export default function Compliance() {
 
   // Format date for display
   const formatDate = (dateString) => {
-    if (!dateString) return '—';
+    if (!dateString) return '-';
     const date = new Date(dateString + 'T00:00:00');
     return date.toLocaleDateString('en-US', {
       month: 'short',
@@ -221,7 +221,7 @@ export default function Compliance() {
             value > 0 ? 'text-danger' : 'text-muted'
           }`}
         >
-          {value > 0 ? `${value}` : '—'}
+          {value > 0 ? `${value}` : '-'}
         </span>
       ),
     },

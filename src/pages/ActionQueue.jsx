@@ -316,7 +316,7 @@ export default function ActionQueue() {
           ].join(' ')}
         >
           <Printer className="w-4 h-4" />
-          No Email — Print Required
+          No Email - Print Required
           {noEmailProperties.length > 0 && (
             <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-warning text-white text-[10px] font-mono font-semibold">
               {noEmailProperties.length}
@@ -472,7 +472,7 @@ export default function ActionQueue() {
                       <html><head><title>Print Letters - GCLBA Compliance</title>
                       <style>body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px;text-align:left}th{background:#f5f5f5;font-size:12px;text-transform:uppercase}</style>
                       </head><body>
-                      <h2>Compliance Letters — No Email on File</h2>
+                      <h2>Compliance Letters - No Email on File</h2>
                       <p>Generated ${new Date().toLocaleDateString()}</p>
                       <table><thead><tr><th>Address</th><th>Buyer</th><th>Program</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>
                       </body></html>

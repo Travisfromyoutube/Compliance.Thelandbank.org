@@ -17,11 +17,11 @@ import { usePageTitle } from '../hooks/usePageTitle';
 /* ── enforcement level display config ─────────────────── */
 
 const ENFORCEMENT_COLORS = {
-  0: '#10b981', // green  — compliant
-  1: '#f59e0b', // amber  — level 1
-  2: '#f97316', // orange — level 2
-  3: '#ef4444', // red    — level 3
-  4: '#991b1b', // dark red — level 4
+  0: '#10b981', // green  - compliant
+  1: '#f59e0b', // amber  - level 1
+  2: '#f97316', // orange - level 2
+  3: '#ef4444', // red    - level 3
+  4: '#991b1b', // dark red - level 4
 };
 
 const ENFORCEMENT_RADII = {
@@ -34,10 +34,10 @@ const ENFORCEMENT_RADII = {
 
 const ENFORCEMENT_LABELS = {
   0: 'Compliant',
-  1: 'Level 1 — Notice',
-  2: 'Level 2 — Warning',
-  3: 'Level 3 — Default',
-  4: 'Level 4 — Legal',
+  1: 'Level 1 - Notice',
+  2: 'Level 2 - Warning',
+  3: 'Level 3 - Default',
+  4: 'Level 4 - Legal',
 };
 
 const LEGEND_ITEMS = [

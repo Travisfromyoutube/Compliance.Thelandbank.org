@@ -125,10 +125,10 @@ Sincerely,
 GCLBA Compliance Team`,
       },
       DEFAULT_NOTICE: {
-        subject: 'Default Notice: Demolition non-compliance — {PropertyAddress}',
+        subject: 'Default Notice: Demolition non-compliance - {PropertyAddress}',
         body: `Dear {BuyerName},
 
-NOTICE OF DEFAULT — DEMOLITION PROGRAM
+NOTICE OF DEFAULT - DEMOLITION PROGRAM
 
 Property: {PropertyAddress}
 Days Overdue: {DaysOverdue}
@@ -170,7 +170,7 @@ Thank you,
 GCLBA Compliance Team`,
       },
       WARNING: {
-        subject: 'Warning: VIP compliance overdue — {PropertyAddress}',
+        subject: 'Warning: VIP compliance overdue - {PropertyAddress}',
         body: `Dear {BuyerName},
 
 Your VIP compliance documentation for {PropertyAddress} is {DaysOverdue} days past due.
@@ -181,10 +181,10 @@ Sincerely,
 GCLBA Compliance Team`,
       },
       DEFAULT_NOTICE: {
-        subject: 'Default Notice: VIP program — {PropertyAddress}',
+        subject: 'Default Notice: VIP program - {PropertyAddress}',
         body: `Dear {BuyerName},
 
-NOTICE OF DEFAULT — VIP PROGRAM
+NOTICE OF DEFAULT - VIP PROGRAM
 
 Property: {PropertyAddress}
 Days Overdue: {DaysOverdue}

@@ -3,7 +3,7 @@ import ICONS from '../../icons/iconMap';
 import ChapterHeader from './ChapterHeader';
 
 /**
- * TechStack — Chapter 3: "The Tech Behind It"
+ * TechStack - Chapter 3: "The Tech Behind It"
  *
  * Four horizontal layer rows with expandable tech chips.
  * Only one chip expanded at a time (accordion behavior).
@@ -29,15 +29,15 @@ const LAYERS = [
     label: 'Where data lives',
     techs: [
       { name: 'Prisma', aha: 'Catches data mismatch bugs before they happen, not after' },
-      { name: 'Neon PostgreSQL', aha: 'The portal\'s own database — always on, scales on its own' },
-      { name: 'FileMaker', aha: 'GCLBA\'s master property database — the portal reads and writes to it over HTTPS' },
+      { name: 'Neon PostgreSQL', aha: 'The portal\'s own database - always on, scales on its own' },
+      { name: 'FileMaker', aha: 'GCLBA\'s master property database - the portal reads and writes to it over HTTPS' },
     ],
   },
   {
     label: 'Services that help',
     techs: [
-      { name: 'Resend', aha: 'Sends compliance emails from compliance@thelandbank.org — lands right in Outlook' },
-      { name: 'Leaflet', aha: 'The map page — color-coded pins show compliance status across the county' },
+      { name: 'Resend', aha: 'Sends compliance emails from compliance@thelandbank.org - lands right in Outlook' },
+      { name: 'Leaflet', aha: 'The map page - color-coded pins show compliance status across the county' },
     ],
   },
 ];
@@ -52,7 +52,7 @@ export default function TechStack() {
       <ChapterHeader
         icon={ICONS.zap}
         title="The Tech Behind It"
-        subtitle="What's running under the hood — click any chip to learn more"
+        subtitle="What's running under the hood - click any chip to learn more"
       />
       <div className="space-y-3">
         {LAYERS.map((layer, layerIdx) => (

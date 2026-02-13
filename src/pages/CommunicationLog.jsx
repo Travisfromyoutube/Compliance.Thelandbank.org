@@ -267,7 +267,7 @@ export default function CommunicationLog() {
         </button>
       </div>
 
-      {/* Communications — Flat Table */}
+      {/* Communications - Flat Table */}
       {viewMode === 'flat' && (
         <div className="animate-fade-slide-up admin-stagger-5">
           <DataTable
@@ -281,7 +281,7 @@ export default function CommunicationLog() {
         </div>
       )}
 
-      {/* Communications — Grouped by Property */}
+      {/* Communications - Grouped by Property */}
       {viewMode === 'grouped' && (
         <div className="space-y-3 animate-fade-slide-up admin-stagger-5">
           {groupedByProperty.length === 0 && (

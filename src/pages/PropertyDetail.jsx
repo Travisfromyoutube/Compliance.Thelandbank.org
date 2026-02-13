@@ -319,7 +319,7 @@ const PropertyDetail = () => {
                   )}
                   <span className="text-sm font-semibold text-text">
                     {property.demoFinalCertDate
-                      ? <>Certified — <span className="font-mono">{formatDate(property.demoFinalCertDate)}</span></>
+                      ? <>Certified - <span className="font-mono">{formatDate(property.demoFinalCertDate)}</span></>
                       : 'Pending'}
                   </span>
                 </div>
@@ -334,7 +334,7 @@ const PropertyDetail = () => {
                   )}
                   <span className="text-sm font-semibold text-text">
                     {property.dateProofOfInvestProvided
-                      ? <>Provided — <span className="font-mono">{formatDate(property.dateProofOfInvestProvided)}</span></>
+                      ? <>Provided - <span className="font-mono">{formatDate(property.dateProofOfInvestProvided)}</span></>
                       : 'Not Provided'}
                   </span>
                 </div>
@@ -404,7 +404,7 @@ const PropertyDetail = () => {
                         <span className="text-sm font-medium text-text">{rcKey}</span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted">
-                        <span>Due: <span className="font-mono">{rcData?.due ? formatDate(rcData.due) : '—'}</span></span>
+                        <span>Due: <span className="font-mono">{rcData?.due ? formatDate(rcData.due) : '-'}</span></span>
                         {isCompleted && (
                           <span className="text-success font-medium">Done: <span className="font-mono">{formatDate(rcData.completed)}</span></span>
                         )}
@@ -545,7 +545,7 @@ const PropertyDetail = () => {
         />
         <StatCard
           label="Days Overdue"
-          value={enforcementData.overdue > 0 ? <span className="font-mono">{enforcementData.overdue}</span> : '—'}
+          value={enforcementData.overdue > 0 ? <span className="font-mono">{enforcementData.overdue}</span> : '-'}
           variant={enforcementData.overdue > 0 ? 'warning' : 'default'}
           icon={Clock}
         />
@@ -821,7 +821,7 @@ const PropertyDetail = () => {
             <div className="space-y-2">
               <p className="text-xs font-heading font-medium text-muted uppercase">Days Overdue</p>
               <p className="text-2xl font-semibold text-text font-mono">
-                {enforcementData.overdue > 0 ? enforcementData.overdue : '—'}
+                {enforcementData.overdue > 0 ? enforcementData.overdue : '-'}
               </p>
             </div>
           </div>

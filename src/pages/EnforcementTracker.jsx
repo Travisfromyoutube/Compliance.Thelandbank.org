@@ -51,10 +51,10 @@ const EnforcementTracker = () => {
   const getEnforcementLabel = (level) => {
     const labels = {
       0: 'Compliant',
-      1: 'Level 1 — Notice',
-      2: 'Level 2 — Warning',
-      3: 'Level 3 — Default',
-      4: 'Level 4 — Legal',
+      1: 'Level 1 - Notice',
+      2: 'Level 2 - Warning',
+      3: 'Level 3 - Default',
+      4: 'Level 4 - Legal',
     };
     return labels[level] || 'Unknown';
   };
@@ -97,7 +97,7 @@ const EnforcementTracker = () => {
         value > 0 ? (
           <span className="text-sm font-mono font-semibold text-danger">{value} days</span>
         ) : (
-          <span className="text-sm font-mono text-muted">—</span>
+          <span className="text-sm font-mono text-muted">-</span>
         )
       ),
     },
@@ -108,7 +108,7 @@ const EnforcementTracker = () => {
         value ? (
           <span className="text-sm font-mono text-text">{formatDate(value)}</span>
         ) : (
-          <span className="text-sm text-muted">—</span>
+          <span className="text-sm text-muted">-</span>
         )
       ),
     },
@@ -119,7 +119,7 @@ const EnforcementTracker = () => {
         value ? (
           <span className="text-sm font-mono text-text">{formatDate(value)}</span>
         ) : (
-          <span className="text-sm text-muted">—</span>
+          <span className="text-sm text-muted">-</span>
         )
       ),
     },
@@ -169,10 +169,10 @@ const EnforcementTracker = () => {
             >
               <option value="All">All Levels</option>
               <option value="0">Compliant</option>
-              <option value="1">Level 1 — Notice</option>
-              <option value="2">Level 2 — Warning</option>
-              <option value="3">Level 3 — Default</option>
-              <option value="4">Level 4 — Legal</option>
+              <option value="1">Level 1 - Notice</option>
+              <option value="2">Level 2 - Warning</option>
+              <option value="3">Level 3 - Default</option>
+              <option value="4">Level 4 - Legal</option>
             </SelectInput>
           </FormField>
 

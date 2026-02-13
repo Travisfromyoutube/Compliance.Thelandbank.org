@@ -1,5 +1,5 @@
 /**
- * Email sender — Resend integration with mock fallback.
+ * Email sender - Resend integration with mock fallback.
  *
  * When RESEND_API_KEY is set, sends real emails via Resend.
  * Otherwise, logs to console and returns a mock success response.
@@ -66,7 +66,7 @@ export async function sendBatchEmails(emails, { delayMs = 200 } = {}) {
     const result = await sendEmail(emails[i]);
     results.push({ index: i, ...result });
 
-    // Rate limiting — wait between sends
+    // Rate limiting - wait between sends
     if (i < emails.length - 1 && delayMs > 0) {
       await new Promise((r) => setTimeout(r, delayMs));
     }

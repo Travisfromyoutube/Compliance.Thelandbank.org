@@ -2,8 +2,8 @@
  * Sentry error monitoring for Vercel serverless functions.
  *
  * Initializes once per cold start and exports:
- *   - withSentry(handler) — wraps API route with error capture
- *   - captureError(err, ctx) — manually report a caught error
+ *   - withSentry(handler) - wraps API route with error capture
+ *   - captureError(err, ctx) - manually report a caught error
  *
  * When SENTRY_DSN is not set, operates as a no-op (dev/prototype mode).
  */

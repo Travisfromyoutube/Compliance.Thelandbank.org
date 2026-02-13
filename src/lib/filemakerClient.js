@@ -7,14 +7,14 @@
  * 3 consecutive failures.
  *
  * Env vars required:
- *   FM_SERVER_URL  — base URL (e.g. https://fm.example.com or Cloudflare Tunnel URL)
- *   FM_DATABASE    — FileMaker database name
- *   FM_USERNAME    — Data API account username
- *   FM_PASSWORD    — Data API account password
+ *   FM_SERVER_URL  - base URL (e.g. https://fm.example.com or Cloudflare Tunnel URL)
+ *   FM_DATABASE    - FileMaker database name
+ *   FM_USERNAME    - Data API account username
+ *   FM_PASSWORD    - Data API account password
  *
  * Optional (for session caching):
- *   UPSTASH_REDIS_REST_URL   — from Task 03
- *   UPSTASH_REDIS_REST_TOKEN — from Task 03
+ *   UPSTASH_REDIS_REST_URL   - from Task 03
+ *   UPSTASH_REDIS_REST_TOKEN - from Task 03
  */
 
 import { Redis } from '@upstash/redis';
@@ -58,7 +58,7 @@ async function getCachedToken() {
     }
   }
 
-  // No cached token — create a new session
+  // No cached token - create a new session
   const token = await login();
 
   if (r) {
@@ -151,7 +151,7 @@ export function isConfigured() {
  */
 export async function login() {
   const config = getConfig();
-  if (!config) throw new Error('FileMaker not configured — missing FM_* env vars');
+  if (!config) throw new Error('FileMaker not configured - missing FM_* env vars');
 
   const res = await fetch(`${config.baseUrl}/sessions`, {
     method: 'POST',
@@ -181,7 +181,7 @@ export async function logout(token) {
       method: 'DELETE',
     });
   } catch {
-    // Best-effort — don't throw on logout failure
+    // Best-effort - don't throw on logout failure
   }
 }
 
@@ -190,11 +190,11 @@ export async function logout(token) {
 /**
  * Make an authenticated request to the FM Data API.
  *
- * @param {string} token   — session token from login()
- * @param {string} method  — HTTP method
- * @param {string} path    — path after /databases/{db}/ (e.g. "layouts/MyLayout/records")
- * @param {object} [body]  — request body (will be JSON-serialized)
- * @returns {object}       — parsed response.response object
+ * @param {string} token   - session token from login()
+ * @param {string} method  - HTTP method
+ * @param {string} path    - path after /databases/{db}/ (e.g. "layouts/MyLayout/records")
+ * @param {object} [body]  - request body (will be JSON-serialized)
+ * @returns {object}       - parsed response.response object
  */
 async function fmRequest(token, method, path, body = null) {
   const config = getConfig();
@@ -235,8 +235,8 @@ async function fmRequest(token, method, path, body = null) {
  * Get all records from a layout (paginated).
  *
  * @param {string} token
- * @param {string} layout — FM layout name
- * @param {object} [opts] — { limit, offset, sort }
+ * @param {string} layout - FM layout name
+ * @param {object} [opts] - { limit, offset, sort }
  */
 export async function getRecords(token, layout, opts = {}) {
   const params = new URLSearchParams();
@@ -266,8 +266,8 @@ export async function getRecord(token, layout, recordId) {
  *
  * @param {string} token
  * @param {string} layout
- * @param {Array<object>} query — FM find criteria, e.g. [{ ParcelID: "41-06-..." }]
- * @param {object} [opts]       — { sort, limit, offset }
+ * @param {Array<object>} query - FM find criteria, e.g. [{ ParcelID: "41-06-..." }]
+ * @param {object} [opts]       - { sort, limit, offset }
  */
 export async function findRecords(token, layout, query, opts = {}) {
   const body = { query };
@@ -284,7 +284,7 @@ export async function findRecords(token, layout, query, opts = {}) {
  *
  * @param {string} token
  * @param {string} layout
- * @param {object} fieldData — FM field names → values
+ * @param {object} fieldData - FM field names → values
  * @returns {{ recordId: string, modId: string }}
  */
 export async function createRecord(token, layout, fieldData) {
@@ -297,8 +297,8 @@ export async function createRecord(token, layout, fieldData) {
  *
  * @param {string} token
  * @param {string} layout
- * @param {string} recordId — FM internal record ID
- * @param {object} fieldData — only fields to update
+ * @param {string} recordId - FM internal record ID
+ * @param {object} fieldData - only fields to update
  */
 export async function updateRecord(token, layout, recordId, fieldData) {
   const path = `layouts/${encodeURIComponent(layout)}/records/${recordId}`;
@@ -321,7 +321,7 @@ export async function deleteRecord(token, layout, recordId) {
  * @param {string} token
  * @param {string} layout
  * @param {string} recordId
- * @param {string} fieldName — container field name
+ * @param {string} fieldName - container field name
  * @param {Buffer|Blob} fileData
  * @param {string} filename
  */
@@ -377,7 +377,7 @@ export async function getLayoutMetadata(token, layout) {
  */
 export async function withSession(callback) {
   if (await isCircuitOpen()) {
-    const err = new Error('FileMaker circuit breaker is open — FM appears to be down. Serving from local cache.');
+    const err = new Error('FileMaker circuit breaker is open - FM appears to be down. Serving from local cache.');
     err.circuitOpen = true;
     throw err;
   }

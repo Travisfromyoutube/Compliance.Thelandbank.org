@@ -1,5 +1,5 @@
 /**
- * MacOSWindow — Skeuomorphic Mac OS 9 window chrome
+ * MacOSWindow - Skeuomorphic Mac OS 9 window chrome
  *
  * Now accepts children instead of hardcoded tab content.
  * Used as the container for the File Explorer in Chapter 2.

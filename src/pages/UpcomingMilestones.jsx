@@ -146,7 +146,7 @@ const UpcomingMilestones = () => {
     <div className="space-y-6">
       <AdminPageHeader
         title="Upcoming Milestones"
-        subtitle="Proactive view of all milestones across all properties — catch deadlines before they become enforcement issues."
+        subtitle="Proactive view of all milestones across all properties - catch deadlines before they become enforcement issues."
         icon={CalendarClock}
       />
 

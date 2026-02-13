@@ -202,6 +202,10 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 - **FormField onChange**: `TextInput`/`SelectInput` call `onChange(value, event)` — first arg is the extracted value, not a DOM event. Use `(value) => fn(value)`, not `(e) => fn(e.target.value)`.
 - **FM sync upsert**: Spread full `fromFM()` output with explicit defaults for required fields. Never cherry-pick individual fields — it creates a "field graveyard" where mapped fields don't reach the database. Strip null/undefined keys before upsert to avoid overwriting existing data.
 - **Inline auth gates for mixed-access endpoints**: When a consolidated `?action=` router has both public and admin operations, route the public action first, then add an auth check before admin operations. Don't rely on middleware query-param matching.
+- **React Flow background**: `.react-flow` div has its own opaque background. To show a custom CSS background on the parent, override with `.parent .react-flow { background: transparent !important; }` in `index.css`.
+- **React Flow fitView sizing**: Node bounding box aspect ratio must approximate the container's aspect ratio. A square bounding box in a portrait panel = tiny nodes. Spread y-positions to match panel height-to-width ratio. Use low `padding` (0.08) in `fitViewOptions`.
+- **Patch application**: Prefer `git apply --3way` over `git am` — patches often target older commits and strict context matching fails. If `git am` gets stuck, `rm -f .git/*.lock` then `git am --abort`.
+- **Smooth hover reveals**: Never conditionally mount (`{show && <el>}`) for animated content — causes layout reflow. Always render the element, toggle with `opacity-0/100` + `max-w-0/max-w-[Npx]` and `transition-all duration-200 ease-out`.
 
 ---
 

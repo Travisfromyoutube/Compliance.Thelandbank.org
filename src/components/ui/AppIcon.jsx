@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * AppIcon — consistent icon wrapper for the GCLBA portal.
+ * AppIcon - consistent icon wrapper for the GCLBA portal.
  *
  * ICON USAGE GUIDE
  * ────────────────────────────

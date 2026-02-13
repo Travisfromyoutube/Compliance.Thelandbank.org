@@ -97,7 +97,7 @@ function SecurityBadge() {
         {isSecure && <AppIcon icon={ICONS.shieldCheck} size={12} className="text-accent" />}
       </button>
 
-      {/* Detail popover — compact, overlays inline */}
+      {/* Detail popover - compact, overlays inline */}
       {showDetail && (
         <div className="absolute right-0 bottom-full mb-1.5 w-44 bg-surface rounded-md border border-border shadow-sm p-2 z-20 animate-fade-slide-up">
           <div className="space-y-1">
@@ -183,7 +183,7 @@ const Dashboard = () => {
     return Math.round((stats.compliantCount / stats.totalActiveCases) * 100);
   }, [stats]);
 
-  // Get properties needing attention — sorted by most overdue first
+  // Get properties needing attention - sorted by most overdue first
   const propertiesNeedingAttention = useMemo(() => {
     return properties
       .map((prop) => {
@@ -223,7 +223,7 @@ const Dashboard = () => {
       key: 'buyerName',
       header: 'Buyer',
       render: (value) => (
-        <span className="text-sm text-text">{value || '—'}</span>
+        <span className="text-sm text-text">{value || '-'}</span>
       ),
     },
     {

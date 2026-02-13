@@ -219,15 +219,15 @@ export default function Reports() {
   const getEnforcementLabel = (level) => {
     switch (level) {
       case 0:
-        return 'Level 0 — Compliant';
+        return 'Level 0 - Compliant';
       case 1:
-        return 'Level 1 — Minor Warning';
+        return 'Level 1 - Minor Warning';
       case 2:
-        return 'Level 2 — Major Warning';
+        return 'Level 2 - Major Warning';
       case 3:
-        return 'Level 3 — Default Notice';
+        return 'Level 3 - Default Notice';
       case 4:
-        return 'Level 4 — Enforcement Action';
+        return 'Level 4 - Enforcement Action';
       default:
         return `Level ${level}`;
     }

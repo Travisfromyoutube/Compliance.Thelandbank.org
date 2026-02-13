@@ -23,7 +23,7 @@ function seededRandom(seed) {
 }
 
 // ---------------------------------------------------------------------------
-// Reference data — real Flint streets, names, and zip codes
+// Reference data - real Flint streets, names, and zip codes
 // ---------------------------------------------------------------------------
 
 const STREETS = [
@@ -304,7 +304,7 @@ function buildDemoFields(rand, dateSold, enforcementLevel) {
 function buildVIPFields(rand, dateSold, enforcementLevel) {
   const complianceType = pickFrom(rand, VIP_COMPLIANCE_TYPES);
 
-  // Build RC dates — mark earlier milestones as completed based on enforcement
+  // Build RC dates - mark earlier milestones as completed based on enforcement
   // Lower enforcement = more milestones completed on time
   const completedCount = enforcementLevel === 0
     ? 3 + Math.floor(rand() * 4)  // 3-6 completed
@@ -324,7 +324,7 @@ function buildVIPFields(rand, dateSold, enforcementLevel) {
     rcDates[key] = { due, completed };
   });
 
-  // 15-day check-in — usually all true for low enforcement
+  // 15-day check-in - usually all true for low enforcement
   const secure15 = enforcementLevel <= 1 ? true : rand() < 0.6;
   const checkIn15Day = {
     propertyIsSecure: secure15,
@@ -332,7 +332,7 @@ function buildVIPFields(rand, dateSold, enforcementLevel) {
     lawnMowed: secure15 ? rand() < 0.85 : rand() < 0.3,
   };
 
-  // 45-day check-in — more fields, more variance
+  // 45-day check-in - more fields, more variance
   const good45 = enforcementLevel === 0;
   const checkIn45Day = {
     beforePicturesProvided: good45 ? rand() < 0.95 : rand() < 0.5,
@@ -346,7 +346,7 @@ function buildVIPFields(rand, dateSold, enforcementLevel) {
     afterPicturesProvided: good45 ? rand() < 0.5 : rand() < 0.1,
   };
 
-  // Completion checklist — only filled for very compliant VIP properties
+  // Completion checklist - only filled for very compliant VIP properties
   const nearComplete = enforcementLevel === 0 && rand() < 0.3;
   const completionChecklist = {
     exteriorPhotos: {

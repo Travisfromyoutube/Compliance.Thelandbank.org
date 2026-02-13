@@ -4,7 +4,7 @@ import ICONS from '../../icons/iconMap';
 import ChapterHeader from './ChapterHeader';
 
 /**
- * FlipCards — Chapter 1: "What This System Does"
+ * FlipCards - Chapter 1: "What This System Does"
  *
  * Three flip cards showing the portal's core capabilities.
  * Front: icon + headline + summary. Back: how it works.
@@ -26,7 +26,7 @@ const CARDS = [
     frontTitle: 'Tracks Deadlines',
     frontDetail: 'Compliance milestones are computed from the close date. The system knows what\'s due before you do.',
     backTitle: 'How it works',
-    backDetail: 'Each program — Featured Homes, R4R, Demolition, VIP — has its own built-in schedule. An hourly check flags anything overdue and bumps the enforcement level.',
+    backDetail: 'Each program - Featured Homes, R4R, Demolition, VIP - has its own built-in schedule. An hourly check flags anything overdue and bumps the enforcement level.',
   },
   {
     id: 'notices',
@@ -34,7 +34,7 @@ const CARDS = [
     frontTitle: 'Sends Notices',
     frontDetail: 'One click sends a compliance email from compliance@thelandbank.org. No switching to Outlook.',
     backTitle: 'How it works',
-    backDetail: 'Templates are pre-written for each enforcement step. The Action Queue groups properties by what\'s due — send 20 notices in one batch instead of one at a time.',
+    backDetail: 'Templates are pre-written for each enforcement step. The Action Queue groups properties by what\'s due - send 20 notices in one batch instead of one at a time.',
   },
 ];
 
@@ -73,7 +73,7 @@ export default function FlipCards() {
       <ChapterHeader
         icon={ICONS.home}
         title="What This System Does"
-        subtitle="The stuff you used to do by hand — now handled automatically"
+        subtitle="The stuff you used to do by hand - now handled automatically"
       />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {CARDS.map((card) => (

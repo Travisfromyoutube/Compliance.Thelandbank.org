@@ -1,5 +1,5 @@
 /**
- * PropertyContext — mutable state layer for property records.
+ * PropertyContext - mutable state layer for property records.
  *
  * Attempts to fetch from /api/properties on mount.
  * Falls back to mockData for offline / local-dev / pre-migration.
@@ -76,7 +76,7 @@ async function apiPatch(propertyId, data) {
       body: JSON.stringify(data),
     });
   } catch {
-    // silently ignore — local state is source of truth during session
+    // silently ignore - local state is source of truth during session
   }
 }
 
@@ -114,7 +114,7 @@ export function PropertyProvider({ children }) {
         }
       } catch {
         // Fall back to mockData (already loaded as initial state)
-        console.info('[PropertyContext] API unavailable — using local mockData');
+        console.info('[PropertyContext] API unavailable - using local mockData');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -206,11 +206,11 @@ export function PropertyProvider({ children }) {
             console.info(`[BatchEmail] Sent ${data.sent}/${data.total}, failed ${data.failed}`);
           } else {
             console.error('[BatchEmail] API error:', res.status);
-            // Fall through — still log locally even if API fails
+            // Fall through - still log locally even if API fails
           }
         } catch (err) {
           console.error('[BatchEmail] Network error:', err.message);
-          // Fall through — still log locally
+          // Fall through - still log locally
         }
       }
 

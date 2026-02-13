@@ -17,7 +17,7 @@ function buildTimeline(property) {
   const events = [];
   const commDates = new Set();
 
-  // Communications — each gets an event
+  // Communications - each gets an event
   if (property.communications?.length) {
     property.communications.forEach((comm) => {
       const key = `${comm.action || ''}-${comm.date}`;
@@ -45,7 +45,7 @@ function buildTimeline(property) {
     });
   }
 
-  // 1st Compliance Attempt — only if not already represented in comms
+  // 1st Compliance Attempt - only if not already represented in comms
   if (property.compliance1stAttempt) {
     const alreadyInComms = property.communications?.some(
       (c) => c.action === 'ATTEMPT_1' && c.date === property.compliance1stAttempt

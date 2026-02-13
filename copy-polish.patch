@@ -1,0 +1,286 @@
+From 6ee8baaf00232bcbf94ce54fa43fe2fce60cd2d1 Mon Sep 17 00:00:00 2001
+From: Travis Gilbert <1travisgilbert@gmail.com>
+Date: Fri, 13 Feb 2026 11:06:22 +0000
+Subject: [PATCH] copy(how-it-works): polish writing to sound more natural and
+ less corporate
+
+Rewrote subtitles, security bullets, tech descriptions, and data flow
+steps across all 6 chapters to read like a person explaining things
+to a colleague instead of a product brochure.
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+---
+ .../howItWorks/DataFlowPipeline.jsx           | 26 +++++++++----------
+ src/components/howItWorks/FileExplorer.jsx    |  2 +-
+ src/components/howItWorks/FlipCard.jsx        |  8 +++---
+ src/components/howItWorks/SecurityStack.jsx   | 26 +++++++++----------
+ src/components/howItWorks/SyncFlow.jsx        |  4 +--
+ src/components/howItWorks/TechStack.jsx       | 20 +++++++-------
+ src/pages/HowItWorks.jsx                      |  2 +-
+ 7 files changed, 44 insertions(+), 44 deletions(-)
+
+diff --git a/src/components/howItWorks/DataFlowPipeline.jsx b/src/components/howItWorks/DataFlowPipeline.jsx
+index 1a77c75..110af39 100644
+--- a/src/components/howItWorks/DataFlowPipeline.jsx
++++ b/src/components/howItWorks/DataFlowPipeline.jsx
+@@ -16,30 +16,30 @@ const FLOWS = [
+     id: 'sync',
+     label: 'Property Sync',
+     steps: [
+-      { label: 'Authenticate', detail: 'Portal logs into FileMaker with a 15-minute session token.' },
+-      { label: 'Pull Records', detail: 'Reads property data from the PARC layout.' },
+-      { label: 'Translate Fields', detail: 'filemakerFieldMap.js converts 50+ field names between systems.' },
+-      { label: 'Store Locally', detail: 'Prisma upserts records into the Neon database cache.' },
++      { label: 'Log In', detail: 'The portal connects to FileMaker using a session token that lasts 15 minutes.' },
++      { label: 'Pull Records', detail: 'Grabs property data from the PARC layout in FileMaker.' },
++      { label: 'Translate Fields', detail: 'FileMaker and the portal use different field names — a mapping file translates 50+ of them.' },
++      { label: 'Save Locally', detail: 'Records get saved to the portal\'s own database so pages load fast.' },
+     ],
+   },
+   {
+     id: 'email',
+     label: 'Compliance Emails',
+     steps: [
+-      { label: 'Pick Template', detail: 'Each enforcement step (Attempt 1, Warning, Default Notice) has a pre-written template.' },
+-      { label: 'Merge Data', detail: 'Buyer name, address, and deadline are inserted into the template.' },
+-      { label: 'Send via Resend', detail: 'Email dispatched from compliance@thelandbank.org.' },
++      { label: 'Pick Template', detail: 'Each enforcement step — Attempt 1, Warning, Default Notice — has a ready-to-go template.' },
++      { label: 'Fill In Details', detail: 'The buyer\'s name, address, and deadline get dropped into the template automatically.' },
++      { label: 'Send It', detail: 'Email goes out from compliance@thelandbank.org through Resend.' },
+     ],
+   },
+   {
+     id: 'token',
+     label: 'Buyer Access Links',
+     steps: [
+-      { label: 'Generate Token', detail: 'A unique code tied to one buyer, one property, with an expiration.' },
+-      { label: 'Email the Link', detail: 'Token embedded in the submission URL.' },
+-      { label: 'Buyer Clicks', detail: 'Portal verifies the token is valid and unused.' },
+-      { label: 'Submit Updates', detail: 'Buyer uploads photos and docs through the verified form.' },
+-      { label: 'Token Expires', detail: 'After use or timeout, the link stops working.' },
++      { label: 'Create a Token', detail: 'A unique code gets generated — tied to one buyer, one property, with an expiration date.' },
++      { label: 'Email the Link', detail: 'The token is embedded in the submission URL and sent to the buyer.' },
++      { label: 'Buyer Clicks', detail: 'The portal checks that the token is valid and hasn\'t been used yet.' },
++      { label: 'Submit Updates', detail: 'Buyer uploads their photos and documents through the verified form.' },
++      { label: 'Link Dies', detail: 'Once used or timed out, the link stops working. No reuse.' },
+     ],
+   },
+ ];
+@@ -87,7 +87,7 @@ export default function DataFlowPipeline() {
+       <ChapterHeader
+         icon={ICONS.dataFlow}
+         title="How Data Moves"
+-        subtitle="Step through three key workflows"
++        subtitle="Pick a workflow and walk through it step by step"
+       />
+ 
+       {/* Flow selector tabs */}
+diff --git a/src/components/howItWorks/FileExplorer.jsx b/src/components/howItWorks/FileExplorer.jsx
+index 4ac6681..2299c9f 100644
+--- a/src/components/howItWorks/FileExplorer.jsx
++++ b/src/components/howItWorks/FileExplorer.jsx
+@@ -132,7 +132,7 @@ export default function FileExplorer() {
+       <ChapterHeader
+         icon={ICONS.file}
+         title="What's Inside"
+-        subtitle="The key files that power the portal"
++        subtitle="Where things actually live in the codebase"
+       />
+       <MacOSWindow title="Inside the Portal">
+         <div className="flex gap-0">
+diff --git a/src/components/howItWorks/FlipCard.jsx b/src/components/howItWorks/FlipCard.jsx
+index b114d33..4264d39 100644
+--- a/src/components/howItWorks/FlipCard.jsx
++++ b/src/components/howItWorks/FlipCard.jsx
+@@ -18,7 +18,7 @@ const CARDS = [
+     frontTitle: 'Syncs Records',
+     frontDetail: 'FileMaker records and this portal talk to each other automatically. No copy-pasting.',
+     backTitle: 'How it works',
+-    backDetail: 'Portal connects to FileMaker\'s Data API every 15 minutes. Field names are translated automatically. New properties appear here within one sync cycle.',
++    backDetail: 'The portal connects to FileMaker\'s Data API every 15 minutes. Field names get translated automatically, so new properties show up here after one sync.',
+   },
+   {
+     id: 'deadlines',
+@@ -26,7 +26,7 @@ const CARDS = [
+     frontTitle: 'Tracks Deadlines',
+     frontDetail: 'Compliance milestones are computed from the close date. The system knows what\'s due before you do.',
+     backTitle: 'How it works',
+-    backDetail: 'Each program (Featured Homes, R4R, Demolition, VIP) has a built-in schedule. An hourly check flags anything overdue and escalates the enforcement level.',
++    backDetail: 'Each program — Featured Homes, R4R, Demolition, VIP — has its own built-in schedule. An hourly check flags anything overdue and bumps the enforcement level.',
+   },
+   {
+     id: 'notices',
+@@ -34,7 +34,7 @@ const CARDS = [
+     frontTitle: 'Sends Notices',
+     frontDetail: 'One click sends a compliance email from compliance@thelandbank.org. No switching to Outlook.',
+     backTitle: 'How it works',
+-    backDetail: 'Email templates are pre-written for each enforcement step. The Action Queue groups properties by what\'s due, so you can send 20 notices in one batch.',
++    backDetail: 'Templates are pre-written for each enforcement step. The Action Queue groups properties by what\'s due — send 20 notices in one batch instead of one at a time.',
+   },
+ ];
+ 
+@@ -73,7 +73,7 @@ export default function FlipCards() {
+       <ChapterHeader
+         icon={ICONS.home}
+         title="What This System Does"
+-        subtitle="Three things the portal handles so staff don't have to"
++        subtitle="The stuff you used to do by hand — now handled automatically"
+       />
+       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+         {CARDS.map((card) => (
+diff --git a/src/components/howItWorks/SecurityStack.jsx b/src/components/howItWorks/SecurityStack.jsx
+index bb1d3e3..f3e8f1b 100644
+--- a/src/components/howItWorks/SecurityStack.jsx
++++ b/src/components/howItWorks/SecurityStack.jsx
+@@ -21,9 +21,9 @@ const LAYERS = [
+     icon: ICONS.globe,
+     color: '#2d7a4a',
+     items: [
+-      'All traffic is encrypted in transit.',
+-      'Security certificates are automatic.',
+-      'Browsers must use secure connections.',
++      'Everything between your browser and the server is encrypted.',
++      'Security certificates renew automatically — nothing to manage.',
++      'Plain HTTP connections get redirected to HTTPS.',
+     ],
+   },
+   {
+@@ -32,9 +32,9 @@ const LAYERS = [
+     icon: ICONS.shield,
+     color: '#2b5f8a',
+     items: [
+-      'Staff features require authorization.',
+-      'Only approved apps can access data.',
+-      'Security checks run before any data loads.',
++      'Staff pages are locked behind login.',
++      'Only the portal itself can talk to its own API.',
++      'Every request gets checked before any data loads.',
+     ],
+   },
+   {
+@@ -43,9 +43,9 @@ const LAYERS = [
+     icon: ICONS.outreach,
+     color: '#b07d2e',
+     items: [
+-      'Each buyer gets a unique, time-limited link.',
+-      'Links work once and expire automatically.',
+-      'No account creation needed.',
++      'Buyers get a unique link that\'s tied to their property.',
++      'Once used (or after it times out), the link stops working.',
++      'No passwords, no accounts — just click and submit.',
+     ],
+   },
+   {
+@@ -54,9 +54,9 @@ const LAYERS = [
+     icon: ICONS.database,
+     color: '#7c3aed',
+     items: [
+-      'Portal database is encrypted at rest.',
+-      'FileMaker data is encrypted at rest.',
+-      'Queries are protected against tampering.',
++      'The portal\'s database is encrypted even when nothing\'s running.',
++      'FileMaker\'s data is encrypted the same way.',
++      'All database queries are parameterized — no SQL injection.',
+     ],
+   },
+ ];
+@@ -75,7 +75,7 @@ export default function SecurityStack() {
+       <ChapterHeader
+         icon={ICONS.shieldCheck}
+         title="How Data Stays Safe"
+-        subtitle="Four layers of protection, from network to storage"
++        subtitle="Peel back each layer to see how buyer and property data is protected"
+       />
+ 
+       <div className="flex gap-6">
+diff --git a/src/components/howItWorks/SyncFlow.jsx b/src/components/howItWorks/SyncFlow.jsx
+index 4d381a3..3eb0ca3 100644
+--- a/src/components/howItWorks/SyncFlow.jsx
++++ b/src/components/howItWorks/SyncFlow.jsx
+@@ -97,7 +97,7 @@ export default function SyncFlow() {
+       <ChapterHeader
+         icon={ICONS.sync}
+         title="What Stays in Sync"
+-        subtitle="Data flows both ways between FileMaker and the portal"
++        subtitle="FileMaker and the portal keep each other up to date — here's what moves"
+       />
+ 
+       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+@@ -169,7 +169,7 @@ export default function SyncFlow() {
+         <div className="flex items-center gap-2">
+           <span className={`w-2.5 h-2.5 rounded-full ${status?.connected ? 'bg-accent' : 'bg-danger'}`} />
+           <span className={`text-sm font-medium ${status?.connected ? 'text-accent' : 'text-danger'}`}>
+-            {status?.connected ? 'All systems operational' : 'Some systems need attention'}
++            {status?.connected ? 'Everything\'s connected' : 'Something needs attention'}
+           </span>
+         </div>
+         <div className="flex items-center gap-4">
+diff --git a/src/components/howItWorks/TechStack.jsx b/src/components/howItWorks/TechStack.jsx
+index 06b7619..c6ff949 100644
+--- a/src/components/howItWorks/TechStack.jsx
++++ b/src/components/howItWorks/TechStack.jsx
+@@ -14,30 +14,30 @@ const LAYERS = [
+   {
+     label: 'What you see',
+     techs: [
+-      { name: 'React 18', aha: 'Component-based UI — every card, table, and form is a reusable piece' },
+-      { name: 'Tailwind CSS', aha: 'Consistent design tokens — every color and spacing follows the civic theme' },
++      { name: 'React 18', aha: 'Every card, table, and form is a reusable building block' },
++      { name: 'Tailwind CSS', aha: 'All colors, spacing, and fonts come from one shared design system' },
+     ],
+   },
+   {
+     label: 'What handles requests',
+     techs: [
+-      { name: 'Vite 5', aha: 'Sub-second hot reload — changes appear instantly during development' },
+-      { name: 'Vercel Serverless', aha: 'Auto-deploy on every push — new features go live in under 60 seconds' },
++      { name: 'Vite 5', aha: 'Changes show up in the browser instantly while developing' },
++      { name: 'Vercel Serverless', aha: 'Push code to GitHub and it\'s live in under 60 seconds' },
+     ],
+   },
+   {
+     label: 'Where data lives',
+     techs: [
+-      { name: 'Prisma', aha: 'Type-safe database queries — prevents data mismatch bugs before they happen' },
+-      { name: 'Neon PostgreSQL', aha: 'Serverless database — scales automatically, connects from any edge location' },
+-      { name: 'FileMaker', aha: 'Master property database — reads and writes records securely over HTTPS' },
++      { name: 'Prisma', aha: 'Catches data mismatch bugs before they happen, not after' },
++      { name: 'Neon PostgreSQL', aha: 'The portal\'s own database — always on, scales on its own' },
++      { name: 'FileMaker', aha: 'GCLBA\'s master property database — the portal reads and writes to it over HTTPS' },
+     ],
+   },
+   {
+     label: 'Services that help',
+     techs: [
+-      { name: 'Resend', aha: 'Transactional email from compliance@thelandbank.org — direct to Outlook' },
+-      { name: 'Leaflet', aha: 'Interactive map with color-coded pins — visualize compliance across Genesee County' },
++      { name: 'Resend', aha: 'Sends compliance emails from compliance@thelandbank.org — lands right in Outlook' },
++      { name: 'Leaflet', aha: 'The map page — color-coded pins show compliance status across the county' },
+     ],
+   },
+ ];
+@@ -52,7 +52,7 @@ export default function TechStack() {
+       <ChapterHeader
+         icon={ICONS.zap}
+         title="The Tech Behind It"
+-        subtitle="The tools and services that make it work"
++        subtitle="What's running under the hood — click any chip to learn more"
+       />
+       <div className="space-y-3">
+         {LAYERS.map((layer, layerIdx) => (
+diff --git a/src/pages/HowItWorks.jsx b/src/pages/HowItWorks.jsx
+index 1864e4c..a814fcd 100644
+--- a/src/pages/HowItWorks.jsx
++++ b/src/pages/HowItWorks.jsx
+@@ -96,7 +96,7 @@ export default function HowItWorks() {
+     <div className="space-y-0">
+       <AdminPageHeader
+         title="How This Portal Works"
+-        subtitle="A behind-the-scenes look at how the system works"
++        subtitle="What's actually happening under the hood"
+         icon={ICONS.bookOpen}
+       />
+ 
+-- 
+2.34.1
+

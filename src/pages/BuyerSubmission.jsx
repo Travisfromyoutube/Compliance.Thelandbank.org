@@ -98,7 +98,7 @@ export default function BuyerSubmission() {
   /* ── Restore form from sessionStorage (non-token mode only) */
   useEffect(() => {
     const token = searchParams.get('token');
-    if (token) return; // Don't restore if token mode — token data takes precedence
+    if (token) return; // Don't restore if token mode - token data takes precedence
     try {
       const saved = sessionStorage.getItem('buyer_form_draft');
       if (saved) {
@@ -122,7 +122,7 @@ export default function BuyerSubmission() {
         setShowSaved(true);
         clearTimeout(window._saveTimer);
         window._saveTimer = setTimeout(() => setShowSaved(false), 2000);
-      } catch { /* storage full — ignore */ }
+      } catch { /* storage full - ignore */ }
     }
   }, [formData, submitted]);
 
@@ -638,7 +638,7 @@ export default function BuyerSubmission() {
             <BuyerSection
               number={3}
               title="Progress Photos"
-              subtitle={`Upload photos of the property — ${photoSlotLabels.length} required areas`}
+              subtitle={`Upload photos of the property - ${photoSlotLabels.length} required areas`}
               id="progress-photos"
               stagger={200}
             >
@@ -688,7 +688,7 @@ export default function BuyerSubmission() {
                   <DropZone
                     icon={ICONS.file}
                     title="Drag and drop documents here"
-                    subtitle="or click to browse — PDF, JPG, PNG accepted"
+                    subtitle="or click to browse - PDF, JPG, PNG accepted"
                     accept="image/*,.pdf"
                     onFilesAdded={addFinancialDoc}
                   />
@@ -711,7 +711,7 @@ export default function BuyerSubmission() {
                   <h3 className="font-heading text-sm font-semibold text-text mb-1">
                     Receipts & Invoices
                   </h3>
-                  <p className="text-xs text-muted mb-3">Optional — upload proof of investment if available</p>
+                  <p className="text-xs text-muted mb-3">Optional - upload proof of investment if available</p>
                   <DropZone
                     icon={ICONS.upload}
                     title="Drag and drop receipts here"

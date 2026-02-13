@@ -7,8 +7,8 @@
  * Mapping format: { portalField: 'FM_FieldName' }
  *
  * ── Field name sources ──────────────────────────────────────
- * ✅ CONFIRMED — Visible on GCLBA "PARC - Form" layout screenshots (30,061 records)
- * 🔍 TBD       — Not visible in screenshots; likely on Sales/Maint./Planning/
+ * ✅ CONFIRMED - Visible on GCLBA "PARC - Form" layout screenshots (30,061 records)
+ * 🔍 TBD       - Not visible in screenshots; likely on Sales/Maint./Planning/
  *                Inspections tabs. Run GET /api/filemaker?action=status&meta=true
  *                with real credentials to discover actual names.
  *
@@ -18,18 +18,18 @@
 /* ── Property fields (PARC - Form layout) ─────────────────── */
 
 export const PROPERTY_FIELD_MAP = {
-  // ✅ Identifiers — visible on main form
+  // ✅ Identifiers - visible on main form
   parcelId:              'Parc ID',               // ✅ Top of form: "4635457003"
-  parcelIdDashed:        'PID w/Dashes',          // ✅ PARC-Form — second field next to Parc ID (e.g., "46-35-457-003")
+  parcelIdDashed:        'PID w/Dashes',          // ✅ PARC-Form - second field next to Parc ID (e.g., "46-35-457-003")
   address:               'Address',               // ✅ "3618 BURGESS ST, FLINT, MI 48504"
 
-  // ✅ Program & sale info — visible on main form + buyer portal section
+  // ✅ Program & sale info - visible on main form + buyer portal section
   programType:           'Sales Disposition',      // ✅ Checkbox group: Featured, R4R, VIP, Demo, etc.
   dateSold:              'Date Sold',              // ✅ Buyer portal section at bottom
   offerType:             'Sold Auction',           // ✅ "LBA - NO Min"
   purchaseType:          'Purchase Cat',           // ✅ "Purchase Cat" column in buyer section
 
-  // ✅ Additional property metadata — visible on main form
+  // ✅ Additional property metadata - visible on main form
   foreclosureYear:       'Foreclosure Year',       // ✅ Year field (e.g. "2015")
   propertyClass:         'Property Class',         // ✅ "Resi / 401 / Residential With Structure"
   soldStatus:            'Sold Status',            // ✅ Radio: L, LC, P, Y
@@ -38,71 +38,71 @@ export const PROPERTY_FIELD_MAP = {
   minimumBid:            'Minimum Bid',            // ✅ Dollar amount: "$0.00"
   category:              'Category',               // ✅ "Demo - Removed Sold"
 
-  // ✅ Survey data — visible in Survey Data section
+  // ✅ Survey data - visible in Survey Data section
   sev:                   'SEV',                    // ✅ State Equalized Value (assessment)
   interiorCondition:     'interior condition',     // ✅ Survey field
   fireDamage:            'fire_damage',            // ✅ Survey field
   occupancyStatus:       'occupancy_status',       // ✅ Survey field
   overallCondition:      'LB_Overall condition',   // ✅ Survey field
 
-  // ✅ PARC-Form — Physical property details
-  bedrooms:       'Bedrooms',              // ✅ PARC-Form — property info section
-  baths:          'Baths',                 // ✅ PARC-Form — property info section
-  stories:        'Stories',               // ✅ PARC-Form — property info section
-  sqFt:           'Sq Ft',                 // ✅ PARC-Form — property info section
-  yearBuilt:      'Year Built',            // ✅ PARC-Form — property info section
-  lotSize:        'Lot Size (Acreage)',     // ✅ PARC-Form — property info section
-  garageSize:     'Garage',                // ✅ PARC-Form — property info section
-  basementSize:   'Basement',              // ✅ PARC-Form — property info section
-  school:         'School',                // ✅ PARC-Form — property info section
+  // ✅ PARC-Form - Physical property details
+  bedrooms:       'Bedrooms',              // ✅ PARC-Form - property info section
+  baths:          'Baths',                 // ✅ PARC-Form - property info section
+  stories:        'Stories',               // ✅ PARC-Form - property info section
+  sqFt:           'Sq Ft',                 // ✅ PARC-Form - property info section
+  yearBuilt:      'Year Built',            // ✅ PARC-Form - property info section
+  lotSize:        'Lot Size (Acreage)',     // ✅ PARC-Form - property info section
+  garageSize:     'Garage',                // ✅ PARC-Form - property info section
+  basementSize:   'Basement',              // ✅ PARC-Form - property info section
+  school:         'School',                // ✅ PARC-Form - property info section
 
   // ✅ FM operational status
-  availability:  'Availability',           // ✅ PARC-Form — next to GCLB Owned, drives FM color coding
+  availability:  'Availability',           // ✅ PARC-Form - next to GCLB Owned, drives FM color coding
 
-  // ✅ PARC-Form — additional metadata
-  taxCapture:          'Tax Capture',                     // ✅ PARC-Form — e.g. "5/50 Parcel"
-  askingPrice:         'Asking Price',                    // ✅ PARC-Form — dollar amount
-  rehabStatusFunding:  'Rehab Status / Funding',          // ✅ PARC-Form — text field
-  delinquentTaxes:     'Del. taxes on property?',         // ✅ PARC-Form — Yes/No field
+  // ✅ PARC-Form - additional metadata
+  taxCapture:          'Tax Capture',                     // ✅ PARC-Form - e.g. "5/50 Parcel"
+  askingPrice:         'Asking Price',                    // ✅ PARC-Form - dollar amount
+  rehabStatusFunding:  'Rehab Status / Funding',          // ✅ PARC-Form - text field
+  delinquentTaxes:     'Del. taxes on property?',         // ✅ PARC-Form - Yes/No field
 
-  // ✅ CP layout — Featured Homes tab (sale/closing fields)
-  buyerOfferDate:          'Buyer Offer Date',                // ✅ CP layout — date picker
-  downPaymentAmount:       'Down payment amount',             // ✅ CP layout — Featured tab
-  monthlyPaymentAmount:    'Monthly Payment Amount',          // ✅ CP layout — Featured tab
-  termOfContractMonths:    'Term of Contract in Months',      // ✅ CP layout — Featured tab
-  applicantHomeConditions: 'Applicant Home_Property Conditions', // ✅ CP layout — Featured tab
+  // ✅ CP layout - Featured Homes tab (sale/closing fields)
+  buyerOfferDate:          'Buyer Offer Date',                // ✅ CP layout - date picker
+  downPaymentAmount:       'Down payment amount',             // ✅ CP layout - Featured tab
+  monthlyPaymentAmount:    'Monthly Payment Amount',          // ✅ CP layout - Featured tab
+  termOfContractMonths:    'Term of Contract in Months',      // ✅ CP layout - Featured tab
+  applicantHomeConditions: 'Applicant Home_Property Conditions', // ✅ CP layout - Featured tab
 
-  // 🔍 Compliance dates — not visible in CP layout screenshots (right side truncated)
+  // 🔍 Compliance dates - not visible in CP layout screenshots (right side truncated)
   occupancyDeadline:     'TBD_Occupancy_Deadline',       // 🔍 Check Sales tab
   insuranceDueDate:      'TBD_Insurance_Due_Date',       // 🔍 Check Sales tab
   insuranceReceived:     'TBD_Insurance_Received',       // 🔍 Check Sales tab
   occupancyEstablished:  'TBD_Occupancy_Established',    // 🔍 Check Sales tab
   minimumHoldExpiry:     'TBD_Minimum_Hold_Expiry',      // 🔍 Check Sales tab
 
-  // ✅ Rehab/compliance fields — Confirmed from CP layout SOP screenshots 2026-02-12
-  dateProofOfInvestProvided: 'Date Proof of Invest provided',   // ✅ CP layout — Featured/R4R/Demo tabs (yellow highlight)
-  compliance1stAttempt:      'Compliance 1st Attempt',           // ✅ CP layout — Featured/R4R/Demo tabs (yellow highlight)
-  compliance2ndAttempt:      'Compliance 2nd Attempt',           // ✅ CP layout — Featured/R4R/Demo tabs (yellow highlight)
+  // ✅ Rehab/compliance fields - Confirmed from CP layout SOP screenshots 2026-02-12
+  dateProofOfInvestProvided: 'Date Proof of Invest provided',   // ✅ CP layout - Featured/R4R/Demo tabs (yellow highlight)
+  compliance1stAttempt:      'Compliance 1st Attempt',           // ✅ CP layout - Featured/R4R/Demo tabs (yellow highlight)
+  compliance2ndAttempt:      'Compliance 2nd Attempt',           // ✅ CP layout - Featured/R4R/Demo tabs (yellow highlight)
   lastContactDate:           'TBD_Last_Contact_Date',            // 🔍 Check Sales tab
   scopeOfWorkApproved:       'TBD_Scope_Work_Approved',          // 🔍 Check Planning tab
   buildingPermitObtained:    'TBD_Building_Permit_Obtained',     // 🔍 Check Planning tab
   rehabDeadline:             'TBD_Rehab_Deadline',               // 🔍 Check Planning tab
   percentComplete:           'TBD_Percent_Complete',             // 🔍 Check Maint. tab
 
-  // ✅ Demo fields — Confirmed from CP layout SOP screenshots 2026-02-12
-  demoFinalCertDate:     'Demo Final Cert Date',             // ✅ CP layout — R4R/Demo tab (yellow highlight)
+  // ✅ Demo fields - Confirmed from CP layout SOP screenshots 2026-02-12
+  demoFinalCertDate:     'Demo Final Cert Date',             // ✅ CP layout - R4R/Demo tab (yellow highlight)
 
-  // ✅ Bond fields — Confirmed from CP layout SOP screenshots 2026-02-12
-  bondRequired:          'Bond Required',                    // ✅ CP layout — R4R/Demo tab (Yes/No radio)
-  bondAmount:            'If yes, Bond amount',              // ✅ CP layout — R4R/Demo tab
+  // ✅ Bond fields - Confirmed from CP layout SOP screenshots 2026-02-12
+  bondRequired:          'Bond Required',                    // ✅ CP layout - R4R/Demo tab (Yes/No radio)
+  bondAmount:            'If yes, Bond amount',              // ✅ CP layout - R4R/Demo tab
 
-  // ✅ VIP — Confirmed from VIP Compliance layout screenshot 2026-02-12
+  // ✅ VIP - Confirmed from VIP Compliance layout screenshot 2026-02-12
   complianceType:        'Compliance',                       // ✅ VIP Compliance layout (New Build / Renovation radio)
 
-  // ✅ LISC fields — Confirmed from CP layout SOP screenshots 2026-02-12
-  referredToLISC:        'Referred to LISC',                 // ✅ CP layout — Featured/R4R/Demo tabs
-  liscRecommendReceived: 'LISC recommend Received',          // ✅ CP layout — Featured/R4R/Demo tabs
-  liscRecommendSale:     'LISC recommend Sale',              // ✅ CP layout — Featured/R4R/Demo tabs (Yes/No radio)
+  // ✅ LISC fields - Confirmed from CP layout SOP screenshots 2026-02-12
+  referredToLISC:        'Referred to LISC',                 // ✅ CP layout - Featured/R4R/Demo tabs
+  liscRecommendReceived: 'LISC recommend Received',          // ✅ CP layout - Featured/R4R/Demo tabs
+  liscRecommendSale:     'LISC recommend Sale',              // ✅ CP layout - Featured/R4R/Demo tabs (Yes/No radio)
 
   // 🔍 Enforcement
   enforcementLevel:      'TBD_Enforcement_Level',         // 🔍 Check Inspections or Reports tab
@@ -111,7 +111,7 @@ export const PROPERTY_FIELD_MAP = {
 
 /* ── Buyer fields ───────────────────────────────────────────
  * In GCLBA's FM, buyers are a PORTAL (related records) on the
- * property layout — not a separate layout. The buyer section at
+ * property layout - not a separate layout. The buyer section at
  * the bottom of "PARC - Form" shows: Name, Organization,
  * Co-Applicant, Interest Type, Status, Top Note, Closing, etc.
  *
@@ -129,9 +129,9 @@ export const BUYER_FIELD_MAP = {
   lcForfeit:     'LC Forfeit',          // ✅ Checkbox in buyer portal
   treasRevert:   'Treas Revert',        // ✅ Checkbox in buyer portal
   buyerStatus:   'Status',              // ✅ Buyer portal "Status" column (e.g., "Closed")
-  topNote:       'Top Note',            // ✅ Buyer portal section — primary operational field
-  email:         'TBD_Buyer_Email',     // 🔍 Not visible — ask Lucille
-  phone:         'TBD_Buyer_Phone',     // 🔍 Not visible — ask Lucille
+  topNote:       'Top Note',            // ✅ Buyer portal section - primary operational field
+  email:         'TBD_Buyer_Email',     // 🔍 Not visible - ask Lucille
+  phone:         'TBD_Buyer_Phone',     // 🔍 Not visible - ask Lucille
 };
 
 /* ── Communication fields ───────────────────────────────────
@@ -188,7 +188,7 @@ export const SALES_DISPOSITION_MAP = {
  * FM stores checkbox values as return-delimited strings.
  * We pick the first recognized program type.
  *
- * @param {string|null|undefined} fmValue — Raw FM checkbox value (newline-delimited)
+ * @param {string|null|undefined} fmValue - Raw FM checkbox value (newline-delimited)
  * @returns {string|null} A SALES_DISPOSITION_MAP value (e.g. 'FeaturedHomes'),
  *   the raw first checkbox value if unrecognized, or null if input is empty.
  */
@@ -260,7 +260,7 @@ function toFMDate(value) {
 
 function fromFMDate(value) {
   if (!value) return null;
-  // FM returns dates as strings — could be MM/DD/YYYY or ISO
+  // FM returns dates as strings - could be MM/DD/YYYY or ISO
   if (typeof value === 'string' && value.includes('/')) {
     const [m, d, y] = value.split('/');
     return new Date(`${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}T00:00:00Z`);
@@ -338,7 +338,7 @@ const BOOLEAN_FIELDS = new Set([
   'buildingPermitObtained', 'bondRequired', 'gclbOwned',
   'lcForfeit', 'treasRevert',
   'waive550', 'delinquentTaxes', 'deedRecorded',
-]); // Note: occupancyEstablished removed — now a 3-state String ("Yes"/"No"/"Unsure")
+]); // Note: occupancyEstablished removed - now a 3-state String ("Yes"/"No"/"Unsure")
 
 /** Numeric fields */
 const NUMERIC_FIELDS = new Set([
@@ -362,7 +362,7 @@ export function toFM(portalObj, fieldMap = PROPERTY_FIELD_MAP) {
   const fm = {};
 
   for (const [portalKey, fmKey] of Object.entries(fieldMap)) {
-    // Skip TBD fields — they can't be written to FM yet
+    // Skip TBD fields - they can't be written to FM yet
     if (fmKey.startsWith('TBD_')) continue;
 
     const value = portalObj[portalKey];

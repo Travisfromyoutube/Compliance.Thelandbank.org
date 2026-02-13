@@ -9,7 +9,7 @@ export default function BuyerSection({ number, title, subtitle, id, stagger = 0,
     >
       {/* Section header */}
       <div className="flex items-start gap-4 mb-6">
-        {/* Number badge — visible on all screens */}
+        {/* Number badge - visible on all screens */}
         <span className="flex-shrink-0 w-8 h-8 rounded-full bg-accent text-white font-mono text-sm flex items-center justify-center font-medium mt-0.5">
           {number}
         </span>

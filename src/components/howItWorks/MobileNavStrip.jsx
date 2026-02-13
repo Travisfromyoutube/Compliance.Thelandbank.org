@@ -2,7 +2,7 @@ import { AppIcon } from '../ui';
 import ICONS from '../../icons/iconMap';
 
 /**
- * MobileNavStrip — Horizontal pill navigator for mobile screens.
+ * MobileNavStrip - Horizontal pill navigator for mobile screens.
  *
  * Replaces the React Flow diagram below lg (1024px) breakpoint.
  * Sticky at top, scrollable overflow, shows 6 chapter pills.

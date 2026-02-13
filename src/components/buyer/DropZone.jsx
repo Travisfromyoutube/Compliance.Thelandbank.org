@@ -55,7 +55,7 @@ export default function DropZone({ icon: Icon = Upload, title, subtitle, accept,
     }
 
     if (failedCount > 0) {
-      setUploadError(`${failedCount} file${failedCount > 1 ? 's' : ''} saved locally — upload failed`);
+      setUploadError(`${failedCount} file${failedCount > 1 ? 's' : ''} saved locally - upload failed`);
     }
     setUploading(false);
   };

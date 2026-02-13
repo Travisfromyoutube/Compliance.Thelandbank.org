@@ -5,13 +5,13 @@ import ICONS from '../../icons/iconMap';
 import SystemNode from './SystemNode';
 
 /**
- * SystemMap — React Flow architecture diagram (persistent left panel).
+ * SystemMap - React Flow architecture diagram (persistent left panel).
  *
  * 7 nodes representing system components, 8 edges showing data flow.
  * Accepts activeChapter to highlight relevant nodes/edges.
  * Accepts onNodeClick to scroll the right panel to the matching chapter.
  *
- * All interactivity (drag, zoom, pan) is disabled — this is a read-only
+ * All interactivity (drag, zoom, pan) is disabled - this is a read-only
  * spatial anchor, not an editor. preventScrolling=false lets native
  * scroll pass through so the right panel can scroll normally.
  */

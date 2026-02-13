@@ -1,5 +1,5 @@
 /**
- * iconMap — centralised semantic icon registry for the GCLBA portal.
+ * iconMap - centralised semantic icon registry for the GCLBA portal.
  *
  * RULES
  * ─────────────────────────

@@ -4,7 +4,7 @@ import { AppIcon } from '../ui';
 import ChapterHeader from './ChapterHeader';
 
 /**
- * DataFlowPipeline — Chapter 4: "How Data Moves"
+ * DataFlowPipeline - Chapter 4: "How Data Moves"
  *
  * Three tabbed flow scenarios (Property Sync, Compliance Emails, Buyer Access Links)
  * with step-through navigation. Horizontal pipeline on desktop, vertical on mobile.
@@ -18,7 +18,7 @@ const FLOWS = [
     steps: [
       { label: 'Log In', detail: 'The portal connects to FileMaker using a session token that lasts 15 minutes.' },
       { label: 'Pull Records', detail: 'Grabs property data from the PARC layout in FileMaker.' },
-      { label: 'Translate Fields', detail: 'FileMaker and the portal use different field names — a mapping file translates 50+ of them.' },
+      { label: 'Translate Fields', detail: 'FileMaker and the portal use different field names - a mapping file translates 50+ of them.' },
       { label: 'Save Locally', detail: 'Records get saved to the portal\'s own database so pages load fast.' },
     ],
   },
@@ -26,7 +26,7 @@ const FLOWS = [
     id: 'email',
     label: 'Compliance Emails',
     steps: [
-      { label: 'Pick Template', detail: 'Each enforcement step — Attempt 1, Warning, Default Notice — has a ready-to-go template.' },
+      { label: 'Pick Template', detail: 'Each enforcement step - Attempt 1, Warning, Default Notice - has a ready-to-go template.' },
       { label: 'Fill In Details', detail: 'The buyer\'s name, address, and deadline get dropped into the template automatically.' },
       { label: 'Send It', detail: 'Email goes out from compliance@thelandbank.org through Resend.' },
     ],
@@ -35,7 +35,7 @@ const FLOWS = [
     id: 'token',
     label: 'Buyer Access Links',
     steps: [
-      { label: 'Create a Token', detail: 'A unique code gets generated — tied to one buyer, one property, with an expiration date.' },
+      { label: 'Create a Token', detail: 'A unique code gets generated - tied to one buyer, one property, with an expiration date.' },
       { label: 'Email the Link', detail: 'The token is embedded in the submission URL and sent to the buyer.' },
       { label: 'Buyer Clicks', detail: 'The portal checks that the token is valid and hasn\'t been used yet.' },
       { label: 'Submit Updates', detail: 'Buyer uploads their photos and documents through the verified form.' },
@@ -109,7 +109,7 @@ export default function DataFlowPipeline() {
         ))}
       </div>
 
-      {/* Pipeline — horizontal on desktop */}
+      {/* Pipeline - horizontal on desktop */}
       <div className="hidden sm:flex items-center justify-center mb-5">
         {flow.steps.map((_, i) => (
           <StepIndicator
@@ -122,7 +122,7 @@ export default function DataFlowPipeline() {
         ))}
       </div>
 
-      {/* Pipeline — vertical on mobile */}
+      {/* Pipeline - vertical on mobile */}
       <div className="sm:hidden flex flex-col items-start gap-1 mb-5 pl-2">
         {flow.steps.map((step, i) => (
           <div key={`${activeFlow}-${i}`} className="flex items-center gap-2">

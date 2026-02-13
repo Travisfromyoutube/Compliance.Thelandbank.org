@@ -11,7 +11,7 @@ export const parcelIdSchema = z.string().regex(/^[\d.\-]+$/, 'Invalid parcel ID 
 /** Access token: URL-safe string */
 export const tokenSchema = z.string().min(5).max(500);
 
-/** Pagination (offset-based — existing pattern) */
+/** Pagination (offset-based - existing pattern) */
 export const paginationSchema = z.object({
   limit: z.coerce.number().int().min(1).max(500).optional(),
   offset: z.coerce.number().int().min(0).optional(),

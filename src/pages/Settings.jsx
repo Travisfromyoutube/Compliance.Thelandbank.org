@@ -146,28 +146,28 @@ export default function Settings() {
           </div>
           <div className="space-y-4">
             <InputField
-              label="Level 1 — Notice & Technical Assistance"
+              label="Level 1 - Notice & Technical Assistance"
               value={enforcement.level1Days}
               onChange={(v) => setEnforcement({ ...enforcement, level1Days: v })}
               suffix="days past deadline"
               helpText="First contact and compliance assistance"
             />
             <InputField
-              label="Level 2 — Formal Warning"
+              label="Level 2 - Formal Warning"
               value={enforcement.level2Days}
               onChange={(v) => setEnforcement({ ...enforcement, level2Days: v })}
               suffix="days past deadline"
               helpText="Written warning with cure period"
             />
             <InputField
-              label="Level 3 — Default Notice"
+              label="Level 3 - Default Notice"
               value={enforcement.level3Days}
               onChange={(v) => setEnforcement({ ...enforcement, level3Days: v })}
               suffix="days past deadline"
               helpText="Formal default notice issued"
             />
             <InputField
-              label="Level 4 — Legal Remedies"
+              label="Level 4 - Legal Remedies"
               value={enforcement.level4Days}
               onChange={(v) => setEnforcement({ ...enforcement, level4Days: v })}
               suffix="days past deadline"

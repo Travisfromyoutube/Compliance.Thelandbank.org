@@ -1,5 +1,5 @@
 /**
- * useApiClient — fetch wrapper that attaches Clerk session tokens.
+ * useApiClient - fetch wrapper that attaches Clerk session tokens.
  *
  * In prototype mode (no Clerk), behaves like regular fetch.
  * When Clerk is active, automatically adds Authorization: Bearer <token>.
@@ -16,7 +16,7 @@ import { useAuth } from '@clerk/clerk-react';
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 /**
- * Prototype hook — returns plain fetch (no auth headers).
+ * Prototype hook - returns plain fetch (no auth headers).
  * Used when Clerk is not configured.
  */
 function useApiClientPrototype() {
@@ -24,7 +24,7 @@ function useApiClientPrototype() {
 }
 
 /**
- * Clerk hook — injects Bearer token from useAuth().
+ * Clerk hook - injects Bearer token from useAuth().
  * Only called when ClerkProvider is active.
  */
 function useApiClientClerk() {
@@ -40,7 +40,7 @@ function useApiClientClerk() {
           headers['Authorization'] = `Bearer ${token}`;
         }
       } catch {
-        /* Token fetch failed — proceed without auth header */
+        /* Token fetch failed - proceed without auth header */
       }
 
       return fetch(url, { ...options, headers });

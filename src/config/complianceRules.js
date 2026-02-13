@@ -1,5 +1,5 @@
 /**
- * COMPLIANCE_RULES — deterministic schedule configuration.
+ * COMPLIANCE_RULES - deterministic schedule configuration.
  *
  * Each program defines:
  *   scheduleDaysFromClose  – ordered array of { day, action, level }

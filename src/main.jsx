@@ -30,9 +30,9 @@ if (SENTRY_DSN) {
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 /**
- * ProtectedRoute — wraps admin pages in Clerk auth.
+ * ProtectedRoute - wraps admin pages in Clerk auth.
  * When VITE_CLERK_PUBLISHABLE_KEY is not set, renders children directly
- * (prototype mode — no auth).
+ * (prototype mode - no auth).
  */
 function ProtectedRoute({ children }) {
   if (!CLERK_KEY) return children
@@ -76,7 +76,7 @@ function PageLoader() {
 }
 
 /**
- * AppShell — wraps the entire app.
+ * AppShell - wraps the entire app.
  * If Clerk key is set, wraps in ClerkProvider.
  * If not, renders directly (prototype mode).
  */

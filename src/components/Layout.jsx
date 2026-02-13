@@ -4,14 +4,14 @@ import { AppIcon } from './ui';
 import ICONS from '../icons/iconMap';
 import { useProperties } from '../context/PropertyContext';
 
-/* ── Clerk user button (lazy — only bundled when key is set) ── */
+/* ── Clerk user button (lazy - only bundled when key is set) ── */
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const ClerkUserButton = CLERK_KEY
   ? lazy(() => import('@clerk/clerk-react').then((m) => ({ default: m.UserButton })))
   : null;
 
 /* ══════════════════════════════════════════════════
-   Navigation Structure — grouped by mental model
+   Navigation Structure - grouped by mental model
    ══════════════════════════════════════════════════ */
 
 const NAV_SECTIONS = [

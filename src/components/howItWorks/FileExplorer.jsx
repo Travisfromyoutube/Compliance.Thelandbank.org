@@ -5,7 +5,7 @@ import { MacOSWindow } from '../bridge';
 import ChapterHeader from './ChapterHeader';
 
 /**
- * FileExplorer — Chapter 2: "What's Inside"
+ * FileExplorer - Chapter 2: "What's Inside"
  *
  * Interactive file tree wrapped in the MacOS 9 window chrome.
  * Features: expand/collapse folders, search filter, color-coded domain icons,

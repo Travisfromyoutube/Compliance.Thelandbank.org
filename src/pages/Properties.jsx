@@ -68,7 +68,7 @@ export default function Properties() {
       key: 'buyerName',
       header: 'Buyer',
       render: (value) => (
-        <div className="text-sm text-text">{value || '—'}</div>
+        <div className="text-sm text-text">{value || '-'}</div>
       )
     },
     {
@@ -83,7 +83,7 @@ export default function Properties() {
       header: 'FM Status',
       render: (value) => value
         ? <StatusPill fmStatus={value}>{value}</StatusPill>
-        : <span className="text-sm text-muted">—</span>
+        : <span className="text-sm text-muted">-</span>
     },
     {
       key: 'enforcementLevel',
@@ -114,7 +114,7 @@ export default function Properties() {
       key: 'dateSold',
       header: 'Date Sold',
       render: (value) => {
-        if (!value) return <div className="text-sm font-mono text-muted">—</div>;
+        if (!value) return <div className="text-sm font-mono text-muted">-</div>;
         const d = new Date(value);
         const daysAgo = Math.round((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
         return (

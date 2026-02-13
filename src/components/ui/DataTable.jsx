@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-/* Normalize column definitions — accept both `key` and `accessor` */
+/* Normalize column definitions - accept both `key` and `accessor` */
 function colKey(col) {
   return col.key || col.accessor;
 }
@@ -26,7 +26,7 @@ export function DataTable({
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Normalize columns once — attach resolved `key` to avoid repeated lookups
+  // Normalize columns once - attach resolved `key` to avoid repeated lookups
   const normalizedCols = useMemo(
     () => columns.map((c) => ({ ...c, _key: colKey(c) })),
     [columns]

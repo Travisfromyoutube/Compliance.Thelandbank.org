@@ -130,7 +130,7 @@ export default function BuyerConfirmation({ submissionData, onDownload, onReset 
             {summaryRows.map((row) => (
               <div key={row.label} className="flex items-baseline justify-between py-3">
                 <span className="text-sm text-muted">{row.label}</span>
-                <span className="text-sm font-medium text-text text-right ml-4">{row.value || '—'}</span>
+                <span className="text-sm font-medium text-text text-right ml-4">{row.value || '-'}</span>
               </div>
             ))}
           </div>

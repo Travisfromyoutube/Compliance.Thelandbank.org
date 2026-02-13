@@ -24,9 +24,9 @@ function getRedis() {
  * Create a rate limiter for a specific endpoint.
  *
  * @param {object} opts
- * @param {string} opts.prefix   — unique prefix for this limiter (e.g. "token_verify")
- * @param {number} opts.limit    — max requests per window
- * @param {string} opts.window   — window duration (e.g. "1 m", "5 m", "1 h")
+ * @param {string} opts.prefix   - unique prefix for this limiter (e.g. "token_verify")
+ * @param {number} opts.limit    - max requests per window
+ * @param {string} opts.window   - window duration (e.g. "1 m", "5 m", "1 h")
  * @returns {Ratelimit|null}
  */
 export function createLimiter({ prefix, limit, window }) {
@@ -44,25 +44,25 @@ export function createLimiter({ prefix, limit, window }) {
  * Pre-configured limiters for each endpoint category.
  */
 export const rateLimiters = {
-  /** Buyer token verification — 10 requests per minute per IP */
+  /** Buyer token verification - 10 requests per minute per IP */
   tokenVerify: createLimiter({ prefix: 'token_verify', limit: 10, window: '1 m' }),
 
-  /** Buyer submission — 5 requests per minute per IP */
+  /** Buyer submission - 5 requests per minute per IP */
   submission: createLimiter({ prefix: 'submission', limit: 5, window: '1 m' }),
 
-  /** File upload — 10 requests per minute per IP */
+  /** File upload - 10 requests per minute per IP */
   upload: createLimiter({ prefix: 'upload', limit: 10, window: '1 m' }),
 
-  /** Token creation (admin) — 20 requests per minute per IP */
+  /** Token creation (admin) - 20 requests per minute per IP */
   tokenCreate: createLimiter({ prefix: 'token_create', limit: 20, window: '1 m' }),
 
-  /** FileMaker sync trigger — 2 requests per 5 minutes per IP */
+  /** FileMaker sync trigger - 2 requests per 5 minutes per IP */
   fmSync: createLimiter({ prefix: 'fm_sync', limit: 2, window: '5 m' }),
 
-  /** Email send — 10 requests per minute per IP */
+  /** Email send - 10 requests per minute per IP */
   emailSend: createLimiter({ prefix: 'email_send', limit: 10, window: '1 m' }),
 
-  /** General API — 60 requests per minute per IP (fallback) */
+  /** General API - 60 requests per minute per IP (fallback) */
   general: createLimiter({ prefix: 'general', limit: 60, window: '1 m' }),
 };
 
@@ -70,7 +70,7 @@ export const rateLimiters = {
  * Apply rate limiting to a request. Returns true if allowed, false if blocked.
  * Sends 429 response automatically if blocked.
  *
- * @param {Ratelimit|null} limiter — one of the rateLimiters above
+ * @param {Ratelimit|null} limiter - one of the rateLimiters above
  * @param {Request} req
  * @param {Response} res
  * @returns {Promise<boolean>} true if request is allowed
@@ -99,7 +99,7 @@ export async function applyRateLimit(limiter, req, res) {
 
     return true;
   } catch (err) {
-    // Fail open if Redis is down — log and allow
+    // Fail open if Redis is down - log and allow
     console.error('Rate limit check failed:', err.message);
     return true;
   }

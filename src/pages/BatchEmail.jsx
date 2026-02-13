@@ -410,7 +410,7 @@ export default function BatchEmail() {
                       </td>
                       <td className="px-3 py-3 text-sm">
                         <span className={item.timing.daysOverdue > 0 ? 'font-mono text-danger font-semibold' : 'font-mono text-muted'}>
-                          {item.timing.daysOverdue > 0 ? `${item.timing.daysOverdue}d` : '—'}
+                          {item.timing.daysOverdue > 0 ? `${item.timing.daysOverdue}d` : '-'}
                         </span>
                       </td>
                       <td className="px-3 py-3 text-sm">

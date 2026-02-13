@@ -4,7 +4,7 @@ import { AppIcon } from '../ui';
 import ChapterHeader from './ChapterHeader';
 
 /**
- * SecurityStack — Chapter 5: "How Data Stays Safe"
+ * SecurityStack - Chapter 5: "How Data Stays Safe"
  *
  * Four peelable layer cards stacked with offset. Click the top card
  * to "peel" it away and reveal the next layer. Progress dots on the
@@ -22,7 +22,7 @@ const LAYERS = [
     color: '#2d7a4a',
     items: [
       'Everything between your browser and the server is encrypted.',
-      'Security certificates renew automatically — nothing to manage.',
+      'Security certificates renew automatically - nothing to manage.',
       'Plain HTTP connections get redirected to HTTPS.',
     ],
   },
@@ -45,7 +45,7 @@ const LAYERS = [
     items: [
       'Buyers get a unique link that\'s tied to their property.',
       'Once used (or after it times out), the link stops working.',
-      'No passwords, no accounts — just click and submit.',
+      'No passwords, no accounts - just click and submit.',
     ],
   },
   {
@@ -56,7 +56,7 @@ const LAYERS = [
     items: [
       'The portal\'s database is encrypted even when nothing\'s running.',
       'FileMaker\'s data is encrypted the same way.',
-      'All database queries are parameterized — no SQL injection.',
+      'All database queries are parameterized - no SQL injection.',
     ],
   },
 ];
