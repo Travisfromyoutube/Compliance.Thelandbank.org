@@ -294,24 +294,13 @@
   }
 }
 
-/* ── Drafting paper - architectural grid for diagram panel ───── */
+/* ── Drafting paper - subtle dot grid for diagram panel ───── */
 .drafting-bg {
   background-color: #f4f6f5;
   background-image:
-    /* Major grid lines (every 40px) */
-    linear-gradient(rgba(45, 122, 74, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(45, 122, 74, 0.07) 1px, transparent 1px),
-    /* Minor grid lines (every 20px) */
-    linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px),
-    /* Dot intersections at major crossings */
-    radial-gradient(circle 1px at 0px 0px, rgba(45, 122, 74, 0.12) 1px, transparent 1px);
-  background-size:
-    40px 40px,
-    40px 40px,
-    20px 20px,
-    20px 20px,
-    40px 40px;
+    radial-gradient(circle 0.8px at 0px 0px, rgba(45, 122, 74, 0.10) 0.8px, transparent 0.8px),
+    radial-gradient(circle 0.5px at 0px 0px, rgba(0, 0, 0, 0.04) 0.5px, transparent 0.5px);
+  background-size: 24px 24px, 12px 12px;
 }
 /* Force React Flow viewport transparent so drafting-bg shows through */
 .drafting-bg .react-flow {

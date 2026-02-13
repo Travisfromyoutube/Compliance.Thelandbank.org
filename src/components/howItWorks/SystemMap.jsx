@@ -68,33 +68,33 @@ const CHAPTER_ANNOTATIONS = {
 };
 
 /* ── Annotation positions (absolute canvas coords) ── */
-/* Kept symmetric around node range (0–300) so fitView centers cleanly */
+/* Symmetric around node range (0–360) so fitView centers cleanly */
 const ANNOTATION_POSITIONS = {
   buyer:      { x: -190, y: 30  },
-  admin:      { x: 490,  y: 30  },
-  api:        { x: 490,  y: 250 },
+  admin:      { x: 550,  y: 30  },
+  api:        { x: 550,  y: 250 },
   neon:       { x: -190, y: 460 },
-  filemaker:  { x: 490,  y: 460 },
+  filemaker:  { x: 550,  y: 460 },
   compliance: { x: -190, y: 680 },
-  resend:     { x: 490,  y: 680 },
+  resend:     { x: 550,  y: 680 },
 };
 
 /* ── System nodes with descriptions ─────────── */
-/* y-range stretched to ~750 to fill the tall portrait panel */
+/* x-range 0–360 for wider spread, y-range 0–620 to fill portrait panel */
 const BASE_NODES = [
   { id: 'buyer',      position: { x: 0,   y: 0   }, data: { label: 'Buyer Portal',      subtitle: 'Submissions',    description: 'Buyers get a secure link, upload documents, and confirm occupancy', icon: ICONS.user } },
-  { id: 'admin',      position: { x: 300, y: 0   }, data: { label: 'Admin Portal',      subtitle: '14 pages',       description: 'Where we pull reports, review compliance status, and send batch mail', icon: ICONS.dashboard } },
+  { id: 'admin',      position: { x: 360, y: 0   }, data: { label: 'Admin Portal',      subtitle: '14 pages',       description: 'Where we pull reports, review compliance status, and send batch mail', icon: ICONS.dashboard } },
   { id: 'api',        position: { x: 150, y: 190 }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between the portals, FileMaker, and email', icon: ICONS.zap } },
   { id: 'neon',       position: { x: 0,   y: 400 }, data: { label: 'Neon Database',     subtitle: '9 tables',       description: 'Local cache so pages load fast between syncs', icon: ICONS.database } },
-  { id: 'filemaker',  position: { x: 300, y: 400 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record. The portal reads from it and writes back to it', icon: ICONS.sync } },
+  { id: 'filemaker',  position: { x: 360, y: 400 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record. The portal reads from it and writes back to it', icon: ICONS.sync } },
   { id: 'compliance', position: { x: 0,   y: 620 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Calculates milestones from the close date and updates levels automatically', icon: ICONS.shieldCheck } },
-  { id: 'resend',     position: { x: 300, y: 620 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Write and send emails from compliance@ without leaving the portal', icon: ICONS.batchEmail } },
+  { id: 'resend',     position: { x: 360, y: 620 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Write and send emails from compliance@ without leaving the portal', icon: ICONS.batchEmail } },
 ];
 
 const BASE_EDGES = [
   { id: 'e-buyer-api',  source: 'buyer',      target: 'api',        label: 'Submit' },
   { id: 'e-admin-api',  source: 'admin',      target: 'api',        label: 'Review' },
-  { id: 'e-api-neon',   source: 'api',        target: 'neon',       sourceHandle: 'right', targetHandle: 'left', label: 'Store' },
+  { id: 'e-api-neon',   source: 'api',        target: 'neon',       sourceHandle: 'right', targetHandle: 'left', label: 'Storage' },
   { id: 'e-fm-api',     source: 'filemaker',  target: 'api',        sourceHandle: 'left',  targetHandle: 'right', label: 'Sync' },
   { id: 'e-api-resend', source: 'api',        target: 'resend',     label: 'Send' },
   { id: 'e-comp-admin', source: 'compliance', target: 'admin',      sourceHandle: 'left',  targetHandle: 'left', label: 'Alert' },
