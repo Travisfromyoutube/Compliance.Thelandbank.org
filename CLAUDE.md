@@ -239,9 +239,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 | FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
 | Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
 | HTML overlay title over React Flow node | Title as RF node inflated fitView bounding box, shifted centering, and wasted vertical space |
-| Stacked vertical SystemNode layout (180px wide) | Portrait panel needs tall narrow cards; horizontal layout wasted height. Description at `text-xs text-text/80` for readability |
 | SOP callout annotations frame portal as evolution | Compliance SOP author will view page; all callout text is respectful improvement framing, never attack. No dashes or word "enforcement" |
-| Charter replaces Bitter as heading font | Self-hosted WOFF2 in `public/fonts/`; Bitter removed from Google Fonts load |
 
 ---
 
