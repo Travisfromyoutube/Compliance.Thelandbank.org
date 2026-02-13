@@ -188,6 +188,7 @@ export function PropertyProvider({ children }) {
         }));
 
       let apiResults = [];
+      let apiCallSucceeded = false;
 
       // Call the email API if we have emails to send
       if (emailPayloads.length > 0) {
@@ -201,6 +202,7 @@ export function PropertyProvider({ children }) {
           if (res.ok) {
             const data = await res.json();
             apiResults = data.results || [];
+            apiCallSucceeded = true;
             console.info(`[BatchEmail] Sent ${data.sent}/${data.total}, failed ${data.failed}`);
           } else {
             console.error('[BatchEmail] API error:', res.status);
@@ -215,7 +217,9 @@ export function PropertyProvider({ children }) {
       // Log each entry locally (whether API succeeded or not)
       return entries.map((entry) => {
         const apiResult = apiResults.find(r => r.propertyId === entry.propertyId);
-        const status = apiResult?.success ? 'sent' : (apiResult ? 'failed' : 'sent');
+        const status = apiCallSucceeded
+          ? (apiResult?.success ? 'sent' : 'failed')
+          : 'failed';
         return actions.logCommunication(entry.propertyId, { ...entry, status });
       });
     },

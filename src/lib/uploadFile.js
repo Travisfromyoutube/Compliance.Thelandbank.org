@@ -5,15 +5,26 @@
  * The server streams it directly to Vercel Blob storage.
  *
  * @param {File} file — the File object from an <input> or drag-and-drop
+ * @param {{ accessToken?: string }} [opts]
  * @returns {Promise<{ url: string, pathname: string }>}
  */
-export async function uploadFile(file) {
+export async function uploadFile(file, opts = {}) {
+  const tokenFromUrl = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('token')
+    : null;
+  const accessToken = opts.accessToken || tokenFromUrl;
+
+  const headers = {
+    'content-type': file.type || 'application/octet-stream',
+    'x-filename': file.name,
+  };
+  if (accessToken) {
+    headers['x-access-token'] = accessToken;
+  }
+
   const res = await fetch('/api/upload', {
     method: 'POST',
-    headers: {
-      'content-type': file.type || 'application/octet-stream',
-      'x-filename': file.name,
-    },
+    headers,
     body: file,
   });
 

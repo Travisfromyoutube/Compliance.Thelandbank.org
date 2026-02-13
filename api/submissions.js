@@ -2,14 +2,17 @@
  * POST /api/submissions — buyer compliance submission.
  *
  * Accepts the form data from BuyerSubmission.jsx:
- *   { propertyId, parcelId, buyerEmail, type, formData, documents }
+ *   { token|tokenId, parcelId?, type, formData, documents }
+ *
+ * Buyer-mode requests must include a valid, unexpired access token.
+ * Admin-mode requests may authenticate with Authorization header + parcelId.
  *
  * Creates a Submission record and optional Document metadata records.
  * Returns confirmation ID for the buyer.
  */
 
 import prisma from '../src/lib/db.js';
-import { isConfigured, withSession, findRecords, createRecord } from '../src/lib/filemakerClient.js';
+import { isConfigured, withSession, createRecord } from '../src/lib/filemakerClient.js';
 import {
   toFM,
   PROPERTY_FIELD_MAP,
@@ -17,11 +20,13 @@ import {
   SUBMISSION_FIELD_MAP,
   joinNameForFM,
   getLayouts,
+  normalizeParcelId,
 } from '../src/config/filemakerFieldMap.js';
 import { rateLimiters, applyRateLimit } from '../src/lib/rateLimit.js';
 import { cors } from './_cors.js';
 import { validateOrReject } from '../src/lib/validate.js';
 import { submissionBody } from '../src/lib/schemas.js';
+import { requireAuth } from '../src/lib/auth.js';
 import { withSentry } from '../src/lib/sentry.js';
 import { log } from '../src/lib/logger.js';
 
@@ -30,6 +35,9 @@ export default withSentry(async function handler(req, res) {
 
   /* ── GET — list submissions (admin) ──────────────────── */
   if (req.method === 'GET') {
+    const session = await requireAuth(req, res);
+    if (!session) return;
+
     try {
       const { propertyId, status } = req.query;
       const where = {};
@@ -47,6 +55,7 @@ export default withSentry(async function handler(req, res) {
         take: 100,
       });
 
+      res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=300');
       return res.status(200).json(submissions);
     } catch (error) {
       log.error('submissions_list_failed', { error: error.message });
@@ -64,16 +73,65 @@ export default withSentry(async function handler(req, res) {
   try {
     const data = validateOrReject(submissionBody, req.body, res);
     if (!data) return;
-    const { parcelId, type, formData, documents } = data;
+    const { parcelId, token, tokenId, type, formData, documents } = data;
 
-    // Look up property by parcelId
-    const property = await prisma.property.findUnique({
-      where: { parcelId },
-      include: { buyer: true },
-    });
+    // If an auth header is present, validate it and allow admin-mode submission.
+    // Buyer-mode submissions must include a valid access token.
+    const hasAuthHeader = req.headers.authorization?.startsWith('Bearer ');
+    let session = null;
+    if (hasAuthHeader) {
+      session = await requireAuth(req, res);
+      if (!session) return;
+    }
 
-    if (!property) {
-      return res.status(404).json({ error: `No property found for parcel ${parcelId}` });
+    let property = null;
+    let validatedToken = null;
+
+    if (token || tokenId) {
+      const where = token ? { token } : { id: tokenId };
+      validatedToken = await prisma.accessToken.findUnique({
+        where,
+        include: {
+          property: { include: { buyer: true } },
+        },
+      });
+
+      if (!validatedToken) {
+        return res.status(403).json({ error: 'Invalid access link' });
+      }
+      if (validatedToken.revokedAt) {
+        return res.status(403).json({ error: 'This access link has been revoked' });
+      }
+      if (new Date() > validatedToken.expiresAt) {
+        return res.status(403).json({ error: 'This access link has expired' });
+      }
+
+      property = validatedToken.property;
+
+      // If parcelId is provided, it must match token-bound property to prevent spoofing.
+      if (parcelId && normalizeParcelId(parcelId) !== normalizeParcelId(property.parcelId)) {
+        log.warn('submission_parcel_mismatch', {
+          tokenId: validatedToken.id,
+          providedParcelId: parcelId,
+          tokenParcelId: property.parcelId,
+        });
+        return res.status(403).json({ error: 'Submission does not match access link property' });
+      }
+    } else if (session) {
+      if (!parcelId) {
+        return res.status(400).json({ error: 'parcelId is required for admin submissions' });
+      }
+
+      property = await prisma.property.findUnique({
+        where: { parcelId },
+        include: { buyer: true },
+      });
+
+      if (!property) {
+        return res.status(404).json({ error: `No property found for parcel ${parcelId}` });
+      }
+    } else {
+      return res.status(401).json({ error: 'Valid access token is required' });
     }
 
     // Create submission + document records in a transaction
@@ -107,11 +165,16 @@ export default withSentry(async function handler(req, res) {
       return sub;
     });
 
-    log.info('submission_created', { confirmationId: submission.confirmationId, parcelId });
+    log.info('submission_created', {
+      confirmationId: submission.confirmationId,
+      parcelId: property.parcelId,
+      tokenId: validatedToken?.id || null,
+      mode: validatedToken ? 'buyer_token' : 'admin',
+    });
 
     // Fire-and-forget: push to FileMaker if configured
     if (isConfigured()) {
-      pushToFileMaker(submission.id, parcelId, property).catch((err) => {
+      pushToFileMaker(submission.id, property.parcelId, property).catch((err) => {
         log.warn('fm_push_failed', { submissionId: submission.id, error: err.message });
       });
     }
@@ -125,7 +188,7 @@ export default withSentry(async function handler(req, res) {
     });
   } catch (error) {
     log.error('submission_create_failed', { error: error.message });
-    return res.status(500).json({ error: 'Internal server error', message: error.message });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 

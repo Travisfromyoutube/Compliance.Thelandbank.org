@@ -39,6 +39,9 @@ import { requireAuth } from '../src/lib/auth.js';
 import { withSentry } from '../src/lib/sentry.js';
 import { log } from '../src/lib/logger.js';
 
+// Present in FM mapping but not persisted in current Prisma model.
+const UNSUPPORTED_PROPERTY_FIELDS = new Set(['foreclosureYear', 'propertyClass']);
+
 export default withSentry(async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, OPTIONS' })) return;
 
@@ -358,6 +361,8 @@ async function handleSync(req, res) {
                 lastName: buyerData.lastName || existingBuyer.lastName,
                 phone: buyerData.phone || existingBuyer.phone,
                 organization: buyerData.organization || existingBuyer.organization,
+                topNote: buyerData.topNote ?? existingBuyer.topNote,
+                buyerStatus: buyerData.buyerStatus ?? existingBuyer.buyerStatus,
               },
             });
           } else {
@@ -368,6 +373,8 @@ async function handleSync(req, res) {
                 email: buyerData.email,
                 phone: buyerData.phone,
                 organization: buyerData.organization,
+                topNote: buyerData.topNote || null,
+                buyerStatus: buyerData.buyerStatus || null,
               },
             });
             buyerId = newBuyer.id;
@@ -386,6 +393,8 @@ async function handleSync(req, res) {
               data: {
                 firstName: buyerData.firstName || existingProp.buyer?.firstName,
                 lastName: buyerData.lastName || existingProp.buyer?.lastName,
+                topNote: buyerData.topNote ?? existingProp.buyer?.topNote,
+                buyerStatus: buyerData.buyerStatus ?? existingProp.buyer?.buyerStatus,
               },
             });
           } else if (buyerData.firstName && buyerData.lastName) {
@@ -395,11 +404,20 @@ async function handleSync(req, res) {
             });
             if (nameMatch) {
               buyerId = nameMatch.id;
+              await prisma.buyer.update({
+                where: { id: buyerId },
+                data: {
+                  topNote: buyerData.topNote ?? nameMatch.topNote,
+                  buyerStatus: buyerData.buyerStatus ?? nameMatch.buyerStatus,
+                },
+              });
             } else {
               const newBuyer = await prisma.buyer.create({
                 data: {
                   firstName: buyerData.firstName,
                   lastName: buyerData.lastName,
+                  topNote: buyerData.topNote || null,
+                  buyerStatus: buyerData.buyerStatus || null,
                 },
               });
               buyerId = newBuyer.id;
@@ -409,6 +427,8 @@ async function handleSync(req, res) {
               data: {
                 firstName: buyerData.firstName || 'Unknown',
                 lastName: buyerData.lastName || 'Buyer',
+                topNote: buyerData.topNote || null,
+                buyerStatus: buyerData.buyerStatus || null,
               },
             });
             buyerId = newBuyer.id;
@@ -455,8 +475,12 @@ async function handleSync(req, res) {
           programId,
         };
 
-        // Strip null/undefined to avoid overwriting existing data with blanks
+        // Strip unsupported and null/undefined keys to avoid Prisma write errors
         for (const key of Object.keys(upsertData)) {
+          if (UNSUPPORTED_PROPERTY_FIELDS.has(key)) {
+            delete upsertData[key];
+            continue;
+          }
           if (upsertData[key] === null || upsertData[key] === undefined) {
             delete upsertData[key];
           }

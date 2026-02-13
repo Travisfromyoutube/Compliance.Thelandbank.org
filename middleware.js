@@ -25,14 +25,29 @@ const PUBLIC_PATHS = [
 export default function middleware(req) {
   const clerkSecret = process.env.CLERK_SECRET_KEY;
   const apiKey = process.env.ADMIN_API_KEY;
-
-  // Prototype mode — no auth configured, everything is open
-  if (!clerkSecret && !apiKey) return;
-
+  const allowPrototype = process.env.ALLOW_PROTOTYPE_AUTH === 'true';
+  const isProduction = process.env.NODE_ENV === 'production'
+    || process.env.VERCEL_ENV === 'production';
   const url = new URL(req.url);
 
+  const isPublicPath = PUBLIC_PATHS.some((p) => url.pathname.startsWith(p));
+  const isTokenVerify = url.pathname === '/api/tokens'
+    && req.method === 'GET'
+    && url.searchParams.get('action') === 'verify';
+
   // Allow public (buyer-facing) endpoints without auth
-  if (PUBLIC_PATHS.some((p) => url.pathname.startsWith(p))) return;
+  if (isPublicPath || isTokenVerify) return;
+
+  // No auth configured: fail closed in production unless explicitly allowed.
+  if (!clerkSecret && !apiKey) {
+    if (isProduction && !allowPrototype) {
+      return new Response(JSON.stringify({ error: 'Authentication is not configured' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    return;
+  }
 
   // Allow CORS preflight
   if (req.method === 'OPTIONS') return;

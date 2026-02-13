@@ -156,7 +156,7 @@ async function handleCreate(req, res) {
     return res.status(404).json({ error: 'Property not found' });
   }
 
-  const token = generateToken(10);
+  const token = generateToken(32);
   const expiresAt = defaultExpiration(expirationDays);
 
   const accessToken = await prisma.accessToken.create({

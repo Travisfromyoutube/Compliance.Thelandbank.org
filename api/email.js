@@ -107,7 +107,7 @@ async function handleSendBatch(req, res) {
     const { propertyId, to, subject, body, templateId, templateName, action: emailAction } = emails[i];
 
     if (!propertyId || !to || !subject || !body) {
-      results.push({ index: i, success: false, error: 'Missing required fields' });
+      results.push({ index: i, propertyId: propertyId || null, success: false, error: 'Missing required fields' });
       failedCount++;
       continue;
     }
@@ -118,7 +118,7 @@ async function handleSendBatch(req, res) {
     });
 
     if (!property) {
-      results.push({ index: i, success: false, error: 'Property not found' });
+      results.push({ index: i, propertyId, success: false, error: 'Property not found' });
       failedCount++;
       continue;
     }
@@ -160,6 +160,7 @@ async function handleSendBatch(req, res) {
 
     results.push({
       index: i,
+      propertyId,
       success: emailResult.success,
       communicationId: communication.id,
       messageId: emailResult.messageId,

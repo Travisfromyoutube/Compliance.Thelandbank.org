@@ -69,6 +69,8 @@ export default withSentry(async function handler(req, res) {
         buyerName: `${property.buyer.firstName} ${property.buyer.lastName}`.trim(),
         buyerEmail: property.buyer.email || '',
         organization: property.buyer.organization || '',
+        topNote: property.buyer.topNote || null,
+        buyerStatus: property.buyer.buyerStatus || null,
         programType: property.programType,
         dateSold: property.dateSold.toISOString().slice(0, 10),
         offerType: property.offerType || '',
@@ -95,6 +97,7 @@ export default withSentry(async function handler(req, res) {
         submissions: property.submissions,
       };
 
+      res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=60');
       return res.status(200).json(result);
     } catch (error) {
       log.error('property_get_failed', { propertyId: id, error: error.message });

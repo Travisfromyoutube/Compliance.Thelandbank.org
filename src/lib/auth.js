@@ -1,8 +1,12 @@
 /**
  * Clerk authentication utility for Vercel serverless functions.
  *
- * Verifies the Clerk session JWT from the Authorization header.
- * When CLERK_SECRET_KEY is not set, auth is disabled (prototype mode).
+ * Verifies authentication from the Authorization header.
+ *
+ * Modes:
+ *   1) Clerk JWT (preferred) when CLERK_SECRET_KEY is set
+ *   2) Static ADMIN_API_KEY fallback when CLERK_SECRET_KEY is not set
+ *   3) Prototype mode only when explicitly allowed outside production
  *
  * Usage in API handlers:
  *   import { requireAuth } from '../src/lib/auth.js';
@@ -22,28 +26,52 @@ import { verifyToken } from '@clerk/backend';
  */
 export async function requireAuth(req, res) {
   const secretKey = process.env.CLERK_SECRET_KEY;
-
-  // If no Clerk secret configured, skip auth (prototype mode)
-  if (!secretKey) return { prototype: true };
-
+  const apiKey = process.env.ADMIN_API_KEY;
+  const allowPrototype = process.env.ALLOW_PROTOTYPE_AUTH === 'true';
+  const isProduction = process.env.NODE_ENV === 'production'
+    || process.env.VERCEL_ENV === 'production';
   const authHeader = req.headers.authorization;
-  const sessionToken = authHeader?.startsWith('Bearer ')
+  const bearerToken = authHeader?.startsWith('Bearer ')
     ? authHeader.slice(7)
     : null;
 
-  if (!sessionToken) {
-    res.status(401).json({ error: 'Authentication required' });
+  // Preferred mode: Clerk JWT validation
+  if (secretKey) {
+    if (!bearerToken) {
+      res.status(401).json({ error: 'Authentication required' });
+      return null;
+    }
+
+    try {
+      const session = await verifyToken(bearerToken, {
+        secretKey,
+      });
+      return session;
+    } catch (err) {
+      console.error('Clerk auth failed:', err.message);
+      res.status(401).json({ error: 'Invalid or expired session' });
+      return null;
+    }
+  }
+
+  // Fallback mode: static ADMIN_API_KEY
+  if (apiKey) {
+    if (!bearerToken) {
+      res.status(401).json({ error: 'Authentication required' });
+      return null;
+    }
+    if (bearerToken !== apiKey) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return null;
+    }
+    return { apiKey: true };
+  }
+
+  // Final fallback: prototype mode only when explicitly allowed
+  if (isProduction && !allowPrototype) {
+    res.status(503).json({ error: 'Authentication is not configured' });
     return null;
   }
 
-  try {
-    const session = await verifyToken(sessionToken, {
-      secretKey,
-    });
-    return session;
-  } catch (err) {
-    console.error('Clerk auth failed:', err.message);
-    res.status(401).json({ error: 'Invalid or expired session' });
-    return null;
-  }
+  return { prototype: true };
 }

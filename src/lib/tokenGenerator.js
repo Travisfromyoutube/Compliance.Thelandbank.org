@@ -9,10 +9,10 @@ import { randomBytes } from 'crypto';
 
 /**
  * Generate a URL-safe random token.
- * @param {number} length — desired character length (default 10)
+ * @param {number} length — desired character length (default 32)
  * @returns {string} URL-safe alphanumeric token (A-Z, a-z, 0-9, -, _)
  */
-export function generateToken(length = 10) {
+export function generateToken(length = 32) {
   const bytes = randomBytes(Math.ceil(length * 0.75));
   return bytes.toString('base64url').slice(0, length);
 }

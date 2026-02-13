@@ -21,7 +21,13 @@ import { log } from '../src/lib/logger.js';
 export default withSentry(async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, OPTIONS' })) return;
   if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+
+  // ── AUDIT PROTECTION: Communications are append-only ──
+  // Per SECURITY.md: "Audit log is append-only — no updates or deletes via API."
+  // Communications are created via /api/email (POST). This endpoint is read-only.
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed — audit records are immutable' });
+  }
 
   const session = await requireAuth(req, res);
   if (!session) return;
@@ -112,6 +118,7 @@ export default withSentry(async function handler(req, res) {
       buyerName: `${c.buyer?.firstName || ''} ${c.buyer?.lastName || ''}`.trim(),
     }));
 
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     return res.status(200).json({
       total,
       limit: parseInt(limit, 10),

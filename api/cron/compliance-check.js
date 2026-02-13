@@ -20,6 +20,13 @@ const STAFF_EMAIL = process.env.STAFF_DIGEST_EMAIL || 'compliance@thelandbank.or
 
 export default withSentry(async function handler(req, res) {
   /* ── Auth ──────────────────────────────────────────── */
+  const isProduction = process.env.NODE_ENV === 'production'
+    || process.env.VERCEL_ENV === 'production';
+
+  if (!CRON_SECRET && isProduction) {
+    return res.status(503).json({ error: 'CRON_SECRET is not configured' });
+  }
+
   if (CRON_SECRET) {
     const auth = req.headers.authorization;
     if (auth !== `Bearer ${CRON_SECRET}`) {
@@ -114,6 +121,6 @@ export default withSentry(async function handler(req, res) {
     });
   } catch (error) {
     log.error('cron_compliance_check_failed', { error: error.message });
-    return res.status(500).json({ error: 'Internal server error', message: error.message });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });

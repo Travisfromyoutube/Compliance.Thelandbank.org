@@ -22,6 +22,13 @@ export default withSentry(async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, OPTIONS' })) return;
   if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
 
+  // ── AUDIT PROTECTION: Notes are append-only ───────────
+  // Per SECURITY.md: "Audit log is append-only — no updates or deletes via API."
+  // Only GET (read) and POST (create) are allowed. PUT/PATCH/DELETE are blocked.
+  if (!['GET', 'POST', 'OPTIONS'].includes(req.method)) {
+    return res.status(405).json({ error: 'Method not allowed — audit records are immutable' });
+  }
+
   const session = await requireAuth(req, res);
   if (!session) return;
 

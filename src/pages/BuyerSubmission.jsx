@@ -90,8 +90,10 @@ export default function BuyerSubmission() {
   const [submissionData, setSubmissionData] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState(null);
   const [shakeField, setShakeField] = useState(null);
   const [showSaved, setShowSaved] = useState(false);
+  const accessToken = searchParams.get('token');
 
   /* ── Restore form from sessionStorage (non-token mode only) */
   useEffect(() => {
@@ -209,6 +211,7 @@ export default function BuyerSubmission() {
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    setSubmitError(null);
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
     }
@@ -245,13 +248,14 @@ export default function BuyerSubmission() {
     setReceipts((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const generateConfirmationId = () => {
-    return Math.random().toString(36).substr(2, 8).toUpperCase();
-  };
-
   const handleSubmit = async () => {
+    if (!accessToken) {
+      setSubmitError('This form requires a secure access link. Please use the link from your compliance email.');
+      return;
+    }
     if (!validateForm()) return;
 
+    setSubmitError(null);
     setSubmitting(true);
 
     const documents = [];
@@ -276,46 +280,41 @@ export default function BuyerSubmission() {
       });
     });
 
-    let confirmationId;
-    let timestamp;
-
     try {
       const res = await fetch('/api/submissions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           parcelId: formData.propertyAddress,
+          token: accessToken,
           type: 'progress',
           formData,
           documents,
-          ...(tokenData ? { tokenId: tokenData.tokenId } : {}),
         }),
       });
 
-      if (res.ok) {
-        const result = await res.json();
-        confirmationId = result.confirmationId;
-        timestamp = new Date(result.timestamp).toLocaleString();
-      } else {
-        confirmationId = generateConfirmationId();
-        timestamp = new Date().toLocaleString();
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload.error || 'Unable to submit your update right now.');
       }
-    } catch {
-      confirmationId = generateConfirmationId();
-      timestamp = new Date().toLocaleString();
+
+      const result = await res.json();
+
+      setSubmissionData({
+        confirmationId: result.confirmationId,
+        timestamp: new Date(result.timestamp).toLocaleString(),
+        formData,
+        photoCount: Object.values(photoSlots).filter((p) => p !== null).length,
+        docCount: financialDocs.length,
+        receiptCount: receipts.length,
+      });
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err.message || 'Unable to submit your update right now.');
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmissionData({
-      confirmationId,
-      timestamp,
-      formData,
-      photoCount: Object.values(photoSlots).filter((p) => p !== null).length,
-      docCount: financialDocs.length,
-      receiptCount: receipts.length,
-    });
-
-    setSubmitting(false);
-    setSubmitted(true);
   };
 
   const handleDownloadJSON = () => {
@@ -355,6 +354,7 @@ export default function BuyerSubmission() {
     setSubmitted(false);
     setSubmissionData(null);
     setErrors({});
+    setSubmitError(null);
   };
 
   /* ── Success screen ────────────────────────────────── */
@@ -436,6 +436,13 @@ export default function BuyerSubmission() {
 
           {/* Form content */}
           <div className="flex-grow max-w-3xl space-y-14">
+            {!tokenMode && (
+              <div className="bg-warning-light border border-warning/30 rounded-lg px-4 py-3">
+                <p className="text-sm text-warning font-medium">
+                  Secure access link required. Please open this form from your compliance email link.
+                </p>
+              </div>
+            )}
 
             {/* ═══ Compliance Overview (pre-form) ═══ */}
             <ComplianceOverview programType={formData.programType} />
@@ -737,7 +744,7 @@ export default function BuyerSubmission() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={submitting}
+                disabled={submitting || !accessToken}
                 className={[
                   'inline-flex items-center justify-center gap-2',
                   'font-heading text-base font-medium text-white',
@@ -762,6 +769,9 @@ export default function BuyerSubmission() {
               <p className="text-xs text-muted mt-3">
                 You will receive a confirmation email
               </p>
+              {submitError && (
+                <p className="text-xs text-danger mt-2 text-center max-w-md">{submitError}</p>
+              )}
             </section>
 
           </div>

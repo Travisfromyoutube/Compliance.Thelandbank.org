@@ -266,7 +266,7 @@ model EmailTemplate {
 // ── AccessToken ─────────────────────────────────────────
 model AccessToken {
   id         String    @id @default(cuid())
-  token      String    @unique          // short URL-safe string (10 chars)
+  token      String    @unique          // URL-safe random token (32 chars)
   propertyId String
   property   Property  @relation(fields: [propertyId], references: [id])
   buyerId    String

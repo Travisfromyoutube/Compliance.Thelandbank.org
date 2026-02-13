@@ -36,7 +36,9 @@ export const revokeTokenQuery = z.object({
 // ── Submissions ────────────────────────────────────────────
 
 export const submissionBody = z.object({
-  parcelId: z.string().min(1),
+  parcelId: parcelIdSchema.optional(),
+  token: tokenSchema.optional(),
+  tokenId: cuidish.optional(),
   type: z.enum(['progress', 'final', 'monthly']).optional().default('progress'),
   formData: z.record(z.unknown()).optional().default({}),
   documents: z.array(z.object({
@@ -47,7 +49,10 @@ export const submissionBody = z.object({
     slot: z.string().optional(),
     blobUrl: z.string().url().optional(),
   })).optional().default([]),
-});
+}).refine(
+  (data) => Boolean(data.parcelId || data.token || data.tokenId),
+  { message: 'parcelId or token is required' },
+);
 
 // ── Email ──────────────────────────────────────────────────
 

@@ -27,6 +27,9 @@ export default withSentry(async function handler(req, res) {
 
   const type = req.query.type || 'filemaker';
 
+  // Exports must always reflect current data — never serve stale
+  res.setHeader('Cache-Control', 'no-store');
+
   try {
     if (type === 'communications') return await handleCommunicationsExport(req, res);
     return await handleFilemakerExport(req, res);

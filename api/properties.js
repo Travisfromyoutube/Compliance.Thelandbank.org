@@ -1,7 +1,16 @@
 /**
- * GET /api/properties — list all properties with buyer info.
+ * GET /api/properties — list properties with buyer info.
  *
- * Query params:
+ * Supports cursor-based pagination for scalability:
+ *   ?limit=50                  — page size (default: all, max: 200)
+ *   ?cursor=<id>               — fetch records after this property ID
+ *
+ * When limit is provided, returns paginated response:
+ *   { data: [...], nextCursor, hasMore, total }
+ *
+ * When limit is omitted, returns flat array (backwards compatible).
+ *
+ * Filter params:
  *   ?program=Featured Homes   — filter by programType
  *   ?status=active             — filter by status
  *   ?level=2                   — filter by enforcementLevel
@@ -23,14 +32,18 @@ export default withSentry(async function handler(req, res) {
   if (!session) return;
 
   try {
-    const { program, status, level } = req.query;
+    const { program, status, level, cursor, limit: limitParam } = req.query;
 
     const where = {};
     if (program) where.programType = program;
     if (status) where.status = status;
     if (level !== undefined) where.enforcementLevel = parseInt(level, 10);
 
-    const properties = await prisma.property.findMany({
+    // Pagination: opt-in via ?limit=N. Without it, returns all (backwards compatible).
+    const isPaginated = limitParam !== undefined;
+    const pageSize = isPaginated ? Math.min(Math.max(parseInt(limitParam, 10) || 50, 1), 200) : undefined;
+
+    const findArgs = {
       where,
       include: {
         buyer: true,
@@ -54,7 +67,18 @@ export default withSentry(async function handler(req, res) {
         },
       },
       orderBy: { dateSold: 'desc' },
-    });
+    };
+
+    // Cursor pagination: fetch pageSize + 1 to detect hasMore
+    if (isPaginated) {
+      findArgs.take = pageSize + 1;
+      if (cursor) {
+        findArgs.cursor = { id: cursor };
+        findArgs.skip = 1; // Skip the cursor record itself
+      }
+    }
+
+    const properties = await prisma.property.findMany(findArgs);
 
     // Flatten to match the shape the frontend expects
     // Edge cache: 30s fresh, serve stale up to 5 min while revalidating
@@ -67,6 +91,8 @@ export default withSentry(async function handler(req, res) {
       buyerName: `${p.buyer.firstName} ${p.buyer.lastName}`.trim(),
       buyerEmail: p.buyer.email || '',
       organization: p.buyer.organization || '',
+      topNote: p.buyer.topNote || null,
+      buyerStatus: p.buyer.buyerStatus || null,
       programType: p.programType,
       dateSold: p.dateSold.toISOString().slice(0, 10),
       offerType: p.offerType || '',
@@ -129,7 +155,24 @@ export default withSentry(async function handler(req, res) {
       submissionCount: p._count.submissions,
     }));
 
-    return res.status(200).json(result);
+    // Backwards compatible: flat array when no limit, paginated envelope when limit is set
+    if (!isPaginated) {
+      return res.status(200).json(result);
+    }
+
+    const hasMore = result.length > pageSize;
+    if (hasMore) result.pop(); // Remove the extra probe record
+    const nextCursor = hasMore ? result[result.length - 1]?.id : null;
+
+    // Count total only on first page (cursor not set) to avoid extra query on every page
+    const total = !cursor ? await prisma.property.count({ where }) : undefined;
+
+    return res.status(200).json({
+      data: result,
+      nextCursor,
+      hasMore,
+      ...(total !== undefined && { total }),
+    });
   } catch (error) {
     log.error('properties_list_failed', { error: error.message });
     return res.status(500).json({ error: 'Internal server error', message: error.message });
