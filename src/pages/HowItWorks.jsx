@@ -107,7 +107,7 @@ export default function HowItWorks() {
       <div className="flex gap-6">
         {/* Left: System Map (hidden on mobile) */}
         <div className="hidden lg:block w-[40%] flex-shrink-0">
-          <div className="sticky top-0 h-[calc(100vh-100px)] rounded-lg border border-border bg-bg overflow-hidden">
+          <div className="sticky top-0 h-[calc(100vh-100px)] rounded-lg border border-border drafting-bg overflow-hidden">
             <SystemMap activeChapter={activeChapter} onNodeClick={handleNodeClick} />
           </div>
         </div>

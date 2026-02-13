@@ -294,6 +294,16 @@
   }
 }
 
+/* ── Drafting paper — dot grid for diagram panel ───── */
+.drafting-bg {
+  background-color: #f4f6f5;
+  background-image:
+    radial-gradient(circle 0.7px at 10px 10px, rgba(45, 122, 74, 0.08) 0.7px, transparent 0.7px),
+    radial-gradient(circle 0.5px at 10px 10px, rgba(0, 0, 0, 0.04) 0.5px, transparent 0.5px);
+  background-size: 20px 20px, 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
 /* ══════════════════════════════════════════════════════
    How It Works — Interactive Chapter Animations
    ══════════════════════════════════════════════════════ */
