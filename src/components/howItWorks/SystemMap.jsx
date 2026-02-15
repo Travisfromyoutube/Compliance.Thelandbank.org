@@ -4,20 +4,31 @@ import '@xyflow/react/dist/style.css';
 import ICONS from '../../icons/iconMap';
 import SystemNode from './SystemNode';
 import AnnotationNode from './AnnotationNode';
+import LegendNode from './LegendNode';
 
 /**
- * SystemMap - React Flow architecture diagram (full-width hero card).
+ * SystemMap - Dark blueprint architecture diagram (full-width hero card).
  *
- * Landscape layout: 7 system nodes arranged in 3 tiers across a wide card.
+ * Landscape layout: 7 system nodes arranged in 3 tiers across a wide card
+ * on a dark civic-green background. Nodes have color-coded left borders
+ * by category (portal/service/integration).
+ *
  * Active chapter highlights relevant nodes and animates their connecting edges
- * with directional dash-flow animation.
+ * with directional dash-flow animation and colored glow.
  *
  * Annotations show SOP-improvement callouts per chapter, positioned near
  * their target nodes. All annotations are always in the DOM with opacity
  * transitions to prevent fitView recalculation.
  */
 
-const nodeTypes = { system: SystemNode, annotation: AnnotationNode };
+const nodeTypes = { system: SystemNode, annotation: AnnotationNode, legend: LegendNode };
+
+/* ── Category color constants ────────────── */
+const CATEGORY_COLORS = {
+  portal:      '#2d7a4a',  // civic green
+  service:     '#2b5f8a',  // civic blue
+  integration: '#b07d2e',  // warm ochre
+};
 
 /* ── Chapter-to-node mapping ───────────────── */
 const CHAPTER_NODE_MAP = {
@@ -68,29 +79,36 @@ const CHAPTER_ANNOTATIONS = {
 };
 
 /* ── Landscape node positions ─────────────────
-   Anchor layout: portals are the visual bookends at far left and far right,
-   vertically centered. Services flow in the middle across 2 rows.
+   Same anchored topology: Buyer Portal left, Admin Portal right,
+   services in the center. Now with category colors.
 
    ┌─────────┐                                         ┌─────────┐
    │  Buyer  │───→  API Hub  ←───  FileMaker           │  Admin  │
-   │ (anchor)│          │              │                │(anchor) │
+   │ (portal)│          │              │                │(portal) │
    └─────────┘    Neon   Compliance   Resend            └─────────┘
-
-   Anchor nodes: 260px wide (larger, accent-tinted)
-   Service nodes: 220px wide (standard)
-   Portals at x:0 and x:840 — true left/right anchors */
+*/
 const BASE_NODES = [
-  // Anchors: Portals (vertically centered at far left and far right)
-  { id: 'buyer', position: { x: 0,   y: 110 }, data: { label: 'Buyer Portal', subtitle: 'Submissions', description: 'Secure link for documents and occupancy confirmation', icon: ICONS.home, anchor: true } },
-  { id: 'admin', position: { x: 840, y: 110 }, data: { label: 'Admin Portal', subtitle: '14 pages',    description: 'Reports, compliance status, and batch mail',        icon: ICONS.dashboard, anchor: true } },
-  // Row 1: API Hub (centered between anchors)
-  { id: 'api',        position: { x: 440, y: 0   }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between portals, FileMaker, and email', icon: ICONS.zap } },
-  // Row 2: Services (spread across center)
-  { id: 'neon',       position: { x: 290, y: 200 }, data: { label: 'Neon Database',     subtitle: '9 tables',       description: 'Fast local cache between syncs', icon: ICONS.database } },
-  { id: 'compliance', position: { x: 290, y: 330 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Auto-calculates milestones and levels', icon: ICONS.shieldCheck } },
-  { id: 'filemaker',  position: { x: 570, y: 200 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record system', icon: ICONS.sync } },
-  { id: 'resend',     position: { x: 570, y: 330 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Compliance emails without Outlook', icon: ICONS.batchEmail } },
+  // Anchors: Portals
+  { id: 'buyer', position: { x: 0,   y: 110 }, data: { label: 'Buyer Portal', subtitle: 'Submissions', description: 'Secure link for documents and occupancy confirmation', icon: ICONS.home, anchor: true, category: 'portal' } },
+  { id: 'admin', position: { x: 840, y: 110 }, data: { label: 'Admin Portal', subtitle: '14 pages',    description: 'Reports, compliance status, and batch mail',        icon: ICONS.dashboard, anchor: true, category: 'portal' } },
+  // Row 1: API Hub
+  { id: 'api',        position: { x: 440, y: 0   }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between portals, FileMaker, and email', icon: ICONS.zap, category: 'service' } },
+  // Row 2: Services + integrations
+  { id: 'neon',       position: { x: 290, y: 200 }, data: { label: 'Neon Database',     subtitle: '10 tables',      description: 'Fast local cache between syncs', icon: ICONS.database, category: 'integration' } },
+  { id: 'compliance', position: { x: 290, y: 330 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Auto-calculates milestones and levels', icon: ICONS.shieldCheck, category: 'service' } },
+  { id: 'filemaker',  position: { x: 570, y: 200 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record system', icon: ICONS.sync, category: 'integration' } },
+  { id: 'resend',     position: { x: 570, y: 330 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Compliance emails without Outlook', icon: ICONS.batchEmail, category: 'integration' } },
 ];
+
+/* ── Legend node position (below diagram center) ── */
+const LEGEND_NODE = {
+  id: 'legend',
+  type: 'legend',
+  position: { x: 340, y: 430 },
+  data: {},
+  selectable: false,
+  draggable: false,
+};
 
 /* ── Annotation positions (near their target node) ── */
 const ANNOTATION_POSITIONS = {
@@ -113,6 +131,18 @@ const BASE_EDGES = [
   { id: 'e-comp-neon',  source: 'compliance', target: 'neon',       label: 'Check' },
   { id: 'e-api-buyer',  source: 'api',        target: 'buyer',      sourceHandle: 'left',  targetHandle: 'right', label: 'Token' },
 ];
+
+/* ── Map edge to a category color based on its source node ── */
+function getEdgeColor(edgeId) {
+  const sourceMap = {};
+  BASE_EDGES.forEach((e) => { sourceMap[e.id] = e.source; });
+  const nodeMap = {};
+  BASE_NODES.forEach((n) => { nodeMap[n.id] = n.data.category; });
+
+  const sourceId = sourceMap[edgeId];
+  const category = nodeMap[sourceId];
+  return CATEGORY_COLORS[category] || CATEGORY_COLORS.portal;
+}
 
 export default function SystemMap({ activeChapter, onNodeClick }) {
   const activeNodeIds = CHAPTER_NODE_MAP[activeChapter] || [];
@@ -146,36 +176,37 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         })
     );
 
-    return [...systemNodes, ...annotationNodes];
+    return [...systemNodes, ...annotationNodes, LEGEND_NODE];
   }, [activeChapter, activeNodeIds, onNodeClick]);
 
   const edges = useMemo(() =>
     BASE_EDGES.map((e) => {
       const isActive = activeEdgeIds.includes(e.id);
+      const edgeColor = getEdgeColor(e.id);
       return {
         ...e,
         type: 'default',
         animated: isActive,
         className: isActive ? 'edge-flow-active' : '',
         style: {
-          stroke: isActive ? '#2d7a4a' : '#d4d1cc',
+          stroke: isActive ? edgeColor : 'rgba(255, 255, 255, 0.12)',
           strokeWidth: isActive ? 2.5 : 1.5,
           strokeDasharray: isActive ? '8 4' : '6 3',
           transition: 'stroke 0.4s ease, stroke-width 0.3s ease',
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: isActive ? '#2d7a4a' : '#d4d1cc',
+          color: isActive ? edgeColor : 'rgba(255, 255, 255, 0.12)',
           width: isActive ? 20 : 16,
           height: isActive ? 20 : 16,
         },
         labelStyle: {
           fontSize: 11,
-          fill: isActive ? '#2d7a4a' : '#a8a8a8',
+          fill: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.35)',
           fontWeight: isActive ? 700 : 500,
           transition: 'fill 0.3s ease',
         },
-        labelBgStyle: { fill: '#f4f6f5', fillOpacity: 0.9 },
+        labelBgStyle: { fill: 'transparent', fillOpacity: 0 },
       };
     }),
     [activeChapter, activeEdgeIds]

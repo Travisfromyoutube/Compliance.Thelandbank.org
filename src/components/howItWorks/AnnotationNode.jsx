@@ -1,7 +1,7 @@
 /**
- * AnnotationNode — small SOP callout that appears near a system node.
+ * AnnotationNode — SOP callout for the dark blueprint diagram.
  * Fades in when its chapter is active, fades out otherwise.
- * Dashed left border accent, italic text, no background.
+ * Light text + subtle dashed border for visibility on dark background.
  */
 export default function AnnotationNode({ data }) {
   const { text, visible } = data;
@@ -10,12 +10,16 @@ export default function AnnotationNode({ data }) {
     <div
       className={`
         select-none pointer-events-none max-w-[180px]
-        border-l-2 border-dashed border-accent/30 pl-2 py-0.5
+        border-l-2 border-dashed pl-2 py-0.5
         transition-opacity duration-300 ease-out
         ${visible ? 'opacity-100' : 'opacity-0'}
       `}
+      style={{ borderLeftColor: 'rgba(255, 255, 255, 0.15)' }}
     >
-      <p className="text-[10px] text-muted italic leading-snug">{text}</p>
+      <p className="text-[10px] italic leading-snug"
+        style={{ color: 'rgba(255, 255, 255, 0.55)' }}>
+        {text}
+      </p>
     </div>
   );
 }

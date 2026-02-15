@@ -356,8 +356,24 @@
   animation: dashFlow 0.8s linear infinite reverse;
 }
 
+/* ── Blueprint dark panel - architecture diagram ────────── */
+.blueprint-bg {
+  background-color: #0f1f16;
+  background-image:
+    radial-gradient(circle, rgba(45, 122, 74, 0.12) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.02) 0.5px, transparent 0.5px);
+  background-size: 24px 24px, 12px 12px;
+  background-position: 12px 12px, 6px 6px;
+}
+.blueprint-bg .react-flow {
+  background: transparent !important;
+}
+
 /* ── React Flow active edge animation ──────── */
 /* Enhances the default animated edge with a glow effect */
+.blueprint-bg .edge-flow-active path {
+  filter: drop-shadow(0 0 6px rgba(45, 122, 74, 0.4));
+}
 .edge-flow-active path {
   filter: drop-shadow(0 0 3px rgba(45, 122, 74, 0.3));
 }
@@ -370,4 +386,9 @@
 /* Active edge marker animation */
 .edge-flow-active .react-flow__edge-interaction {
   pointer-events: none;
+}
+
+/* Blueprint edge labels - no background rect on dark panel */
+.blueprint-bg .react-flow__edge-textwrapper .react-flow__edge-textbg {
+  fill: transparent !important;
 }
