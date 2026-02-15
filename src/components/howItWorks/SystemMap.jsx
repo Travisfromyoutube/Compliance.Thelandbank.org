@@ -38,6 +38,7 @@ const CHAPTER_NODE_MAP = {
   'how-data-moves':  ['api', 'filemaker', 'neon', 'resend'],
   'data-stays-safe': ['api', 'compliance'],
   'what-stays-sync': ['filemaker', 'neon'],
+  'full-system':     ['buyer', 'admin', 'api', 'neon', 'compliance', 'filemaker', 'resend'],
 };
 
 /* ── Edge-to-chapter pulse mapping ──────────── */
@@ -48,6 +49,7 @@ const CHAPTER_EDGE_MAP = {
   'how-data-moves':  ['e-fm-api', 'e-api-neon', 'e-api-resend', 'e-api-buyer'],
   'data-stays-safe': ['e-buyer-api', 'e-api-neon', 'e-comp-neon', 'e-comp-admin'],
   'what-stays-sync': ['e-fm-api', 'e-api-neon'],
+  'full-system':     ['e-buyer-api', 'e-admin-api', 'e-api-neon', 'e-fm-api', 'e-api-resend', 'e-comp-admin', 'e-comp-neon', 'e-api-buyer'],
 };
 
 /* ── Chapter-to-annotation callout mapping ──── */
@@ -75,6 +77,10 @@ const CHAPTER_ANNOTATIONS = {
   'what-stays-sync': [
     { targetNode: 'filemaker', text: 'Same FM layouts, same data. The portal handles the back and forth' },
     { targetNode: 'neon', text: 'Portal keeps its own copy so pages load fast between syncs' },
+  ],
+  'full-system': [
+    { targetNode: 'buyer', text: 'Buyers submit documents and confirm occupancy through a secure link' },
+    { targetNode: 'admin', text: 'Staff review compliance status, send notices, and track every property' },
   ],
 };
 

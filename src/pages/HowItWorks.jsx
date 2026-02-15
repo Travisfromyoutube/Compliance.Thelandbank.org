@@ -24,6 +24,7 @@ const TechStack = lazy(() => import('../components/howItWorks/TechStack'));
 const DataFlowPipeline = lazy(() => import('../components/howItWorks/DataFlowPipeline'));
 const SecurityStack = lazy(() => import('../components/howItWorks/SecurityStack'));
 const SyncFlow = lazy(() => import('../components/howItWorks/SyncFlow'));
+const FullSystem = lazy(() => import('../components/howItWorks/FullSystem'));
 
 /* ── Step definitions ── */
 const STEPS = [
@@ -33,6 +34,7 @@ const STEPS = [
   { id: 'how-data-moves',  label: 'Data Flow', icon: ICONS.dataFlow,    Component: DataFlowPipeline },
   { id: 'data-stays-safe', label: 'Security',  icon: ICONS.shieldCheck, Component: SecurityStack },
   { id: 'what-stays-sync', label: 'Sync',      icon: ICONS.sync,        Component: SyncFlow },
+  { id: 'full-system',     label: 'Full System', icon: ICONS.globe,     Component: FullSystem },
 ];
 
 /* ── Loading placeholder ── */
