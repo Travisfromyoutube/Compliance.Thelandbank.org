@@ -195,20 +195,20 @@ export default function SystemMap({ activeChapter, onNodeClick }) {
         animated: isActive,
         className: isActive ? 'edge-flow-active' : '',
         style: {
-          stroke: isActive ? edgeColor : 'rgba(255, 255, 255, 0.12)',
+          stroke: isActive ? edgeColor : 'rgba(255, 255, 255, 0.07)',
           strokeWidth: isActive ? 2.5 : 1.5,
           strokeDasharray: isActive ? '8 4' : '6 3',
           transition: 'stroke 0.4s ease, stroke-width 0.3s ease',
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: isActive ? edgeColor : 'rgba(255, 255, 255, 0.12)',
+          color: isActive ? edgeColor : 'rgba(255, 255, 255, 0.07)',
           width: isActive ? 20 : 16,
           height: isActive ? 20 : 16,
         },
         labelStyle: {
           fontSize: 11,
-          fill: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.35)',
+          fill: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.25)',
           fontWeight: isActive ? 700 : 500,
           transition: 'fill 0.3s ease',
         },

@@ -53,8 +53,8 @@ export default function SystemNode({ data }) {
         className="absolute inset-0 rounded-lg pointer-events-none"
         style={{
           background: active
-            ? 'rgba(255, 255, 255, 0.08)'
-            : 'rgba(15, 31, 22, 0.92)',
+            ? 'rgba(18, 36, 25, 0.95)'
+            : 'rgba(15, 31, 22, 0.95)',
           borderTop:    `1px solid ${active ? `${catColor}44` : 'rgba(255,255,255,0.08)'}`,
           borderRight:  `1px solid ${active ? `${catColor}44` : 'rgba(255,255,255,0.08)'}`,
           borderBottom: `1px solid ${active ? `${catColor}44` : 'rgba(255,255,255,0.08)'}`,

@@ -28,13 +28,13 @@ const FullSystem = lazy(() => import('../components/howItWorks/FullSystem'));
 
 /* ── Step definitions ── */
 const STEPS = [
+  { id: 'full-system',     label: 'Full System', icon: ICONS.globe,     Component: FullSystem },
   { id: 'what-it-does',    label: 'Overview',  icon: ICONS.home,        Component: FlipCards },
   { id: 'whats-inside',    label: 'Files',     icon: ICONS.file,        Component: FileExplorer },
   { id: 'tech-behind-it',  label: 'Tech',      icon: ICONS.zap,         Component: TechStack },
   { id: 'how-data-moves',  label: 'Data Flow', icon: ICONS.dataFlow,    Component: DataFlowPipeline },
   { id: 'data-stays-safe', label: 'Security',  icon: ICONS.shieldCheck, Component: SecurityStack },
   { id: 'what-stays-sync', label: 'Sync',      icon: ICONS.sync,        Component: SyncFlow },
-  { id: 'full-system',     label: 'Full System', icon: ICONS.globe,     Component: FullSystem },
 ];
 
 /* ── Loading placeholder ── */
@@ -63,10 +63,10 @@ export default function HowItWorks() {
 
   const handleNodeClick = useCallback((nodeId) => {
     const NODE_TO_STEP = {
-      buyer: 0, admin: 0,
-      api: 2,
-      neon: 2, filemaker: 5,
-      compliance: 4, resend: 3,
+      buyer: 1, admin: 1,
+      api: 3,
+      neon: 3, filemaker: 6,
+      compliance: 5, resend: 4,
     };
     const stepIdx = NODE_TO_STEP[nodeId];
     if (stepIdx !== undefined) setActiveStep(stepIdx);
