@@ -84,7 +84,7 @@ export default function HowItWorks() {
 
       {/* Hero: Full-width system architecture diagram */}
       <div className="rounded-xl border border-accent-dark/30 blueprint-bg overflow-hidden shadow-sm">
-        <div className="h-[380px] lg:h-[420px]">
+        <div className="h-[456px] lg:h-[504px]">
           <SystemMap activeChapter={activeChapter} onNodeClick={handleNodeClick} />
         </div>
       </div>

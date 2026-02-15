@@ -54,7 +54,7 @@ export default function SystemNode({ data }) {
         style={{
           background: active
             ? 'rgba(255, 255, 255, 0.08)'
-            : 'rgba(255, 255, 255, 0.04)',
+            : 'rgba(15, 31, 22, 0.92)',
           borderTop:    `1px solid ${active ? `${catColor}44` : 'rgba(255,255,255,0.08)'}`,
           borderRight:  `1px solid ${active ? `${catColor}44` : 'rgba(255,255,255,0.08)'}`,
           borderBottom: `1px solid ${active ? `${catColor}44` : 'rgba(255,255,255,0.08)'}`,

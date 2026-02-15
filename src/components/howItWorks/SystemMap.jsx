@@ -89,22 +89,22 @@ const CHAPTER_ANNOTATIONS = {
 */
 const BASE_NODES = [
   // Anchors: Portals
-  { id: 'buyer', position: { x: 0,   y: 110 }, data: { label: 'Buyer Portal', subtitle: 'Submissions', description: 'Secure link for documents and occupancy confirmation', icon: ICONS.home, anchor: true, category: 'portal' } },
-  { id: 'admin', position: { x: 840, y: 110 }, data: { label: 'Admin Portal', subtitle: '14 pages',    description: 'Reports, compliance status, and batch mail',        icon: ICONS.dashboard, anchor: true, category: 'portal' } },
+  { id: 'buyer', position: { x: 0,   y: 132 }, data: { label: 'Buyer Portal', subtitle: 'Submissions', description: 'Secure link for documents and occupancy confirmation', icon: ICONS.home, anchor: true, category: 'portal' } },
+  { id: 'admin', position: { x: 840, y: 132 }, data: { label: 'Admin Portal', subtitle: '14 pages',    description: 'Reports, compliance status, and batch mail',        icon: ICONS.dashboard, anchor: true, category: 'portal' } },
   // Row 1: API Hub
   { id: 'api',        position: { x: 440, y: 0   }, data: { label: 'Vercel API',        subtitle: '8 endpoints',    description: 'Routes requests between portals, FileMaker, and email', icon: ICONS.zap, category: 'service' } },
   // Row 2: Services + integrations
-  { id: 'neon',       position: { x: 290, y: 200 }, data: { label: 'Neon Database',     subtitle: '10 tables',      description: 'Fast local cache between syncs', icon: ICONS.database, category: 'integration' } },
-  { id: 'compliance', position: { x: 290, y: 330 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Auto-calculates milestones and levels', icon: ICONS.shieldCheck, category: 'service' } },
-  { id: 'filemaker',  position: { x: 570, y: 200 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record system', icon: ICONS.sync, category: 'integration' } },
-  { id: 'resend',     position: { x: 570, y: 330 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Compliance emails without Outlook', icon: ICONS.batchEmail, category: 'integration' } },
+  { id: 'neon',       position: { x: 290, y: 240 }, data: { label: 'Neon Database',     subtitle: '10 tables',      description: 'Fast local cache between syncs', icon: ICONS.database, category: 'integration' } },
+  { id: 'compliance', position: { x: 290, y: 396 }, data: { label: 'Compliance Engine', subtitle: 'Hourly check',   description: 'Auto-calculates milestones and levels', icon: ICONS.shieldCheck, category: 'service' } },
+  { id: 'filemaker',  position: { x: 570, y: 240 }, data: { label: 'FileMaker',         subtitle: 'Master records',  description: 'The master record system', icon: ICONS.sync, category: 'integration' } },
+  { id: 'resend',     position: { x: 570, y: 396 }, data: { label: 'Resend Email',      subtitle: 'Notices',         description: 'Compliance emails without Outlook', icon: ICONS.batchEmail, category: 'integration' } },
 ];
 
 /* ── Legend node position (below diagram center) ── */
 const LEGEND_NODE = {
   id: 'legend',
   type: 'legend',
-  position: { x: 340, y: 430 },
+  position: { x: 340, y: 516 },
   data: {},
   selectable: false,
   draggable: false,
@@ -112,13 +112,13 @@ const LEGEND_NODE = {
 
 /* ── Annotation positions (near their target node) ── */
 const ANNOTATION_POSITIONS = {
-  buyer:      { x: -10,  y: -40  },
-  admin:      { x: 850,  y: -40  },
-  api:        { x: 660,  y: -30  },
-  neon:       { x: 80,   y: 200  },
-  filemaker:  { x: 790,  y: 200  },
-  compliance: { x: 80,   y: 340  },
-  resend:     { x: 790,  y: 340  },
+  buyer:      { x: -10,  y: -48  },
+  admin:      { x: 850,  y: -48  },
+  api:        { x: 660,  y: -36  },
+  neon:       { x: 80,   y: 240  },
+  filemaker:  { x: 790,  y: 240  },
+  compliance: { x: 80,   y: 408  },
+  resend:     { x: 790,  y: 408  },
 };
 
 const BASE_EDGES = [
