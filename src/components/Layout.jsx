@@ -230,7 +230,7 @@ function FileMakerSyncStatus() {
           }
         }
       } catch {
-        if (mounted) setFmStatus({ connected: false, configured: false, error: true });
+        if (mounted) setFmStatus({ connected: false, configured: false });
       }
     }
     check();
@@ -239,14 +239,15 @@ function FileMakerSyncStatus() {
 
   const connected = fmStatus?.connected;
   const configured = fmStatus?.configured;
-  const hasError = fmStatus?.error || (configured && !connected);
+  /* Only show red when FM is configured but connection actually failed */
+  const hasError = configured && !connected;
 
-  /* Tri-state: gray (not configured), green (connected), red (configured but failing) */
+  /* Tri-state: gray (not configured / awaiting creds), green (connected), red (configured but failing) */
   const dotColor = connected ? 'bg-accent' : hasError ? 'bg-danger' : 'bg-blue-200/30';
   const dotPing = connected || syncing;
   const statusText = fmStatus === null
     ? 'Checking...'
-    : connected ? 'Connected' : hasError ? 'Connection error' : 'Awaiting setup';
+    : connected ? 'Connected' : hasError ? 'Connection error' : 'Awaiting credentials';
   const statusColor = connected ? 'text-accent-light' : hasError ? 'text-danger/80' : 'text-blue-200/40';
 
   async function handleSync(e) {
@@ -299,22 +300,22 @@ function FileMakerSyncStatus() {
             </span>
           </div>
         )}
-        {/* Sync button — only when connected */}
-        {connected && (
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className={[
-              'mt-2 w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-150',
-              syncing
-                ? 'bg-accent/20 text-accent-light cursor-wait'
+        {/* Sync button — always visible, disabled when not connected */}
+        <button
+          onClick={handleSync}
+          disabled={syncing || !connected}
+          className={[
+            'mt-2 w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-150',
+            syncing
+              ? 'bg-accent/20 text-accent-light cursor-wait'
+              : !connected
+                ? 'bg-white/[0.03] text-blue-200/20 cursor-not-allowed'
                 : 'bg-white/[0.06] text-blue-200/60 hover:bg-accent/20 hover:text-accent-light',
-            ].join(' ')}
-          >
-            <AppIcon icon={ICONS.sync} size={11} className={syncing ? 'animate-spin' : ''} />
-            {syncing ? 'Synchronizing' : 'Sync Now'}
-          </button>
-        )}
+          ].join(' ')}
+        >
+          <AppIcon icon={ICONS.sync} size={11} className={syncing ? 'animate-spin' : ''} />
+          {syncing ? 'Synchronizing' : 'Sync Now'}
+        </button>
       </Link>
     </div>
   );

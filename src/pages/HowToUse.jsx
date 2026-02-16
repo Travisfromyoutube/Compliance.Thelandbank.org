@@ -102,7 +102,7 @@ export default function HowToUse() {
       />
 
       {/* About this software */}
-      <div className="mb-6 px-1">
+      <div className="mb-10 px-1">
         <p className="text-sm text-muted leading-relaxed">
           This portal is custom software built for the Genesee County Land Bank Authority
           to streamline compliance management across all property sale programs. Built on

@@ -13,7 +13,7 @@ function FMBridgeBadge() {
     fetch('/api/filemaker?action=status')
       .then((r) => r.json())
       .then((data) => { if (mounted) setStatus(data); })
-      .catch(() => { if (mounted) setStatus({ connected: false, configured: false, error: true }); });
+      .catch(() => { if (mounted) setStatus({ connected: false, configured: false }); });
     return () => { mounted = false; };
   }, []);
 
@@ -21,10 +21,11 @@ function FMBridgeBadge() {
 
   const connected = status.connected;
   const configured = status.configured;
-  const hasError = status.error || (configured && !connected);
+  /* Only show red when FM is configured but connection actually failed */
+  const hasError = configured && !connected;
 
   const dotColor = connected ? 'bg-accent' : hasError ? 'bg-danger' : 'bg-warm-400/40';
-  const label = connected ? 'Connected' : hasError ? 'Error' : 'Awaiting setup';
+  const label = connected ? 'Connected' : hasError ? 'Connection error' : 'Awaiting credentials';
   const textColor = connected ? 'text-accent' : hasError ? 'text-danger' : 'text-warm-500';
   const borderColor = connected ? 'border-accent/20' : hasError ? 'border-danger/20' : 'border-warm-300';
 
