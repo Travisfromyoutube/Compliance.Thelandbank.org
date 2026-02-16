@@ -22,6 +22,7 @@ const NAV_SECTIONS = [
     collapsible: true,
     items: [
       { label: 'Data Integration & Security',  icon: ICONS.database, path: '/bridge' },
+      { label: 'How to Use the Portal',         icon: ICONS.clipboardList, path: '/how-to-use' },
     ],
   },
   {

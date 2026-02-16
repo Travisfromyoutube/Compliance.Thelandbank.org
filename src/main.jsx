@@ -62,6 +62,7 @@ const TemplateManager = React.lazy(() => import('./pages/TemplateManager'))
 const ComplianceMap = React.lazy(() => import('./pages/ComplianceMap'))
 const AuditTrail = React.lazy(() => import('./pages/AuditTrail'))
 const HowItWorks = React.lazy(() => import('./pages/HowItWorks'))
+const HowToUse = React.lazy(() => import('./pages/HowToUse'))
 
 /* ── 404 page ─────────────────────────────────────────── */
 function NotFoundPage() {
@@ -128,6 +129,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/audit" element={<ProtectedRoute><AuditTrail /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
             <Route path="/bridge" element={<ProtectedRoute><HowItWorks /></ProtectedRoute>} />
+            <Route path="/how-to-use" element={<ProtectedRoute><HowToUse /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

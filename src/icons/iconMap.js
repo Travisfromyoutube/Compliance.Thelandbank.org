@@ -61,6 +61,15 @@ import {
   BookOpen,
   Globe,
   Lock,
+  ClipboardList,
+  Lightbulb,
+  Users,
+  MousePointerClick,
+  CircleDot,
+  ArrowRightLeft,
+  Inbox,
+  UserCheck,
+  FolderOpen,
 } from 'lucide-react';
 
 const ICONS = {
@@ -135,6 +144,17 @@ const ICONS = {
   check:         Check,
   mailWarning:   MailWarning,
   loader:        Loader2,
+
+  // SOP / How-To-Use
+  clipboardList: ClipboardList,
+  lightbulb:     Lightbulb,
+  users:         Users,
+  mouseClick:    MousePointerClick,
+  circleDot:     CircleDot,
+  arrowSwap:     ArrowRightLeft,
+  inbox:         Inbox,
+  userCheck:     UserCheck,
+  folderOpen:    FolderOpen,
 };
 
 export default ICONS;

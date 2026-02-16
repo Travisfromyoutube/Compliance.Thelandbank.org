@@ -80,7 +80,7 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 ### Design System
 
 - **Tailwind tokens** in `tailwind.config.js`: civic green (`accent`), civic blue (`accent-blue`), warm neutrals (`bg`, `surface`, `warm-100/200`), semantic status colors
-- **Fonts**: Bitter (`font-heading`, Google Fonts) for page titles and card headings only. Inter for body (`font-sans`) and labels (`font-label` — status labels, stat labels, table headers, form labels, sidebar section headers). JetBrains Mono (`font-mono`) for dates, IDs, parcel numbers, timestamps, version tags, and technical data. Use `tabular-nums` for aligned numeric displays. Never use `font-heading` for labels/metadata (uppercase tracked text).
+- **Fonts**: Bitter (`font-heading`, Google Fonts) for page titles and card headings only. IBM Plex Sans for body (`font-sans`) and labels (`font-label` — status labels, stat labels, table headers, form labels, sidebar section headers). JetBrains Mono (`font-mono`) for dates, IDs, parcel numbers, timestamps, version tags, and technical data. Use `tabular-nums` for aligned numeric displays. Never use `font-heading` for labels/metadata (uppercase tracked text).
 - **Reusable UI** in `src/components/ui/`: `Card`, `StatCard`, `StatusPill`, `DataTable`, `AdminPageHeader`, `AppIcon`, `FormField`, `EmptyState`
 - **Buyer components** in `src/components/buyer/`: `BuyerHero`, `BuyerSection`, `BuyerProgressSpine`, `ComplianceOverview`, `PhotoSlot`, `DropZone`, `FileListItem`, `AnimatedCheck`, `BuyerConfirmation`, `SaveIndicator`
 - **Icon system**: `src/icons/iconMap.js` maps semantic names to Lucide React components; always use `<AppIcon>` wrapper
@@ -180,7 +180,7 @@ API error responses never leak `error.message` to clients — all 500s return ge
 - **State updates**: Dispatch to PropertyContext reducer, then fire-and-forget API patch. Local state is source of truth during session.
 - **API responses**: Flatten Prisma includes to match the shape PropertyContext expects (buyerName as single string, dates as ISO strings).
 - **Program types**: Use display names in UI/mockData, rule keys in compliance engine. Convert with `toRuleKey()` / `toDisplayName()`.
-- **Fonts**: Bitter for headings (`font-heading`), Inter for body (`font-sans`) and labels (`font-label`), JetBrains Mono for dates/IDs/numbers (`font-mono`). Never use `font-heading` for labels/metadata.
+- **Fonts**: Bitter for headings (`font-heading`), IBM Plex Sans for body (`font-sans`) and labels (`font-label`), JetBrains Mono for dates/IDs/numbers (`font-mono`). Never use `font-heading` for labels/metadata.
 - **Vite cache**: After changing major dependency versions, clear `node_modules/.vite` and restart dev server.
 - **Mock data**: `allProperties` merges hand-curated (10) + generated (30) properties. Import from `src/data/mockData.js`.
 - **DataTable compact prop**: Pass `compact` to DataTable for embedded tables (e.g., Dashboard). Default is spacious (`px-5 py-4`); compact is tighter (`px-4 py-3`).
@@ -215,7 +215,7 @@ API error responses never leak `error.message` to clients — all 500s return ge
 | react-leaflet pinned to v4.2.1 | v5 requires React 19 context API; crashes on React 18 with "render2 is not a function" |
 | Serverless router pattern (`?action=`) | Vercel counts each `.js` file as a function; consolidation keeps count manageable |
 | `db push` over `migrate dev` for schema changes | Project has no migration history (started with `db push`); `migrate dev` would require full DB reset. Non-destructive column additions only. |
-| Typography overhaul: 3 fonts, 4 tokens | Bitter (`font-heading`) for headings only, Inter (`font-sans` + `font-label`) for body and labels, JetBrains Mono (`font-mono`) for technical data. `font-label` is semantically distinct from `font-sans` for future font-swap flexibility |
+| Typography overhaul: 3 fonts, 4 tokens | Bitter (`font-heading`) for headings only, IBM Plex Sans (`font-sans` + `font-label`) for body and labels, JetBrains Mono (`font-mono`) for technical data. `font-label` is semantically distinct from `font-sans` for future font-swap flexibility |
 | FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
 | Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
 | SOP callout annotations frame portal as evolution | Compliance SOP author will view page; all callout text is respectful improvement framing, never attack. No dashes or word "enforcement" |
