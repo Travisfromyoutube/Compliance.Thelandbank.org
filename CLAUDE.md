@@ -1,8 +1,8 @@
 # GCLBA Compliance Portal
 
-Compliance management system for the Genesee County Land Bank Authority (Flint, MI). Tracks property buyers across four programs (Featured Homes, Ready4Rehab, Demolition, VIP) through graduated enforcement levels (0-4), milestone schedules, and automated communications.
+Compliance management system for the Genesee County Land Bank Authority (Flint, MI). Tracks property buyers across four programs (Featured Homes, Ready4Rehab, Demolition, VIP) through graduated compliance levels (0-4), milestone schedules, and automated communications.
 
-**Repo:** https://github.com/Travisfromyoutube/Compliance.Thelandbank.org.git
+**Repo:** https://github.com/Travis-Gilbert/Compliance.Thelandbank.org.git
 **Live:** https://compliance.thelandbank.org
 **Version:** 1.1.0 (prototype, no auth)
 
@@ -24,8 +24,8 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 
 ### Two-Surface App
 
-1. **Admin portal** (`/`, `/properties`, `/compliance`, etc.) — wrapped in `Layout.jsx` with sidebar nav
-2. **Buyer portal** (`/submit`) — standalone page, no sidebar, editorial design
+1. **Admin portal** (`/`, `/properties`, `/compliance`, etc.) - wrapped in `Layout.jsx` with sidebar nav
+2. **Buyer portal** (`/submit`) - standalone page, no sidebar, editorial design
 
 ### State Management
 
@@ -33,15 +33,15 @@ Tech Stack: React, Vite, Tailwind CSS, Prisma, PostgreSQL, Vercel
 - Initializes from `allProperties` in `mockData.js` (10 hand-curated + 30 generated), then attempts API fetch on mount
 - All mutations dispatch locally AND fire-and-forget PATCH to `/api/properties/:id`
 - Actions: `SET_PROPERTIES`, `ADD_COMMUNICATION`, `UPDATE_PROPERTY_FIELD`, `BATCH_UPDATE_PROPERTIES`
-- Helpers: `logCommunication()`, `batchLogCommunications()` (async — calls `/api/email` then logs locally), `updateField()`, `getProperty()`
-- Computed: `pendingSubmissions` (count of properties with unreviewed buyer submissions) — available via `useProperties()` hook
+- Helpers: `logCommunication()`, `batchLogCommunications()` (async, calls `/api/email` then logs locally), `updateField()`, `getProperty()`
+- Computed: `pendingSubmissions` (count of properties with unreviewed buyer submissions), available via `useProperties()` hook
 
 ### Compliance Engine
 
 Deterministic and rule-based:
-- `src/config/complianceRules.js` — per-program schedule (days from close), grace periods, required uploads/docs
-- `src/lib/computeDueNow.js` — walks the schedule, checks completed actions, returns `isDueNow`, `daysOverdue`, `currentAction`, `nextAction`
-- `src/utils/milestones.js` — dashboard stats, overdue calculations
+- `src/config/complianceRules.js` - per-program schedule (days from close), grace periods, required uploads/docs
+- `src/lib/computeDueNow.js` - walks the schedule, checks completed actions, returns `isDueNow`, `daysOverdue`, `currentAction`, `nextAction`
+- `src/utils/milestones.js` - dashboard stats, overdue calculations
 
 ### API Layer (Vercel Serverless)
 
@@ -66,21 +66,21 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 ### Database (Prisma + Neon PostgreSQL)
 
 10 models in `prisma/schema.prisma`:
-- **Buyer** — firstName, lastName, email, phone, organization, lcForfeit, treasRevert, buyerStatus, topNote
-- **Program** — key, label, cadence, schedule JSON, grace days, required uploads/docs
-- **Property** — parcel, address, program-specific compliance fields, enforcement level (0-4), status, FM sync fields (soldStatus, gclbOwned, sev, flintAreaName, minimumBid, category, conditions), physical details (beds/baths/sqft/yearBuilt/stories/garage/basement/lot/school), FM metadata (taxCapture, askingPrice, violations, foreclosureStatus, etc.), availability (FM color coding)
-- **Submission** — type (progress/final/monthly), form data JSON, status, confirmation ID
-- **Document** — filename, mime, category (photo/document/receipt), slot, blob URL
-- **Communication** — template, action, channel, body, status, sent/approved timestamps
-- **EmailTemplate** — name, program types JSON, variants JSON (per-action subject/body)
-- **AccessToken** — token (unique), buyerId, propertyId, expiry, used flag
-- **SyncMetadata** — key (unique), value, updatedAt — tracks FM sync cursor/timestamps
-- **Note** — body, creator, visibility (internal/external), propertyId
+- **Buyer** - firstName, lastName, email, phone, organization, lcForfeit, treasRevert, buyerStatus, topNote
+- **Program** - key, label, cadence, schedule JSON, grace days, required uploads/docs
+- **Property** - parcel, address, program-specific compliance fields, compliance level (0-4), status, FM sync fields (soldStatus, gclbOwned, sev, flintAreaName, minimumBid, category, conditions), physical details (beds/baths/sqft/yearBuilt/stories/garage/basement/lot/school), FM metadata (taxCapture, askingPrice, violations, foreclosureStatus, etc.), availability (FM color coding)
+- **Submission** - type (progress/final/monthly), form data JSON, status, confirmation ID
+- **Document** - filename, mime, category (photo/document/receipt), slot, blob URL
+- **Communication** - template, action, channel, body, status, sent/approved timestamps
+- **EmailTemplate** - name, program types JSON, variants JSON (per-action subject/body)
+- **AccessToken** - token (unique), buyerId, propertyId, expiry, used flag
+- **SyncMetadata** - key (unique), value, updatedAt; tracks FM sync cursor/timestamps
+- **Note** - body, creator, visibility (internal/external), propertyId
 
 ### Design System
 
 - **Tailwind tokens** in `tailwind.config.js`: civic green (`accent`), civic blue (`accent-blue`), warm neutrals (`bg`, `surface`, `warm-100/200`), semantic status colors
-- **Fonts**: Bitter (`font-heading`, Google Fonts) for page titles and card headings only. IBM Plex Sans for body (`font-sans`) and labels (`font-label` — status labels, stat labels, table headers, form labels, sidebar section headers). JetBrains Mono (`font-mono`) for dates, IDs, parcel numbers, timestamps, version tags, and technical data. Use `tabular-nums` for aligned numeric displays. Never use `font-heading` for labels/metadata (uppercase tracked text).
+- **Fonts**: Bitter (`font-heading`, Google Fonts) for page titles and card headings only. IBM Plex Sans for body (`font-sans`) and labels (`font-label`, used for status labels, stat labels, table headers, form labels, sidebar section headers). JetBrains Mono (`font-mono`) for dates, IDs, parcel numbers, timestamps, version tags, and technical data. Use `tabular-nums` for aligned numeric displays. Never use `font-heading` for labels/metadata (uppercase tracked text).
 - **Reusable UI** in `src/components/ui/`: `Card`, `StatCard`, `StatusPill`, `DataTable`, `AdminPageHeader`, `AppIcon`, `FormField`, `EmptyState`
 - **Buyer components** in `src/components/buyer/`: `BuyerHero`, `BuyerSection`, `BuyerProgressSpine`, `ComplianceOverview`, `PhotoSlot`, `DropZone`, `FileListItem`, `AnimatedCheck`, `BuyerConfirmation`, `SaveIndicator`
 - **Icon system**: `src/icons/iconMap.js` maps semantic names to Lucide React components; always use `<AppIcon>` wrapper
@@ -88,31 +88,31 @@ All endpoints in `api/` directory, consumed via `/api/*` rewrite in `vercel.json
 
 ### FileMaker Integration
 
-- **Field map** (`filemakerFieldMap.js`): Single source of truth for Prisma ↔ FM field names. `toFM()` converts portal→FM (skips `TBD_` prefixed fields), `fromFM()` converts FM→portal.
+- **Field map** (`filemakerFieldMap.js`): Single source of truth for Prisma/FM field names. `toFM()` converts portal to FM (skips `TBD_` prefixed fields), `fromFM()` converts FM to portal.
 - **TBD_ pattern**: Undiscovered FM field names get `TBD_` prefix; `toFM()` auto-skips them. Run `?action=status&meta=true` with real credentials to discover actual names.
-- **FM client** (`filemakerClient.js`): Wraps FM Data API — session token lifecycle, `getRecords`, `findRecords`, `createRecord`, `updateRecord`.
+- **FM client** (`filemakerClient.js`): Wraps FM Data API - session token lifecycle, `getRecords`, `findRecords`, `createRecord`, `updateRecord`.
 - **Parcel ID normalizer**: `normalizeParcelId()` strips dashes/spaces for consistent matching (FM stores both `4635457003` and `46-35-457-003`).
-- **Sync flow**: `GET /api/filemaker?action=sync` pulls FM records → `fromFM()` (with parcel normalization) → Prisma upsert on `parcelId`.
-- **Push flow**: `POST /api/filemaker?action=push` reads Prisma record → `toFM()` → FM `createRecord`/`updateRecord`.
-- **Buyer portal in FM**: Buyers are related records on the property layout (not a separate layout). Single "Name" field → `splitFMName()` splits to first/last. Includes `lcForfeit`, `treasRevert`, `buyerStatus` fields.
+- **Sync flow**: `GET /api/filemaker?action=sync` pulls FM records, runs `fromFM()` (with parcel normalization), then Prisma upsert on `parcelId`.
+- **Push flow**: `POST /api/filemaker?action=push` reads Prisma record, runs `toFM()`, then FM `createRecord`/`updateRecord`.
+- **Buyer portal in FM**: Buyers are related records on the property layout (not a separate layout). Single "Name" field uses `splitFMName()` to split to first/last. Includes `lcForfeit`, `treasRevert`, `buyerStatus` fields.
 
 ### Authentication & Security
 
 Three-tier auth checked in order by `middleware.js` (Edge) and `src/lib/auth.js` (serverless):
-1. **Clerk JWT** — production auth when `CLERK_SECRET_KEY` is set. Middleware passes bearer token through; `requireAuth()` does full verification.
-2. **ADMIN_API_KEY** — static key fallback for scripts/testing. Middleware validates directly.
-3. **Prototype mode** — no auth required when neither key is set. Blocked in production unless `ALLOW_PROTOTYPE_AUTH=true`.
+1. **Clerk JWT** - production auth when `CLERK_SECRET_KEY` is set. Middleware passes bearer token through; `requireAuth()` does full verification.
+2. **ADMIN_API_KEY** - static key fallback for scripts/testing. Middleware validates directly.
+3. **Prototype mode** - no auth required when neither key is set. Blocked in production unless `ALLOW_PROTOTYPE_AUTH=true`.
 
 Public (buyer-facing) routes bypass auth: `/api/submissions`, `/api/upload`, `/api/tokens?action=verify`.
 
-API error responses never leak `error.message` to clients — all 500s return generic `{ error: 'Internal server error' }`. Unmatched routes return a 404 page (catch-all `<Route path="*">` in `main.jsx`).
+API error responses never leak `error.message` to clients. All 500s return generic `{ error: 'Internal server error' }`. Unmatched routes return a 404 page (catch-all `<Route path="*">` in `main.jsx`).
 
 ### Domain Concepts
 
-- **Programs**: Featured Homes, Ready4Rehab (R4R), Demolition, VIP — each with different compliance timelines
-- **Enforcement Levels**: 0 (Compliant) through 4 (Legal Remedies), tied to days overdue
+- **Programs**: Featured Homes, Ready4Rehab (R4R), Demolition, VIP, each with different compliance timelines
+- **Compliance Levels**: 0 (Compliant) through 4 (Legal Remedies), tied to days overdue
 - **Compliance Statuses**: On Track, Due Soon, Overdue, Completed, In Cure Period, In Default
-- **Communication actions**: ATTEMPT_1, ATTEMPT_2, WARNING, DEFAULT_NOTICE — map to email template variants
+- **Communication actions**: ATTEMPT_1, ATTEMPT_2, WARNING, DEFAULT_NOTICE, mapped to email template variants
 
 ---
 
@@ -122,60 +122,48 @@ API error responses never leak `error.message` to clients — all 500s return ge
 |------|---------|
 | `src/main.jsx` | Route definitions, 404 catch-all, code splitting (React.lazy), Analytics + SpeedInsights |
 | `src/context/PropertyContext.jsx` | Central state store + API sync |
-| `src/config/complianceRules.js` | Per-program enforcement schedules |
+| `src/config/complianceRules.js` | Per-program compliance schedules |
 | `src/lib/computeDueNow.js` | Deterministic compliance timing calculator |
 | `src/lib/templateRenderer.js` | Email template variable interpolation |
 | `src/lib/programTypeMapper.js` | Display name / rule key mapping |
 | `src/lib/db.js` | Prisma client singleton (serverless-safe) |
-| `src/lib/auth.js` | Clerk JWT / API key / prototype auth verification for serverless functions |
-| `src/lib/rateLimit.js` | Upstash Redis rate limiting (optional, disabled without env vars) |
-| `src/lib/schemas.js` | Zod validation schemas for API request bodies |
-| `src/lib/validate.js` | Request validation helpers using schemas |
-| `src/lib/sentry.js` | Sentry error monitoring init (optional, logs to console without DSN) |
-| `src/lib/logger.js` | Structured logging with configurable LOG_LEVEL |
-| `src/lib/tokenGenerator.js` | Crypto-safe access token generation for buyer links |
-| `src/lib/emailSender.js` | Resend integration with mock fallback |
+| `src/lib/auth.js` | Clerk JWT / API key / prototype auth for serverless functions |
 | `src/data/mockData.js` | Seed data + enum exports (PROGRAM_TYPES, ENFORCEMENT_LEVELS, COMPLIANCE_STATUSES) |
 | `src/data/mockDataGenerator.js` | Seeded PRNG generator for 30+ demo properties with realistic data |
-| `src/data/programPolicies.js` | Single source of truth for GCLBA program policies, enforcement levels, eligibility |
+| `src/data/programPolicies.js` | Single source of truth for GCLBA program policies, levels, eligibility |
 | `src/data/emailTemplates.js` | DEFAULT_TEMPLATES, ACTION_LABELS for compliance email actions |
-| `src/pages/ActionQueue.jsx` | SOP-killer: grouped compliance actions with mail merge |
-| `src/pages/ComplianceMap.jsx` | Leaflet map with enforcement-level markers and popups |
-| `src/pages/AuditTrail.jsx` | Per-property timeline with communications and milestones |
-| `src/pages/EnforcementTracker.jsx` | Enforcement level tracking page (exists but not yet routed in main.jsx) |
+| `src/pages/ActionQueue.jsx` | Grouped compliance actions with template merge and send |
+| `src/pages/HowToUse.jsx` | 5-phase SOP walkthrough using SOPPhase/SOPStep components |
+| `src/pages/HowItWorks.jsx` | Two-part page: hero diagram with click-through nav + Deep Dive reference |
+| `src/pages/FileMakerBridge.jsx` | FM integration dashboard - system health bar, tech stack, sync controls |
+| `src/pages/ComplianceMap.jsx` | Leaflet map with compliance-level markers and popups |
+| `src/pages/BatchEmail.jsx` | Bulk email sending with template selection and preview |
+| `src/pages/BuyerSubmission.jsx` | Buyer-facing submission form (photos, documents, progress updates) |
+| `src/components/Layout.jsx` | Admin shell - sidebar nav, keyboard shortcuts (Alt+key), badge system |
+| `src/components/howToUse/SOPPhase.jsx` | Collapsible phase container with numbered header and child steps |
+| `src/components/howToUse/SOPStep.jsx` | Individual step card with optional tip callout (green lightbulb box) |
+| `src/components/howItWorks/SystemMap.jsx` | React Flow landscape diagram with chapter-driven highlighting |
 | `src/components/buyer/ComplianceOverview.jsx` | Buyer-facing compliance timeline + expandable policy accordion |
-| `src/components/buyer/SaveIndicator.jsx` | Floating "Progress saved" toast for buyer form |
-| `src/components/ui/EmptyState.jsx` | Reusable empty state with icon, title, subtitle, optional CTA |
-| `src/hooks/usePageTitle.js` | `usePageTitle(title)` hook — sets document title per page (used by 14 pages) |
-| `src/components/Layout.jsx` | Admin shell — sidebar nav, keyboard shortcuts (Alt+key), badge system |
-| `public/gclba-logo.png` | Official GCLBA logo (transparent PNG) |
+| `src/config/filemakerFieldMap.js` | FM/Portal field mapping, `toFM()`/`fromFM()` converters, TBD_ pattern |
+| `src/lib/filemakerClient.js` | FM Data API client (session tokens, CRUD, layout metadata) |
+| `src/hooks/usePageTitle.js` | `usePageTitle(title)` hook, sets document title per page |
 | `src/icons/iconMap.js` | Semantic icon registry (Lucide) |
 | `tailwind.config.js` | Design tokens (colors, fonts, animations) |
 | `prisma/schema.prisma` | Database schema (10 models) |
-| `DESIGN-SPEC.md` | Visual direction spec (civic editorial) |
-| `src/config/filemakerFieldMap.js` | FM ↔ Portal field mapping, `toFM()`/`fromFM()` converters, TBD_ pattern |
-| `src/lib/filemakerClient.js` | FM Data API client (session tokens, CRUD, layout metadata) |
-| `src/pages/FileMakerBridge.jsx` | FM integration dashboard — architecture explainer, system health bar, tech stack, sync controls |
-| `docs/plans/2026-02-11-filemaker-integration-design.md` | FM architecture decisions and field mapping reference |
-| `docs/FM-PORTAL-TASKS.md` | FM ↔ Portal compatibility fix tasks (from SOP screenshots) |
-| `api/notes.js` | Property notes/activity log CRUD endpoint |
-| `docs/feature-spec.md` | 28-feature roadmap across 6 pillars |
-| `api/upload.js` | Vercel Blob file upload endpoint (`put()` pattern) |
-| `api/cron/compliance-check.js` | Hourly compliance monitoring cron job |
-| `middleware.js` | Edge Middleware — API route auth gating |
-| `src/lib/uploadFile.js` | Browser-side upload helper (plain `fetch()` to `/api/upload`) |
-| `src/pages/HowItWorks.jsx` | Two-part page: full-width hero diagram with click-through step nav + Deep Dive scrollable reference |
-| `src/components/howItWorks/SystemMap.jsx` | React Flow landscape diagram: anchor portals (left/right bookends), service nodes (center 2x2), chapter-driven highlighting + annotations |
-| `src/components/howItWorks/SystemNode.jsx` | Horizontal node card with anchor/service dual sizing (260px/220px), content-level dimming |
-| `src/components/howItWorks/AnnotationNode.jsx` | SOP callout nodes: fade in/out per active chapter, dashed left-border accent |
+| `middleware.js` | Edge Middleware - API route auth gating |
 | `vite.config.js` | Build config with manual chunks (vendor-react, vendor-map, vendor-flow) |
+| `docs/feature-spec.md` | 28-feature roadmap across 6 pillars |
+| `DESIGN-SPEC.md` | Visual direction spec (civic editorial) |
 
 ---
 
 ## Conventions
 
+- **No em dashes**: Use regular hyphens (` - `) everywhere. No em dash characters (Unicode U+2014) in code, comments, or user-facing strings. Enforced site-wide.
+- **No comparison language in SOP content**: The How to Use page and SOP-related text should never use "replaces," "eliminates," "no more," "instead of," or marketing language. Write like explaining to a coworker. The compliance SOP author will see this page. Use "consolidates," "brings together," "handles," "lives here now," "built into."
+- **Never say "enforcement"**: Use "compliance levels" not "enforcement levels" in all user-facing text and new code comments. The DB field is still `enforcementLevel` for backward compatibility but UI always says "compliance level."
 - **Icons**: Import from `src/icons/iconMap.js`, render via `<AppIcon>`. Prefer `iconMap` over direct Lucide imports.
-- **Icon enforcement**: If a needed icon isn't in `iconMap.js`, add it there first, then use `ICONS.name`. Some pages import layout-specific Lucide icons directly (e.g., `Search`, `Building2`, `List`, `Layers`) — this is acceptable for one-off UI icons not reused elsewhere.
+- **Icon enforcement**: If a needed icon isn't in `iconMap.js`, add it there first, then use `ICONS.name`. Some pages import layout-specific Lucide icons directly (e.g., `Search`, `Building2`, `List`, `Layers`); this is acceptable for one-off UI icons not reused elsewhere.
 - **Styling**: Use Tailwind design tokens (`text-accent`, `bg-surface`, `border-border`). Avoid arbitrary hex values.
 - **State updates**: Dispatch to PropertyContext reducer, then fire-and-forget API patch. Local state is source of truth during session.
 - **API responses**: Flatten Prisma includes to match the shape PropertyContext expects (buyerName as single string, dates as ISO strings).
@@ -185,9 +173,9 @@ API error responses never leak `error.message` to clients — all 500s return ge
 - **Mock data**: `allProperties` merges hand-curated (10) + generated (30) properties. Import from `src/data/mockData.js`.
 - **DataTable compact prop**: Pass `compact` to DataTable for embedded tables (e.g., Dashboard). Default is spacious (`px-5 py-4`); compact is tighter (`px-4 py-3`).
 - **Barrel imports**: UI components use barrel export from `src/components/ui/index.js`. Import as `{ Card, StatusPill, DataTable } from '../components/ui'`.
-- **Program type mapping layers**: Form values (`'featured-homes'`) → rule keys (`'FeaturedHomes'`) → display names (`'Featured Homes'`). ComplianceOverview has its own `FORM_TO_RULE_KEY` map; admin pages use `programTypeMapper.js`.
-- **Static assets**: Place in `public/` directory. Vite serves them at root URL (e.g., `public/gclba-logo.png` → `/gclba-logo.png`).
-- **FM field writes**: Always use `toFM(obj, FIELD_MAP)` to write fields to FileMaker. Never manually check `startsWith('TBD_')` — `toFM()` skips TBD fields automatically.
+- **Program type mapping layers**: Form values (`'featured-homes'`) to rule keys (`'FeaturedHomes'`) to display names (`'Featured Homes'`). ComplianceOverview has its own `FORM_TO_RULE_KEY` map; admin pages use `programTypeMapper.js`.
+- **Static assets**: Place in `public/` directory. Vite serves them at root URL (e.g., `public/gclba-logo.png` becomes `/gclba-logo.png`).
+- **FM field writes**: Always use `toFM(obj, FIELD_MAP)` to write fields to FileMaker. Never manually check `startsWith('TBD_')` - `toFM()` skips TBD fields automatically.
 - **FM buyer fields**: Use `toFM({ email, fullName }, BUYER_FIELD_MAP)` + `Object.assign()` to merge buyer context into submission/communication payloads.
 - **useEffect + async + intervals**: When setting up `setInterval` inside an async callback within `useEffect`, always gate on a `mounted` flag to prevent orphaned intervals after unmount.
 - **Code splitting**: Dashboard + Properties are eager-loaded; all other pages use `React.lazy()` in `main.jsx`. New pages should be lazy-loaded by default.
@@ -195,15 +183,15 @@ API error responses never leak `error.message` to clients — all 500s return ge
 - **API cache headers**: GET endpoints set `Cache-Control: s-maxage=N, stale-while-revalidate=M`. Only add to GET handlers, never POST/PUT/DELETE.
 - **Blob uploads**: `api/upload.js` uses `put(filename, req, { access: 'public' })` with `bodyParser: false`. Client sends raw file body via `fetch()` (see `src/lib/uploadFile.js`). Falls back to base64.
 - **Serverless router pattern**: Related endpoints consolidated into single files with `?action=` routing (filemaker.js, tokens.js) to manage Vercel function count.
-- **Vercel env vars**: Use `printf 'value' | vercel env add` — never `echo` (adds trailing newline that breaks header-safe values like CRON_SECRET).
+- **Vercel env vars**: Use `printf 'value' | vercel env add`, never `echo` (adds trailing newline that breaks header-safe values like CRON_SECRET).
 - **Deployment**: `git push origin main` then `npx vercel@50.15.0 --prod`. Vercel Pro uses Turbo Build (30 cores).
-- **StatusPill**: Uses `children` for display text, NOT a `label` prop. `<StatusPill variant="info">{text}</StatusPill>` — never `<StatusPill label={text} />`.
-- **FormField onChange**: `TextInput`/`SelectInput` call `onChange(value, event)` — first arg is the extracted value, not a DOM event. Use `(value) => fn(value)`, not `(e) => fn(e.target.value)`.
-- **FM sync upsert**: Spread full `fromFM()` output with explicit defaults for required fields. Never cherry-pick individual fields — it creates a "field graveyard" where mapped fields don't reach the database. Strip null/undefined keys before upsert to avoid overwriting existing data.
+- **StatusPill**: Uses `children` for display text, NOT a `label` prop. `<StatusPill variant="info">{text}</StatusPill>`, never `<StatusPill label={text} />`.
+- **FormField onChange**: `TextInput`/`SelectInput` call `onChange(value, event)` - first arg is the extracted value, not a DOM event. Use `(value) => fn(value)`, not `(e) => fn(e.target.value)`.
+- **FM sync upsert**: Spread full `fromFM()` output with explicit defaults for required fields. Never cherry-pick individual fields - it creates a "field graveyard" where mapped fields don't reach the database. Strip null/undefined keys before upsert to avoid overwriting existing data.
 - **Inline auth gates for mixed-access endpoints**: When a consolidated `?action=` router has both public and admin operations, route the public action first, then add an auth check before admin operations. Don't rely on middleware query-param matching.
 - **React Flow gotchas**: Override `.react-flow { background: transparent !important }` for custom backgrounds. Never put titles as RF nodes (inflates fitView). Use content-level dimming (not container `opacity`) to keep card backgrounds solid. Keep annotations always mounted with opacity transitions (never conditional mount). Use `anchor: true` data flag for bookend portal nodes (260px) vs service nodes (220px).
-- **Smooth hover reveals**: Never conditionally mount (`{show && <el>}`) for animated content — causes layout reflow. Always render the element, toggle with `opacity-0/100` + `max-w-0/max-w-[Npx]` and `transition-all duration-200 ease-out`.
-- **Patch application**: Prefer `git apply --3way` over `git am` — patches often target older commits and strict context matching fails.
+- **Smooth hover reveals**: Never conditionally mount (`{show && <el>}`) for animated content - causes layout reflow. Always render the element, toggle with `opacity-0/100` + `max-w-0/max-w-[Npx]` and `transition-all duration-200 ease-out`.
+- **Patch application**: Prefer `git apply --3way` over `git am` - patches often target older commits and strict context matching fails.
 - **CSS dot grid `background-position`**: Use `background-position` offset (e.g., `10px 10px`) to center `radial-gradient` dots within tiles.
 
 ---
@@ -216,11 +204,12 @@ API error responses never leak `error.message` to clients — all 500s return ge
 | Serverless router pattern (`?action=`) | Vercel counts each `.js` file as a function; consolidation keeps count manageable |
 | `db push` over `migrate dev` for schema changes | Project has no migration history (started with `db push`); `migrate dev` would require full DB reset. Non-destructive column additions only. |
 | Typography overhaul: 3 fonts, 4 tokens | Bitter (`font-heading`) for headings only, IBM Plex Sans (`font-sans` + `font-label`) for body and labels, JetBrains Mono (`font-mono`) for technical data. `font-label` is semantically distinct from `font-sans` for future font-swap flexibility |
-| FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" — new mapped fields never reached DB. Spread + null-strip is future-proof |
+| FM sync spreads full fromFM() output | Cherry-picking 11 of 50+ fields caused "field graveyard" where new mapped fields never reached DB. Spread + null-strip is future-proof |
 | Middleware supports Clerk JWT + ADMIN_API_KEY fallback | Clerk for production auth, ADMIN_API_KEY for API scripts/testing, prototype mode when neither is set |
-| SOP callout annotations frame portal as evolution | Compliance SOP author will view page; all callout text is respectful improvement framing, never attack. No dashes or word "enforcement" |
-| How It Works: click-through nav over scroll-sync | Single `useState(activeStep)` drives node highlights, edge animation, and chapter content — replaced bidirectional IntersectionObserver which had sync edge cases. Simpler, more reliable |
+| SOP content uses neutral documentation tone | Compliance SOP author will view the How to Use page; all text is respectful, no comparison language, no dashes, no word "enforcement" |
+| How It Works: click-through nav over scroll-sync | Single `useState(activeStep)` drives node highlights, edge animation, and chapter content. Replaced bidirectional IntersectionObserver which had sync edge cases |
 | How It Works: two-part page (hero + Deep Dive) | Interactive hero is guided tour (click steps); scrollable Deep Dive below renders all chapters for reference. Same content, two consumption modes |
+| No em dashes site-wide | Consistency and encoding safety. Use regular hyphens (` - `) in all code, comments, and user-facing strings |
 
 ---
 
@@ -233,11 +222,10 @@ npm run preview      # Preview production build locally
 npm run db:push      # Push schema changes to Neon
 npm run db:seed      # Seed database with initial data
 npm run db:studio    # Open Prisma Studio GUI
+vercel dev           # Run serverless functions locally alongside Vite
 ```
 
 **Environment**: Copy `.env.example` to `.env` and fill in Neon connection strings. `RESEND_API_KEY` is optional (mock mode without it).
-
-**Local API development**: Use `vercel dev` (Vercel CLI) to run serverless functions locally alongside Vite.
 
 **FileMaker debug**: Visit `/api/filemaker?action=status&meta=true` to see all FM layout fields (requires credentials).
 
@@ -245,7 +233,7 @@ npm run db:studio    # Open Prisma Studio GUI
 
 ## Next Steps
 
-1. **FileMaker credentials** — Get real FM credentials from Lucille; run `?action=status&meta=true` to discover remaining 15 TBD_ field names. Bridge page + normalizer are ready.
-2. **Authentication** — Add role-based auth (staff vs. buyer) before any public deployment beyond prototype
-3. **Tests** — Set up Vitest, start with compliance engine unit tests (`computeComplianceTiming`)
-4. **Feature roadmap** — See `docs/feature-spec.md` for the full 28-feature, 6-pillar plan
+1. **FileMaker credentials** - Get real FM credentials from Lucille; run `?action=status&meta=true` to discover remaining 15 TBD_ field names. Bridge page + normalizer are ready.
+2. **Authentication** - Add role-based auth (staff vs. buyer) before any public deployment beyond prototype
+3. **Tests** - Set up Vitest, start with compliance engine unit tests (`computeComplianceTiming`)
+4. **Feature roadmap** - See `docs/feature-spec.md` for the full 28-feature, 6-pillar plan
