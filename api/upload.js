@@ -1,5 +1,5 @@
 /**
- * POST /api/upload — Upload a file to Vercel Blob storage.
+ * POST /api/upload - Upload a file to Vercel Blob storage.
  *
  * Accepts the file as the raw request body with headers:
  *   x-filename: original filename
@@ -7,7 +7,7 @@
  *
  * Returns { url, pathname } from Vercel Blob.
  *
- * Uses server-side put() — simple and reliable for files under 4.5MB.
+ * Uses server-side put() - simple and reliable for files under 4.5MB.
  * Compliance photos (phone camera JPEGs) are typically 2-4MB.
  */
 

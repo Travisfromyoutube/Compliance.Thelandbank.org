@@ -1,10 +1,10 @@
 /**
- * /api/filemaker — Consolidated FileMaker API router.
+ * /api/filemaker - Consolidated FileMaker API router.
  *
  * Routes by ?action= query parameter:
- *   GET  ?action=status  — Connection health check (was /api/filemaker/status)
- *   GET  ?action=sync    — Pull FM records into Neon (was /api/filemaker/sync)
- *   POST ?action=push    — Push portal record to FM (was /api/filemaker/push)
+ *   GET  ?action=status  - Connection health check (was /api/filemaker/status)
+ *   GET  ?action=sync    - Pull FM records into Neon (was /api/filemaker/sync)
+ *   POST ?action=push    - Push portal record to FM (was /api/filemaker/push)
  *
  * Consolidated to stay within Vercel Hobby plan's 12-function limit.
  */
@@ -74,7 +74,7 @@ export default withSentry(async function handler(req, res) {
 });
 
 /* ══════════════════════════════════════════════════════════
- *  STATUS — Connection health check
+ *  STATUS - Connection health check
  * ══════════════════════════════════════════════════════════ */
 
 async function handleStatus(req, res) {
@@ -82,7 +82,7 @@ async function handleStatus(req, res) {
   const circuitOpen = await isCircuitOpen();
   const syncMeta = await prisma.syncMetadata.findUnique({ where: { id: 'singleton' } }).catch(() => null);
 
-  // Static field mapping — always available regardless of FM connection
+  // Static field mapping - always available regardless of FM connection
   const staticFieldMapping = {
     mappedFields: Object.keys(PROPERTY_FIELD_MAP).length,
     portalFields: Object.keys(PROPERTY_FIELD_MAP),
@@ -203,9 +203,9 @@ async function handleStatus(req, res) {
 }
 
 /* ══════════════════════════════════════════════════════════
- *  SYNC — Pull FM records into Neon (incremental delta)
+ *  SYNC - Pull FM records into Neon (incremental delta)
  *
- *  Default mode is 'delta' — only pulls records modified
+ *  Default mode is 'delta' - only pulls records modified
  *  since the last successful sync. Use ?mode=full to pull
  *  all records (will time out in serverless for large DBs).
  * ══════════════════════════════════════════════════════════ */
@@ -251,7 +251,7 @@ async function handleSync(req, res) {
 
     const fmData = await withSession(async (token) => {
       if (mode === 'full') {
-        // Full sync — paginate through all records
+        // Full sync - paginate through all records
         // WARNING: Will time out on Vercel for large datasets.
         // Use for initial seed or from a long-running environment.
         const allRecords = [];
@@ -280,7 +280,7 @@ async function handleSync(req, res) {
         return allRecords;
       }
 
-      // Delta sync — only records modified since last sync
+      // Delta sync - only records modified since last sync
       const fmDate = formatDateForFM(syncMeta.lastSyncAt);
 
       try {
@@ -317,7 +317,7 @@ async function handleSync(req, res) {
         mode,
         totalFmRecords: fmData.length,
         preview,
-        message: 'Dry run — no records written. Remove ?dryRun=true to sync.',
+        message: 'Dry run - no records written. Remove ?dryRun=true to sync.',
       });
     }
 
@@ -380,7 +380,7 @@ async function handleSync(req, res) {
             buyerId = newBuyer.id;
           }
         } else {
-          // No email — reuse existing buyer linked to this property if possible
+          // No email - reuse existing buyer linked to this property if possible
           const existingProp = await prisma.property.findUnique({
             where: { parcelId: propertyData.parcelId },
             select: { buyerId: true, buyer: true },
@@ -454,7 +454,7 @@ async function handleSync(req, res) {
           continue;
         }
 
-        // Build property data for upsert — spread all fromFM() fields with explicit defaults
+        // Build property data for upsert - spread all fromFM() fields with explicit defaults
         const { parcelId, status, ...restPropertyData } = propertyData;
 
         const upsertData = {
@@ -505,7 +505,7 @@ async function handleSync(req, res) {
 
     log.info('fm_sync_complete', { mode, ...stats, errorCount: stats.errors.length });
 
-    // Update sync metadata — mark idle with new timestamp
+    // Update sync metadata - mark idle with new timestamp
     await prisma.syncMetadata.update({
       where: { id: 'singleton' },
       data: {
@@ -554,7 +554,7 @@ function formatDateForFM(date) {
 }
 
 /* ══════════════════════════════════════════════════════════
- *  PUSH — Push a portal record to FileMaker
+ *  PUSH - Push a portal record to FileMaker
  * ══════════════════════════════════════════════════════════ */
 
 async function handlePush(req, res) {
@@ -620,7 +620,7 @@ async function pushSubmission(submissionId, layouts, res) {
     // Add parcel context
     submissionFields[PROPERTY_FIELD_MAP.parcelId] = parcelId;
 
-    // Add buyer context via toFM() — automatically skips TBD fields
+    // Add buyer context via toFM() - automatically skips TBD fields
     const buyerFields = toFM({
       email: submission.property.buyer?.email || '',
       fullName: joinNameForFM(
@@ -630,7 +630,7 @@ async function pushSubmission(submissionId, layouts, res) {
     }, BUYER_FIELD_MAP);
     Object.assign(submissionFields, buyerFields);
 
-    // Document counts (these field names are TBD — will be set when layout is created)
+    // Document counts (these field names are TBD - will be set when layout is created)
     const photos = submission.documents.filter((d) => d.category === 'photo');
     const docs = submission.documents.filter((d) => d.category === 'document');
     const receipts = submission.documents.filter((d) => d.category === 'receipt');

@@ -1,5 +1,5 @@
 /**
- * Seed script — populates Neon Postgres from mockData.js definitions.
+ * Seed script - populates Neon Postgres from mockData.js definitions.
  *
  * Run with: npx prisma db seed
  * (configured in package.json prisma.seed)

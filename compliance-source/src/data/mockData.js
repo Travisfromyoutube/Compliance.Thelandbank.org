@@ -10,10 +10,10 @@ export const PROGRAM_TYPES = {
 
 export const ENFORCEMENT_LEVELS = {
   COMPLIANT: { level: 0, label: 'Compliant', color: 'emerald', bgClass: 'bg-emerald-100 text-emerald-800' },
-  LEVEL_1: { level: 1, label: 'Level 1 — Notice & Technical Assistance', color: 'yellow', bgClass: 'bg-yellow-100 text-yellow-800', daysRange: '0-30 days past deadline' },
-  LEVEL_2: { level: 2, label: 'Level 2 — Formal Warning', color: 'orange', bgClass: 'bg-orange-100 text-orange-800', daysRange: '31-60 days past deadline' },
-  LEVEL_3: { level: 3, label: 'Level 3 — Default Notice', color: 'red', bgClass: 'bg-red-100 text-red-800', daysRange: '61-90 days past deadline' },
-  LEVEL_4: { level: 4, label: 'Level 4 — Legal Remedies', color: 'red', bgClass: 'bg-red-200 text-red-900', daysRange: '91+ days past deadline' }
+  LEVEL_1: { level: 1, label: 'Level 1 - Notice & Technical Assistance', color: 'yellow', bgClass: 'bg-yellow-100 text-yellow-800', daysRange: '0-30 days past deadline' },
+  LEVEL_2: { level: 2, label: 'Level 2 - Formal Warning', color: 'orange', bgClass: 'bg-orange-100 text-orange-800', daysRange: '31-60 days past deadline' },
+  LEVEL_3: { level: 3, label: 'Level 3 - Default Notice', color: 'red', bgClass: 'bg-red-100 text-red-800', daysRange: '61-90 days past deadline' },
+  LEVEL_4: { level: 4, label: 'Level 4 - Legal Remedies', color: 'red', bgClass: 'bg-red-200 text-red-900', daysRange: '91+ days past deadline' }
 };
 
 export const COMPLIANCE_STATUSES = {
@@ -328,7 +328,7 @@ export const mockProperties = [
 export const emailTemplates = [
   { id: 'rehab-1st', name: 'Request for Proof of Renovations', program: ['R4R', 'Featured Homes'], attempt: 1 },
   { id: 'rehab-2nd', name: '2nd Request for Proof of Renovations', program: ['R4R', 'Featured Homes'], attempt: 2 },
-  { id: 'rehab-mail', name: 'Proof of Renovations — Mail', program: ['R4R', 'Featured Homes'], attempt: 1, mailOnly: true },
+  { id: 'rehab-mail', name: 'Proof of Renovations - Mail', program: ['R4R', 'Featured Homes'], attempt: 1, mailOnly: true },
   { id: 'demo-proof', name: 'Proof of Demo Investment', program: ['Demolition'], attempt: 1 },
   { id: 'vip-checkin', name: 'VIP Compliance Check-In', program: ['VIP'], attempt: 1 },
   { id: 'level3-default', name: 'Default Notice', program: ['all'], attempt: 3 },

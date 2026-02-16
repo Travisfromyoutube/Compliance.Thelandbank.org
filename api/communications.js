@@ -1,14 +1,14 @@
 /**
- * GET /api/communications — communication records.
+ * GET /api/communications - communication records.
  *
  * Query params:
- *   ?id=xxx            — fetch a single communication by ID (returns full details)
- *   ?propertyId=xxx    — filter by property
- *   ?status=sent       — filter by status
- *   ?from=2025-01-01   — filter by sentAt >= date
- *   ?to=2025-12-31     — filter by sentAt <= date
- *   ?limit=50          — pagination limit (default 100)
- *   ?offset=0          — pagination offset
+ *   ?id=xxx            - fetch a single communication by ID (returns full details)
+ *   ?propertyId=xxx    - filter by property
+ *   ?status=sent       - filter by status
+ *   ?from=2025-01-01   - filter by sentAt >= date
+ *   ?to=2025-12-31     - filter by sentAt <= date
+ *   ?limit=50          - pagination limit (default 100)
+ *   ?offset=0          - pagination offset
  */
 
 import prisma from '../src/lib/db.js';
@@ -23,10 +23,10 @@ export default withSentry(async function handler(req, res) {
   if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
 
   // ── AUDIT PROTECTION: Communications are append-only ──
-  // Per SECURITY.md: "Audit log is append-only — no updates or deletes via API."
+  // Per SECURITY.md: "Audit log is append-only - no updates or deletes via API."
   // Communications are created via /api/email (POST). This endpoint is read-only.
   if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed — audit records are immutable' });
+    return res.status(405).json({ error: 'Method not allowed - audit records are immutable' });
   }
 
   const session = await requireAuth(req, res);

@@ -1,9 +1,9 @@
 /**
- * GET /api/properties — list properties with buyer info.
+ * GET /api/properties - list properties with buyer info.
  *
  * Supports cursor-based pagination for scalability:
- *   ?limit=50                  — page size (default: all, max: 200)
- *   ?cursor=<id>               — fetch records after this property ID
+ *   ?limit=50                  - page size (default: all, max: 200)
+ *   ?cursor=<id>               - fetch records after this property ID
  *
  * When limit is provided, returns paginated response:
  *   { data: [...], nextCursor, hasMore, total }
@@ -11,9 +11,9 @@
  * When limit is omitted, returns flat array (backwards compatible).
  *
  * Filter params:
- *   ?program=Featured Homes   — filter by programType
- *   ?status=active             — filter by status
- *   ?level=2                   — filter by enforcementLevel
+ *   ?program=Featured Homes   - filter by programType
+ *   ?status=active             - filter by status
+ *   ?level=2                   - filter by enforcementLevel
  */
 
 import prisma from '../src/lib/db.js';

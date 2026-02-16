@@ -1,5 +1,5 @@
 /**
- * LegendNode — color-coded category legend for the blueprint diagram.
+ * LegendNode - color-coded category legend for the blueprint diagram.
  * Rendered as a non-interactive React Flow node at the bottom of the map.
  */
 

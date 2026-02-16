@@ -1,11 +1,11 @@
 /**
- * GET /api/compliance — server-computed compliance data.
+ * GET /api/compliance - server-computed compliance data.
  *
  * Query params:
- *   ?type=due-now       — compliance queue sorted by urgency (default)
- *   ?type=exceptions    — properties with data quality issues
- *   ?program=Featured Homes  — filter by program type (due-now only)
- *   ?dueOnly=true       — only return properties where isDueNow is true (due-now only)
+ *   ?type=due-now       - compliance queue sorted by urgency (default)
+ *   ?type=exceptions    - properties with data quality issues
+ *   ?program=Featured Homes  - filter by program type (due-now only)
+ *   ?dueOnly=true       - only return properties where isDueNow is true (due-now only)
  */
 
 import prisma from '../src/lib/db.js';

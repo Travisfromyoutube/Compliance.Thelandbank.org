@@ -1,10 +1,10 @@
 /**
- * /api/templates — CRUD for email templates.
+ * /api/templates - CRUD for email templates.
  *
- * GET    — list all templates
- * POST   — create a new template
- * PUT    — update an existing template (requires id in body)
- * DELETE — delete a template (requires ?id= query param)
+ * GET    - list all templates
+ * POST   - create a new template
+ * PUT    - update an existing template (requires id in body)
+ * DELETE - delete a template (requires ?id= query param)
  */
 
 import prisma from '../src/lib/db.js';
@@ -24,7 +24,7 @@ export default withSentry(async function handler(req, res) {
   if (!session) return;
 
   try {
-    /* ── GET — list all templates ──────────────────────── */
+    /* ── GET - list all templates ──────────────────────── */
     if (req.method === 'GET') {
       const templates = await prisma.emailTemplate.findMany({
         orderBy: { createdAt: 'desc' },
@@ -34,7 +34,7 @@ export default withSentry(async function handler(req, res) {
       return res.status(200).json(templates);
     }
 
-    /* ── POST — create template ────────────────────────── */
+    /* ── POST - create template ────────────────────────── */
     if (req.method === 'POST') {
       const data = validateOrReject(createTemplateBody, req.body, res);
       if (!data) return;
@@ -47,7 +47,7 @@ export default withSentry(async function handler(req, res) {
       return res.status(201).json(template);
     }
 
-    /* ── PUT — update template ─────────────────────────── */
+    /* ── PUT - update template ─────────────────────────── */
     if (req.method === 'PUT') {
       const validated = validateOrReject(updateTemplateBody, req.body, res);
       if (!validated) return;
@@ -67,7 +67,7 @@ export default withSentry(async function handler(req, res) {
       return res.status(200).json(template);
     }
 
-    /* ── DELETE — remove template ──────────────────────── */
+    /* ── DELETE - remove template ──────────────────────── */
     if (req.method === 'DELETE') {
       const { id } = req.query;
 

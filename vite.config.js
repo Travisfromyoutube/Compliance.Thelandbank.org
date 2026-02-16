@@ -8,11 +8,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Vendor chunks — cached long-term, change rarely
+          // Vendor chunks - cached long-term, change rarely
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Map libraries — only loaded when visiting /map
+          // Map libraries - only loaded when visiting /map
           'vendor-map': ['leaflet', 'react-leaflet'],
-          // React Flow — only loaded when visiting architecture diagram
+          // React Flow - only loaded when visiting architecture diagram
           'vendor-flow': ['@xyflow/react'],
         },
       },

@@ -1,5 +1,5 @@
 /**
- * GET /api/cron/compliance-check — Daily compliance monitoring.
+ * GET /api/cron/compliance-check - Daily compliance monitoring.
  *
  * Invoked by Vercel Cron at 8 AM Eastern (1 PM UTC), Mon-Fri.
  * Authenticated via CRON_SECRET bearer token.
@@ -90,11 +90,11 @@ export default withSentry(async function handler(req, res) {
     /* ── 4. Send digest email ────────────────────────── */
     if (dueNow.length > 0) {
       const urgentList = digest.topUrgent
-        .map((p) => `  • ${p.address} (${p.program}) — ${p.action}, ${p.daysOverdue} days overdue`)
+        .map((p) => `  • ${p.address} (${p.program}) - ${p.action}, ${p.daysOverdue} days overdue`)
         .join('\n');
 
       const body = [
-        `GCLBA Compliance Digest — ${digest.date}`,
+        `GCLBA Compliance Digest - ${digest.date}`,
         '',
         `Properties needing action: ${digest.dueNowCount}`,
         `Properties 30+ days overdue: ${digest.overdue30Count}`,
@@ -108,7 +108,7 @@ export default withSentry(async function handler(req, res) {
 
       await sendEmail({
         to: STAFF_EMAIL,
-        subject: `[GCLBA] ${digest.dueNowCount} properties need compliance action — ${digest.date}`,
+        subject: `[GCLBA] ${digest.dueNowCount} properties need compliance action - ${digest.date}`,
         body,
       });
     }

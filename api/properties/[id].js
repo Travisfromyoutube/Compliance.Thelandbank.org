@@ -1,5 +1,5 @@
 /**
- * GET /api/properties/:id — single property with full relations.
+ * GET /api/properties/:id - single property with full relations.
  *
  * Returns property + buyer + program + communications + submissions.
  * Communications are sorted newest-first.
@@ -23,7 +23,7 @@ export default withSentry(async function handler(req, res) {
 
   const { id } = req.query;
 
-  /* ── GET — fetch single property ─────────────────────── */
+  /* ── GET - fetch single property ─────────────────────── */
   if (req.method === 'GET') {
     try {
       const property = await prisma.property.findUnique({
@@ -105,7 +105,7 @@ export default withSentry(async function handler(req, res) {
     }
   }
 
-  /* ── PATCH — update property fields ──────────────────── */
+  /* ── PATCH - update property fields ──────────────────── */
   if (req.method === 'PATCH') {
     try {
       const updates = validateOrReject(patchPropertyBody, req.body, res);

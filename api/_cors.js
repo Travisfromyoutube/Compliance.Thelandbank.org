@@ -46,10 +46,10 @@ export function cors(req, res, opts = {}) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
   } else if (!origin) {
-    // Server-to-server calls (cron, CLI) have no Origin header — allow them
+    // Server-to-server calls (cron, CLI) have no Origin header - allow them
     // but don't set ACAO so browsers still block cross-origin
   } else {
-    // Origin present but not whitelisted — block
+    // Origin present but not whitelisted - block
     res.setHeader('Vary', 'Origin');
     return res.status(403).json({ error: 'Origin not allowed' }) || true;
   }

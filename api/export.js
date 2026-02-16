@@ -1,11 +1,11 @@
 /**
- * GET /api/export — data export endpoints.
+ * GET /api/export - data export endpoints.
  *
  * Query params:
- *   ?type=filemaker         — structured export for FileMaker sync (default)
- *   ?type=communications    — full communication log export
- *   ?format=csv|json        — output format (default: json)
- *   ?from=2025-01-01        — filter by date range (communications only)
+ *   ?type=filemaker         - structured export for FileMaker sync (default)
+ *   ?type=communications    - full communication log export
+ *   ?format=csv|json        - output format (default: json)
+ *   ?from=2025-01-01        - filter by date range (communications only)
  *   ?to=2025-12-31
  */
 
@@ -27,7 +27,7 @@ export default withSentry(async function handler(req, res) {
 
   const type = req.query.type || 'filemaker';
 
-  // Exports must always reflect current data — never serve stale
+  // Exports must always reflect current data - never serve stale
   res.setHeader('Cache-Control', 'no-store');
 
   try {

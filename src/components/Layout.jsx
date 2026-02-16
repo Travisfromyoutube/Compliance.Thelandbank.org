@@ -300,7 +300,7 @@ function FileMakerSyncStatus() {
             </span>
           </div>
         )}
-        {/* Sync button — always visible, disabled when not connected */}
+        {/* Sync button - always visible, disabled when not connected */}
         <button
           onClick={handleSync}
           disabled={syncing || !connected}

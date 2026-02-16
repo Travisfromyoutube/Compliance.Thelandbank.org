@@ -1,10 +1,10 @@
 /**
- * Vercel Edge Middleware — lightweight API route protection.
+ * Vercel Edge Middleware - lightweight API route protection.
  *
  * Authentication modes (checked in order):
- *   1. Clerk JWT — when CLERK_SECRET_KEY is set, verifies Bearer token
- *   2. ADMIN_API_KEY — legacy static API key (fallback)
- *   3. Prototype mode — when neither is set, all routes are open
+ *   1. Clerk JWT - when CLERK_SECRET_KEY is set, verifies Bearer token
+ *   2. ADMIN_API_KEY - legacy static API key (fallback)
+ *   3. Prototype mode - when neither is set, all routes are open
  *
  * Public routes (buyer-facing, always open):
  *   /api/submissions, /api/upload, /api/tokens (verify action)

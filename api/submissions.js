@@ -1,5 +1,5 @@
 /**
- * POST /api/submissions — buyer compliance submission.
+ * POST /api/submissions - buyer compliance submission.
  *
  * Accepts the form data from BuyerSubmission.jsx:
  *   { token|tokenId, parcelId?, type, formData, documents }
@@ -33,7 +33,7 @@ import { log } from '../src/lib/logger.js';
 export default withSentry(async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, OPTIONS' })) return;
 
-  /* ── GET — list submissions (admin) ──────────────────── */
+  /* ── GET - list submissions (admin) ──────────────────── */
   if (req.method === 'GET') {
     const session = await requireAuth(req, res);
     if (!session) return;
@@ -63,7 +63,7 @@ export default withSentry(async function handler(req, res) {
     }
   }
 
-  /* ── POST — new buyer submission ─────────────────────── */
+  /* ── POST - new buyer submission ─────────────────────── */
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -198,7 +198,7 @@ async function pushToFileMaker(submissionId, parcelId, property) {
   const layouts = getLayouts();
 
   await withSession(async (token) => {
-    // Build submission fields using the field maps — no hardcoded FM names
+    // Build submission fields using the field maps - no hardcoded FM names
     const submissionFields = toFM({
       type: 'progress',
       status: 'received',
@@ -209,7 +209,7 @@ async function pushToFileMaker(submissionId, parcelId, property) {
     // Add parcel context
     submissionFields[PROPERTY_FIELD_MAP.parcelId] = parcelId;
 
-    // Add buyer context via toFM() — automatically skips TBD fields
+    // Add buyer context via toFM() - automatically skips TBD fields
     const buyerFields = toFM({
       email: property.buyer?.email || '',
       fullName: joinNameForFM(

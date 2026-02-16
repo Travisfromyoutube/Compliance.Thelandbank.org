@@ -49,10 +49,10 @@ function FMBridgeBadge() {
  *
  * Two-part layout:
  * 1. Interactive hero: Full-width React Flow diagram + click-through step nav
- *    - Clicking steps highlights nodes and animates edges
- *    - Active chapter content appears below the nav bar
+ *   - Clicking steps highlights nodes and animates edges
+ *   - Active chapter content appears below the nav bar
  * 2. Scrollable reference: All chapters rendered in sequence below the hero
- *    - Reinforcing learning tool — same content, browsable format
+ *   - Reinforcing learning tool - same content, browsable format
  *
  * The hero is the guided tour; the scroll content is the reference manual.
  */

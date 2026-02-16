@@ -68,15 +68,15 @@ export const generateMilestones = (programType, dateSold) => {
     case PROGRAM_TYPES.VIP:
       // VIP uses the RC date system from FileMaker
       return [
-        { key: 'RC15', label: 'RC15 — 15-Day Check-In', dueDate: addDays(dateSold, 15), category: 'check-in' },
-        { key: 'RC45', label: 'RC45 — 45-Day Check-In', dueDate: addDays(dateSold, 45), category: 'check-in' },
-        { key: 'RC90', label: 'RC90 — 90-Day Check-In', dueDate: addDays(dateSold, 90), category: 'check-in' },
-        { key: 'RC135', label: 'RC135 — Progress Review', dueDate: addDays(dateSold, 135), category: 'check-in' },
-        { key: 'RC180', label: 'RC180 — 6-Month Review', dueDate: addDays(dateSold, 180), category: 'inspection' },
-        { key: 'RC225', label: 'RC225 — Progress Review', dueDate: addDays(dateSold, 225), category: 'check-in' },
-        { key: 'RC270', label: 'RC270 — 9-Month Review', dueDate: addDays(dateSold, 270), category: 'inspection' },
-        { key: 'RC315', label: 'RC315 — Progress Review', dueDate: addDays(dateSold, 315), category: 'check-in' },
-        { key: 'RC360', label: 'RC360 — Final Review', dueDate: addDays(dateSold, 360), category: 'completion' }
+        { key: 'RC15', label: 'RC15 - 15-Day Check-In', dueDate: addDays(dateSold, 15), category: 'check-in' },
+        { key: 'RC45', label: 'RC45 - 45-Day Check-In', dueDate: addDays(dateSold, 45), category: 'check-in' },
+        { key: 'RC90', label: 'RC90 - 90-Day Check-In', dueDate: addDays(dateSold, 90), category: 'check-in' },
+        { key: 'RC135', label: 'RC135 - Progress Review', dueDate: addDays(dateSold, 135), category: 'check-in' },
+        { key: 'RC180', label: 'RC180 - 6-Month Review', dueDate: addDays(dateSold, 180), category: 'inspection' },
+        { key: 'RC225', label: 'RC225 - Progress Review', dueDate: addDays(dateSold, 225), category: 'check-in' },
+        { key: 'RC270', label: 'RC270 - 9-Month Review', dueDate: addDays(dateSold, 270), category: 'inspection' },
+        { key: 'RC315', label: 'RC315 - Progress Review', dueDate: addDays(dateSold, 315), category: 'check-in' },
+        { key: 'RC360', label: 'RC360 - Final Review', dueDate: addDays(dateSold, 360), category: 'completion' }
       ];
 
     default:
@@ -122,7 +122,7 @@ export const getMilestoneStatus = (milestone, completedDate) => {
 
 // Format date for display
 export const formatDate = (dateStr) => {
-  if (!dateStr) return '—';
+  if (!dateStr) return ' -';
   const d = new Date(dateStr + 'T00:00:00');
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 };

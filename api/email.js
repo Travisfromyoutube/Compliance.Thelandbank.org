@@ -1,10 +1,10 @@
 /**
- * POST /api/email — email operations.
+ * POST /api/email - email operations.
  *
  * Body.action determines the operation:
- *   action: "send"        — send a single compliance email
- *   action: "send-batch"  — batch send up to 50 emails
- *   action: "preview"     — render template previews without sending
+ *   action: "send"        - send a single compliance email
+ *   action: "send-batch"  - batch send up to 50 emails
+ *   action: "preview"     - render template previews without sending
  */
 
 import prisma from '../src/lib/db.js';

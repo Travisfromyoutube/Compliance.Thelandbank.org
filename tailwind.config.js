@@ -26,8 +26,8 @@ export default {
         },
 
         /* ── Warm surface tokens (buyer portal) ─────────── */
-        'warm-100': '#f0ece5',          // warm stone — hero header, photo slots
-        'warm-200': '#e4ddd2',          // deeper warm — spine line, dividers
+        'warm-100': '#f0ece5',          // warm stone - hero header, photo slots
+        'warm-200': '#e4ddd2',          // deeper warm - spine line, dividers
 
         /* ── Brand accents (GCLBA-inspired blue/green) ───── */
         accent: {
@@ -65,11 +65,11 @@ export default {
         xl: '12px',
       },
       boxShadow: {
-        /* Level 1 — card containers */
+        /* Level 1 - card containers */
         sm:    '0 1px 2px 0 rgba(0,0,0,0.04), 0 1px 3px 0 rgba(0,0,0,0.02)',
-        /* Level 2 — interactive focus / hovered surfaces */
+        /* Level 2 - interactive focus / hovered surfaces */
         md:    '0 2px 8px -2px rgba(0,0,0,0.08), 0 1px 4px -1px rgba(0,0,0,0.04)',
-        /* Removed inner — inputs should not have inset shadow */
+        /* Removed inner - inputs should not have inset shadow */
         inner: 'none',
       },
       keyframes: {

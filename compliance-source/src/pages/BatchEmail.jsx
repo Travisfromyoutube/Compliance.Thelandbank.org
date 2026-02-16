@@ -249,7 +249,7 @@ Compliance Team
                       </span>
                     </td>
                     <td className="px-6 py-3 text-slate-600">
-                      {property.compliance1stAttempt ? formatDate(property.compliance1stAttempt) : '—'}
+                      {property.compliance1stAttempt ? formatDate(property.compliance1stAttempt) : ' -'}
                     </td>
                   </tr>
                 ))}

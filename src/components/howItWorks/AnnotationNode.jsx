@@ -1,5 +1,5 @@
 /**
- * AnnotationNode — SOP callout for the dark blueprint diagram.
+ * AnnotationNode - SOP callout for the dark blueprint diagram.
  * Fades in when its chapter is active, fades out otherwise.
  * Light text + subtle dashed border for visibility on dark background.
  */

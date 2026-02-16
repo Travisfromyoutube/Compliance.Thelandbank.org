@@ -5,9 +5,9 @@ import { AppIcon } from '../ui';
  * SystemNode - Custom React Flow node for the dark blueprint diagram.
  *
  * Category colors (left border):
- * - portal:      #2d7a4a (civic green) — Buyer Portal, Admin Portal
- * - service:     #2b5f8a (civic blue)  — Vercel API, Compliance Engine
- * - integration: #b07d2e (warm ochre)  — Neon, FileMaker, Resend
+ * - portal:      #2d7a4a (civic green) - Buyer Portal, Admin Portal
+ * - service:     #2b5f8a (civic blue)  - Vercel API, Compliance Engine
+ * - integration: #b07d2e (warm ochre)  - Neon, FileMaker, Resend
  *
  * Two sizes:
  * - Anchor nodes (portals): 260px wide, larger icon/text

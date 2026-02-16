@@ -1,11 +1,11 @@
 /**
- * /api/tokens — Consolidated access-token router.
+ * /api/tokens - Consolidated access-token router.
  *
  * Routes by ?action= query parameter (or defaults to CRUD):
- *   GET  ?action=verify&token=xxx  — Verify a buyer token (was /api/verify-token)
- *   GET                            — List tokens (was /api/access-tokens GET)
- *   POST                           — Create a token (was /api/access-tokens POST)
- *   DELETE ?id=xxx                  — Revoke a token (was /api/access-tokens DELETE)
+ *   GET  ?action=verify&token=xxx  - Verify a buyer token (was /api/verify-token)
+ *   GET                            - List tokens (was /api/access-tokens GET)
+ *   POST                           - Create a token (was /api/access-tokens POST)
+ *   DELETE ?id=xxx                  - Revoke a token (was /api/access-tokens DELETE)
  *
  * Consolidated to stay within Vercel Hobby plan's 12-function limit.
  */
@@ -24,7 +24,7 @@ export default withSentry(async function handler(req, res) {
   if (cors(req, res, { methods: 'GET, POST, DELETE, OPTIONS' })) return;
 
   try {
-    // Route: GET ?action=verify — buyer token verification (public, no auth)
+    // Route: GET ?action=verify - buyer token verification (public, no auth)
     if (req.method === 'GET' && req.query.action === 'verify') {
       if (!(await applyRateLimit(rateLimiters.tokenVerify, req, res))) return;
       return handleVerify(req, res);
@@ -34,18 +34,18 @@ export default withSentry(async function handler(req, res) {
     const session = await requireAuth(req, res);
     if (!session) return;
 
-    // Route: GET — list tokens (admin)
+    // Route: GET - list tokens (admin)
     if (req.method === 'GET') {
       return handleList(req, res);
     }
 
-    // Route: POST — create token (admin)
+    // Route: POST - create token (admin)
     if (req.method === 'POST') {
       if (!(await applyRateLimit(rateLimiters.tokenCreate, req, res))) return;
       return handleCreate(req, res);
     }
 
-    // Route: DELETE — revoke token (admin)
+    // Route: DELETE - revoke token (admin)
     if (req.method === 'DELETE') {
       return handleRevoke(req, res);
     }

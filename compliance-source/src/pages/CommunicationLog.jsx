@@ -314,7 +314,7 @@ export default function CommunicationLog() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-slate-700 max-w-xs truncate">
-                      {comm.template || comm.subject || '—'}
+                      {comm.template || comm.subject || ' -'}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusBadge.class}`}>

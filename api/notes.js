@@ -1,12 +1,12 @@
 /**
- * GET /api/notes — list notes for a property.
- * POST /api/notes — create a new note.
+ * GET /api/notes - list notes for a property.
+ * POST /api/notes - create a new note.
  *
  * Query params (GET):
- *   ?propertyId=xxx    — filter by property (required)
- *   ?visibility=internal — filter by visibility
- *   ?limit=50          — pagination limit (default 100)
- *   ?offset=0          — pagination offset
+ *   ?propertyId=xxx    - filter by property (required)
+ *   ?visibility=internal - filter by visibility
+ *   ?limit=50          - pagination limit (default 100)
+ *   ?offset=0          - pagination offset
  */
 
 import prisma from '../src/lib/db.js';
@@ -23,10 +23,10 @@ export default withSentry(async function handler(req, res) {
   if (!(await applyRateLimit(rateLimiters.general, req, res))) return;
 
   // ── AUDIT PROTECTION: Notes are append-only ───────────
-  // Per SECURITY.md: "Audit log is append-only — no updates or deletes via API."
+  // Per SECURITY.md: "Audit log is append-only - no updates or deletes via API."
   // Only GET (read) and POST (create) are allowed. PUT/PATCH/DELETE are blocked.
   if (!['GET', 'POST', 'OPTIONS'].includes(req.method)) {
-    return res.status(405).json({ error: 'Method not allowed — audit records are immutable' });
+    return res.status(405).json({ error: 'Method not allowed - audit records are immutable' });
   }
 
   const session = await requireAuth(req, res);
