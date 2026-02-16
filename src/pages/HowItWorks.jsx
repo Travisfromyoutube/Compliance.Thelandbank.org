@@ -1,8 +1,47 @@
-import { useState, useCallback, lazy, Suspense } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { usePageTitle } from '../hooks/usePageTitle';
 import ICONS from '../icons/iconMap';
 import { AdminPageHeader, AppIcon } from '../components/ui';
 import SystemMap from '../components/howItWorks/SystemMap';
+
+/* ── FileMaker Bridge connection badge (top-right of header) ── */
+function FMBridgeBadge() {
+  const [status, setStatus] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/filemaker?action=status')
+      .then((r) => r.json())
+      .then((data) => { if (mounted) setStatus(data); })
+      .catch(() => { if (mounted) setStatus({ connected: false, configured: false, error: true }); });
+    return () => { mounted = false; };
+  }, []);
+
+  if (status === null) return null;
+
+  const connected = status.connected;
+  const configured = status.configured;
+  const hasError = status.error || (configured && !connected);
+
+  const dotColor = connected ? 'bg-accent' : hasError ? 'bg-danger' : 'bg-warm-400/40';
+  const label = connected ? 'Connected' : hasError ? 'Error' : 'Awaiting setup';
+  const textColor = connected ? 'text-accent' : hasError ? 'text-danger' : 'text-warm-500';
+  const borderColor = connected ? 'border-accent/20' : hasError ? 'border-danger/20' : 'border-warm-300';
+
+  return (
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-surface ${borderColor}`}>
+      <AppIcon icon={ICONS.database} size={14} className={textColor} />
+      <span className="relative flex h-2 w-2">
+        {connected && (
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/60 opacity-75" />
+        )}
+        <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
+      </span>
+      <span className={`text-xs font-medium ${textColor}`}>FileMaker Bridge</span>
+      <span className={`text-[10px] font-mono ${textColor} opacity-70`}>{label}</span>
+    </div>
+  );
+}
 
 /**
  * HowItWorks - "How This Portal Works" page
@@ -47,7 +86,7 @@ function ChapterFallback() {
 }
 
 export default function HowItWorks() {
-  usePageTitle('How This Portal Works');
+  usePageTitle('Data Integration & Security');
   const [activeStep, setActiveStep] = useState(0);
 
   const activeChapter = STEPS[activeStep].id;
@@ -75,9 +114,10 @@ export default function HowItWorks() {
   return (
     <div className="space-y-0">
       <AdminPageHeader
-        title="How This Portal Works"
-        subtitle="What's actually happening under the hood"
-        icon={ICONS.bookOpen}
+        title="Data Integration & Security"
+        subtitle="How data flows between systems and stays safe"
+        icon={ICONS.database}
+        actions={<FMBridgeBadge />}
       />
 
       {/* ═══════════════════════════════════════════

@@ -17,12 +17,12 @@ const ClerkUserButton = CLERK_KEY
 const NAV_SECTIONS = [
   {
     id: 'howItWorks',
-    label: 'How it Works',
+    label: 'How This Portal Works',
     icon: ICONS.bookOpen,
     collapsible: true,
     items: [
-      { label: 'Data Integration & Security',  icon: ICONS.database, path: '/bridge' },
       { label: 'How to Use the Portal',         icon: ICONS.clipboardList, path: '/how-to-use' },
+      { label: 'Data Integration & Security',    icon: ICONS.database, path: '/bridge' },
     ],
   },
   {
@@ -214,6 +214,7 @@ function NavSection({ section, openSections, toggleSection, onNavClick, badgeCou
 
 function FileMakerSyncStatus() {
   const [fmStatus, setFmStatus] = useState(null);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -224,13 +225,12 @@ function FileMakerSyncStatus() {
         const data = await res.json();
         if (mounted) {
           setFmStatus(data);
-          // Only start polling if FileMaker is actually configured
           if (data.configured && !intervalId && mounted) {
             intervalId = setInterval(check, 5 * 60 * 1000);
           }
         }
       } catch {
-        if (mounted) setFmStatus({ connected: false, configured: false });
+        if (mounted) setFmStatus({ connected: false, configured: false, error: true });
       }
     }
     check();
@@ -239,6 +239,32 @@ function FileMakerSyncStatus() {
 
   const connected = fmStatus?.connected;
   const configured = fmStatus?.configured;
+  const hasError = fmStatus?.error || (configured && !connected);
+
+  /* Tri-state: gray (not configured), green (connected), red (configured but failing) */
+  const dotColor = connected ? 'bg-accent' : hasError ? 'bg-danger' : 'bg-blue-200/30';
+  const dotPing = connected || syncing;
+  const statusText = fmStatus === null
+    ? 'Checking...'
+    : connected ? 'Connected' : hasError ? 'Connection error' : 'Awaiting setup';
+  const statusColor = connected ? 'text-accent-light' : hasError ? 'text-danger/80' : 'text-blue-200/40';
+
+  async function handleSync(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (syncing || !connected) return;
+    setSyncing(true);
+    try {
+      await fetch('/api/filemaker?action=sync');
+      const res = await fetch('/api/filemaker?action=status');
+      const data = await res.json();
+      setFmStatus(data);
+    } catch {
+      /* status will reflect error on next poll */
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   return (
     <div className="px-2.5 pb-2">
@@ -254,19 +280,16 @@ function FileMakerSyncStatus() {
         </div>
         <div className="flex items-center gap-2">
           <span className="relative flex h-2 w-2">
-            {connected && (
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/60 opacity-75" />
+            {dotPing && (
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${syncing ? 'bg-accent/60' : connected ? 'bg-accent/60' : 'bg-danger/60'}`} />
             )}
-            <span className={`relative inline-flex rounded-full h-2 w-2 ${connected ? 'bg-accent' : configured ? 'bg-warning' : 'bg-blue-200/30'}`} />
+            <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
           </span>
-          <span className={`text-[10px] font-medium ${connected ? 'text-accent-light' : 'text-blue-200/40'}`}>
-            {fmStatus === null ? 'Checking...' : connected ? 'Connected' : configured ? 'Disconnected' : 'Awaiting setup'}
-          </span>
-          <span className="text-[10px] text-blue-200/30 ml-auto font-mono">
-            {connected ? 'Bidirectional' : ''}
+          <span className={`text-[10px] font-medium ${statusColor}`}>
+            {syncing ? 'Syncing...' : statusText}
           </span>
         </div>
-        {connected && fmStatus.sync && (
+        {connected && fmStatus?.sync && (
           <div className="flex items-center gap-1.5 mt-1.5">
             <AppIcon icon={ICONS.sync} size={10} className="text-blue-200/30" />
             <span className="text-[9px] text-blue-200/30 font-mono">
@@ -275,6 +298,22 @@ function FileMakerSyncStatus() {
                 : `${fmStatus.sync.delta} records behind`}
             </span>
           </div>
+        )}
+        {/* Sync button — only when connected */}
+        {connected && (
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className={[
+              'mt-2 w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-150',
+              syncing
+                ? 'bg-accent/20 text-accent-light cursor-wait'
+                : 'bg-white/[0.06] text-blue-200/60 hover:bg-accent/20 hover:text-accent-light',
+            ].join(' ')}
+          >
+            <AppIcon icon={ICONS.sync} size={11} className={syncing ? 'animate-spin' : ''} />
+            {syncing ? 'Synchronizing' : 'Sync Now'}
+          </button>
         )}
       </Link>
     </div>

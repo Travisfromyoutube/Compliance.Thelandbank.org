@@ -101,6 +101,19 @@ export default function HowToUse() {
         icon={ICONS.clipboardList}
       />
 
+      {/* About this software */}
+      <div className="mb-6 px-1">
+        <p className="text-sm text-muted leading-relaxed">
+          This portal is custom software built for the Genesee County Land Bank Authority
+          to streamline compliance management across all property sale programs. Built on
+          React and backed by a PostgreSQL database with real-time FileMaker synchronization,
+          it replaces the previous multi-tool workflow of FileMaker exports, Excel sorting,
+          Word mail merge, Outlook archiving, and K-drive filing with a single, unified system.
+          Every compliance action — from sending notices to reviewing buyer submissions — is
+          handled here and automatically recorded in a searchable audit trail.
+        </p>
+      </div>
+
       {/* Two-column layout: SOP phases + quick reference sidebar */}
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Main SOP content */}
