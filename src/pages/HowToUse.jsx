@@ -28,9 +28,9 @@ import PhaseDivider from '../components/howToUse/PhaseDivider';
 /* ── Intro section above the phases ── */
 function IntroCard() {
   return (
-    <div className="mb-10 rounded-xl overflow-hidden border border-accent/15 shadow-sm">
+    <div className="mb-10 rounded-xl overflow-hidden border border-accent/15 bg-white shadow-sm">
       {/* Tinted header band */}
-      <div className="px-6 py-5 bg-gradient-to-r from-accent/[0.06] to-accent-blue/[0.04] border-b border-accent/10">
+      <div className="px-6 py-5 bg-gradient-to-r from-accent/[0.10] to-accent-blue/[0.07] border-b border-accent/10">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white border border-accent/15 flex items-center justify-center shadow-sm">
             <AppIcon icon={ICONS.clipboardList} size={22} className="text-accent" />
@@ -40,14 +40,16 @@ function IntroCard() {
               Compliance Standard Operating Procedure
             </h2>
             <p className="text-sm text-muted leading-relaxed">
-              This guide covers the full compliance workflow for all four programs.
-              Each phase below maps to the tasks you perform daily, weekly, or as needed.
+              This guide walks through the compliance workflow as it works in the portal,
+              covering all four programs: Featured Homes, Ready4Rehab (R4R), Demolition,
+              and VIP. Each phase below maps to the tasks you perform daily, weekly, or
+              as needed.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Program badges in a clean white section */}
+      {/* Program badges */}
       <div className="px-6 py-4 bg-white">
         <p className="text-[10px] font-label font-semibold tracking-[0.08em] uppercase text-muted mb-2.5">
           Programs covered
@@ -118,17 +120,6 @@ export default function HowToUse() {
         subtitle="The compliance workflow for all four programs, in one place"
         icon={ICONS.clipboardList}
       />
-
-      {/* About this page */}
-      <div className="mb-10 px-1">
-        <p className="text-sm text-muted leading-relaxed">
-          This page walks through the compliance workflow as it works in the portal,
-          covering all four programs: Featured Homes, Ready4Rehab (R4R), Demolition,
-          and VIP. The workflow follows the compliance framework established by the
-          GCLBA compliance team. FileMaker remains the system of record; the portal
-          reads from it and writes back to it automatically.
-        </p>
-      </div>
 
       {/* Two-column layout: SOP phases + quick reference sidebar */}
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">

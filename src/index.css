@@ -43,18 +43,6 @@
 /* ── App background - green-tinted grid with vignette ── */
 .app-bg {
   background-color: #f6f5f3;
-  position: relative;
-}
-/*
- * Grid layer - lives behind content as a pseudo-element.
- * mask-image fades the grid toward viewport edges (vignette)
- * so only the grid dissolves, never the content above it.
- */
-.app-bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
   background-image:
     /* Grid lines - green-tinted wireframe, 1.5px strokes */
     repeating-linear-gradient(
@@ -68,21 +56,22 @@
     /* Intersection dots - green emphasis at grid crossings */
     radial-gradient(circle 1px at 40px 40px, rgba(45, 122, 74, 0.08) 1px, transparent 1px);
   background-size: 40px 40px;
-  /* Vignette: grid visible across most of viewport, fades near edges */
-  -webkit-mask-image: radial-gradient(
+  position: relative;
+}
+/* Vignette - fades ONLY the grid at viewport edges, fixed to viewport */
+.app-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
     ellipse 80% 70% at 50% 50%,
-    black 0%,
-    rgba(0, 0, 0, 0.6) 55%,
-    rgba(0, 0, 0, 0.2) 80%,
-    transparent 100%
+    transparent 0%,
+    rgba(246, 245, 243, 0.4) 55%,
+    rgba(246, 245, 243, 0.75) 80%,
+    rgba(246, 245, 243, 0.95) 100%
   );
-  mask-image: radial-gradient(
-    ellipse 80% 70% at 50% 50%,
-    black 0%,
-    rgba(0, 0, 0, 0.6) 55%,
-    rgba(0, 0, 0, 0.2) 80%,
-    transparent 100%
-  );
+  z-index: 0;
 }
 /* Noise texture overlay */
 .app-bg::after {
@@ -93,6 +82,12 @@
   opacity: 0.12;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   background-size: 256px 256px;
+  z-index: 0;
+}
+/* Content renders above vignette and noise overlays */
+.app-bg > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Sidebar - cooler blue gradient ───────────────── */
