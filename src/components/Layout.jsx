@@ -74,14 +74,14 @@ function NavItem({ item, onClick }) {
           'group flex items-center gap-2.5 pl-9 pr-3 py-[7px] text-[13px] rounded-md transition-all duration-150',
           isActive
             ? 'bg-white/10 text-white font-medium shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
-            : 'text-blue-200/60 font-medium hover:bg-white/[0.05] hover:text-blue-100',
+            : 'text-blue-200/80 font-medium hover:bg-white/[0.05] hover:text-blue-100',
         ].join(' ')
       }
     >
       <AppIcon icon={item.icon} size={15} />
       <span className="flex-1">{item.label}</span>
       {item.shortcut && (
-        <kbd className="hidden lg:inline text-[9px] font-mono text-blue-200/30 bg-white/[0.04] px-1.5 py-0.5 rounded leading-none">
+        <kbd className="hidden lg:inline text-[9px] font-mono text-blue-200/50 bg-white/[0.04] px-1.5 py-0.5 rounded leading-none">
           Alt+{item.shortcut}
         </kbd>
       )}
@@ -102,7 +102,7 @@ function NavItemWithBadge({ item, onClick, badgeCount }) {
           'group flex items-center gap-2.5 pl-9 pr-3 py-[7px] text-[13px] rounded-md transition-all duration-150',
           isActive
             ? 'bg-white/10 text-white font-medium shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
-            : 'text-blue-200/60 font-medium hover:bg-white/[0.05] hover:text-blue-100',
+            : 'text-blue-200/80 font-medium hover:bg-white/[0.05] hover:text-blue-100',
         ].join(' ')
       }
     >
@@ -133,8 +133,8 @@ function SectionHeader({ section, isOpen, hasActiveChild, onClick }) {
         isCollapsible ? 'cursor-pointer' : 'cursor-default',
         hasActiveChild
           ? 'text-accent bg-white/[0.06]'
-          : 'text-blue-200/50',
-        isCollapsible && !hasActiveChild ? 'hover:text-blue-200/70 hover:bg-white/[0.04]' : '',
+          : 'text-blue-200/70',
+        isCollapsible && !hasActiveChild ? 'hover:text-blue-200/90 hover:bg-white/[0.04]' : '',
       ].join(' ')}
     >
       <AppIcon icon={section.icon} size={15} />
@@ -248,7 +248,7 @@ function FileMakerSyncStatus() {
   const statusText = fmStatus === null
     ? 'Checking...'
     : connected ? 'Connected' : hasError ? 'Connection error' : 'Awaiting credentials';
-  const statusColor = connected ? 'text-accent-light' : hasError ? 'text-danger/80' : 'text-blue-200/40';
+  const statusColor = connected ? 'text-accent-light' : hasError ? 'text-danger/80' : 'text-blue-200/60';
 
   async function handleSync(e) {
     e.preventDefault();
@@ -274,8 +274,8 @@ function FileMakerSyncStatus() {
         className="block px-3 py-2.5 rounded-md bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] transition-colors"
       >
         <div className="flex items-center gap-2 mb-2">
-          <AppIcon icon={ICONS.database} size={13} className="text-blue-200/60" />
-          <span className="text-[11px] font-label font-semibold tracking-[0.06em] uppercase text-blue-200/50">
+          <AppIcon icon={ICONS.database} size={13} className="text-blue-200/70" />
+          <span className="text-[11px] font-label font-semibold tracking-[0.06em] uppercase text-blue-200/70">
             FileMaker Bridge
           </span>
         </div>
@@ -292,8 +292,8 @@ function FileMakerSyncStatus() {
         </div>
         {connected && fmStatus?.sync && (
           <div className="flex items-center gap-1.5 mt-1.5">
-            <AppIcon icon={ICONS.sync} size={10} className="text-blue-200/30" />
-            <span className="text-[9px] text-blue-200/30 font-mono">
+            <AppIcon icon={ICONS.sync} size={10} className="text-blue-200/50" />
+            <span className="text-[9px] text-blue-200/50 font-mono">
               {fmStatus.sync.inSync
                 ? `${fmStatus.sync.fmRecords} records in sync`
                 : `${fmStatus.sync.delta} records behind`}
@@ -309,8 +309,8 @@ function FileMakerSyncStatus() {
             syncing
               ? 'bg-accent/20 text-accent-light cursor-wait'
               : !connected
-                ? 'bg-white/[0.03] text-blue-200/20 cursor-not-allowed'
-                : 'bg-white/[0.06] text-blue-200/60 hover:bg-accent/20 hover:text-accent-light',
+                ? 'bg-white/[0.03] text-blue-200/40 cursor-not-allowed'
+                : 'bg-white/[0.06] text-blue-200/70 hover:bg-accent/20 hover:text-accent-light',
           ].join(' ')}
         >
           <AppIcon icon={ICONS.sync} size={11} className={syncing ? 'animate-spin' : ''} />
@@ -338,7 +338,7 @@ function BatchMailNudge() {
             <p className="text-[13px] font-medium text-white leading-tight">
               Batch Mail
             </p>
-            <p className="text-[10px] text-blue-200/40 mt-0.5 group-hover:text-blue-200/60 transition-colors">
+            <p className="text-[10px] text-blue-200/60 mt-0.5 group-hover:text-blue-200/80 transition-colors">
               Send compliance emails →
             </p>
           </div>
@@ -394,11 +394,11 @@ function Sidebar({ onNavClick }) {
           <h1 className="font-heading text-[17px] font-bold tracking-tight text-white leading-none">
             GCLBA
           </h1>
-          <span className="text-[10px] font-mono text-blue-200/40 tracking-widest uppercase leading-none">
+          <span className="text-[10px] font-mono text-blue-200/60 tracking-widest uppercase leading-none">
             v1.1
           </span>
         </div>
-        <p className="text-[10px] font-label text-blue-200/50 mt-1 tracking-[0.15em] uppercase">
+        <p className="text-[10px] font-label text-blue-200/70 mt-1 tracking-[0.15em] uppercase">
           Compliance Portal
         </p>
       </div>
@@ -432,7 +432,7 @@ function Sidebar({ onNavClick }) {
               'flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-md transition-colors duration-150',
               isActive
                 ? 'bg-white/10 text-white font-medium'
-                : 'text-blue-200/50 hover:bg-white/[0.05] hover:text-blue-100',
+                : 'text-blue-200/70 hover:bg-white/[0.05] hover:text-blue-100',
             ].join(' ')
           }
         >
@@ -447,7 +447,7 @@ function Sidebar({ onNavClick }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={onNavClick}
-          className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-blue-200/50 hover:bg-white/[0.05] hover:text-blue-100 rounded-md transition-colors duration-150"
+          className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-blue-200/70 hover:bg-white/[0.05] hover:text-blue-100 rounded-md transition-colors duration-150"
         >
           <AppIcon icon={ICONS.buyerPortal} size={15} />
           <span>Buyer Portal</span>
