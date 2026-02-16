@@ -3,6 +3,7 @@ import ICONS from '../icons/iconMap';
 import { AdminPageHeader, AppIcon, Card } from '../components/ui';
 import SOPPhase from '../components/howToUse/SOPPhase';
 import SOPStep from '../components/howToUse/SOPStep';
+import PhaseDivider from '../components/howToUse/PhaseDivider';
 
 /**
  * HowToUse - Staff workflow guide for the Compliance Portal.
@@ -27,35 +28,48 @@ import SOPStep from '../components/howToUse/SOPStep';
 /* ── Intro section above the phases ── */
 function IntroCard() {
   return (
-    <Card className="mb-8">
-      <div className="flex flex-col sm:flex-row gap-5">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/10 border border-accent/15 flex items-center justify-center">
-          <AppIcon icon={ICONS.clipboardList} size={22} className="text-accent" />
-        </div>
-        <div className="flex-1">
-          <h2 className="font-heading text-base font-semibold text-text mb-1.5">
-            Compliance Workflow Guide
-          </h2>
-          <p className="text-sm text-muted leading-relaxed mb-3">
-            Each section below walks through a part of the compliance process:
-            checking your workload, sending notices, reviewing buyer submissions,
-            recording completion, and managing VIP agreements. Everything
-            described here happens inside the portal.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {['Featured Homes', 'Ready4Rehab', 'Demolition', 'VIP'].map((prog) => (
-              <span
-                key={prog}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-warm-100 text-xs font-medium text-warm-700 border border-warm-200"
-              >
-                <AppIcon icon={ICONS.circleDot} size={10} className="text-accent" />
-                {prog}
-              </span>
-            ))}
+    <div className="mb-10 rounded-xl overflow-hidden border border-accent/15 shadow-sm">
+      {/* Tinted header band */}
+      <div className="px-6 py-5 bg-gradient-to-r from-accent/[0.06] to-accent-blue/[0.04] border-b border-accent/10">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white border border-accent/15 flex items-center justify-center shadow-sm">
+            <AppIcon icon={ICONS.clipboardList} size={22} className="text-accent" />
+          </div>
+          <div className="flex-1">
+            <h2 className="font-heading text-lg font-semibold text-text mb-1">
+              Compliance Standard Operating Procedure
+            </h2>
+            <p className="text-sm text-muted leading-relaxed">
+              This guide covers the full compliance workflow for all four programs.
+              Each phase below maps to the tasks you perform daily, weekly, or as needed.
+            </p>
           </div>
         </div>
       </div>
-    </Card>
+
+      {/* Program badges in a clean white section */}
+      <div className="px-6 py-4 bg-white">
+        <p className="text-[10px] font-label font-semibold tracking-[0.08em] uppercase text-muted mb-2.5">
+          Programs covered
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { name: 'Featured Homes', color: 'bg-accent/8 text-accent border-accent/15' },
+            { name: 'Ready4Rehab', color: 'bg-accent-blue/8 text-accent-blue border-accent-blue/15' },
+            { name: 'Demolition', color: 'bg-warning/8 text-warning border-warning/15' },
+            { name: 'VIP', color: 'bg-accent-dark/8 text-accent-dark border-accent-dark/15' },
+          ].map((prog) => (
+            <span
+              key={prog.name}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${prog.color}`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-50" />
+              {prog.name}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -119,7 +133,7 @@ export default function HowToUse() {
       {/* Two-column layout: SOP phases + quick reference sidebar */}
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Main SOP content */}
-        <div className="flex-1 min-w-0 space-y-5">
+        <div className="flex-1 min-w-0 space-y-3">
           <IntroCard />
 
           {/* ═══════════════════════════════════════
@@ -194,6 +208,8 @@ export default function HowToUse() {
               </SOPStep>
             </div>
           </SOPPhase>
+
+          <PhaseDivider />
 
           {/* ═══════════════════════════════════════
               SECTION 2: Sending Notices
@@ -282,6 +298,8 @@ export default function HowToUse() {
               </SOPStep>
             </div>
           </SOPPhase>
+
+          <PhaseDivider />
 
           {/* ═══════════════════════════════════════
               SECTION 3: Buyer Submissions
@@ -380,6 +398,8 @@ export default function HowToUse() {
             </div>
           </SOPPhase>
 
+          <PhaseDivider />
+
           {/* ═══════════════════════════════════════
               SECTION 4: Recording Completion
               ═══════════════════════════════════════ */}
@@ -451,6 +471,8 @@ export default function HowToUse() {
               </SOPStep>
             </div>
           </SOPPhase>
+
+          <PhaseDivider />
 
           {/* ═══════════════════════════════════════
               SECTION 5: VIP Agreements
