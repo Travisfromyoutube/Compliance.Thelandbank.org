@@ -40,58 +40,45 @@
   }
 }
 
-/* ── App background - green-tinted grid with vignette ── */
+/*
+ * App background - green-tinted grid with vignette.
+ *
+ * The grid and vignette are stacked background-image layers on the
+ * same element. The vignette is a radial gradient of the bg color
+ * layered on top of the grid, fading the grid toward the edges.
+ * Both scroll with content naturally. No pseudo-element tricks needed.
+ */
 .app-bg {
   background-color: #f6f5f3;
-  position: relative;
-}
-/*
- * Grid layer with vignette mask.
- *
- * The grid is on ::before with position:absolute so it scrolls with
- * the parent container. mask-image fades the grid at viewport edges.
- * mask-attachment:fixed pins the mask to the viewport so the vignette
- * stays at screen edges even as the grid scrolls.
- */
-.app-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
   background-image:
-    /* Grid lines - green-tinted wireframe, 1.5px strokes */
-    repeating-linear-gradient(
-      0deg, transparent, transparent 38.5px,
-      rgba(45, 122, 74, 0.055) 38.5px, rgba(45, 122, 74, 0.055) 40px
+    /* Layer 1 (top): Vignette - bg-color radial fade over the grid */
+    radial-gradient(
+      ellipse 80% 70% at 50% 50%,
+      transparent 0%,
+      rgba(246, 245, 243, 0.35) 50%,
+      rgba(246, 245, 243, 0.7) 75%,
+      rgba(246, 245, 243, 0.95) 100%
     ),
+    /* Layer 2: Vertical grid lines */
     repeating-linear-gradient(
       90deg, transparent, transparent 38.5px,
       rgba(45, 122, 74, 0.055) 38.5px, rgba(45, 122, 74, 0.055) 40px
     ),
-    /* Intersection dots - green emphasis at grid crossings */
+    /* Layer 3: Horizontal grid lines */
+    repeating-linear-gradient(
+      0deg, transparent, transparent 38.5px,
+      rgba(45, 122, 74, 0.055) 38.5px, rgba(45, 122, 74, 0.055) 40px
+    ),
+    /* Layer 4 (bottom): Intersection dots */
     radial-gradient(circle 1px at 40px 40px, rgba(45, 122, 74, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  /* Vignette: mask fades grid at viewport edges, pinned to viewport */
-  -webkit-mask-image: radial-gradient(
-    ellipse 80% 70% at 50% 50%,
-    black 0%,
-    rgba(0, 0, 0, 0.6) 55%,
-    rgba(0, 0, 0, 0.2) 80%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(
-    ellipse 80% 70% at 50% 50%,
-    black 0%,
-    rgba(0, 0, 0, 0.6) 55%,
-    rgba(0, 0, 0, 0.2) 80%,
-    transparent 100%
-  );
-  -webkit-mask-attachment: fixed;
-  mask-attachment: fixed;
+  /* Vignette covers full viewport, grid tiles at 40px */
+  background-size: 100% 100%, 40px 40px, 40px 40px, 40px 40px;
+  /* Vignette stays centered on viewport, grid scrolls with content */
+  background-attachment: fixed, scroll, scroll, scroll;
+  position: relative;
 }
 /* Noise texture overlay */
-.app-bg::after {
+.app-bg::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -99,12 +86,6 @@
   opacity: 0.12;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   background-size: 256px 256px;
-  z-index: 0;
-}
-/* Content renders above grid and noise overlays */
-.app-bg > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* ── Sidebar - cooler blue gradient ───────────────── */
