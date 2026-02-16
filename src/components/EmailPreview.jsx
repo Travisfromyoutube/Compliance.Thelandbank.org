@@ -340,7 +340,7 @@ export function EmailPreview({ properties, templates, timings, onClose, onApprov
                 <div className="mb-4 sm:mb-6">
                   <Card className="p-4 bg-surface-alt border border-border">
                     <div className="mb-4">
-                      <label className="block text-xs font-heading font-semibold text-muted uppercase tracking-wide mb-1">
+                      <label className="block text-xs font-label font-semibold text-muted uppercase tracking-wide mb-1">
                         To
                       </label>
                       <p className={selectedProperty.buyerEmail ? 'text-text' : 'text-danger'}>
@@ -349,7 +349,7 @@ export function EmailPreview({ properties, templates, timings, onClose, onApprov
                     </div>
 
                     <div>
-                      <label className="block text-xs font-heading font-semibold text-muted uppercase tracking-wide mb-1">
+                      <label className="block text-xs font-label font-semibold text-muted uppercase tracking-wide mb-1">
                         Subject
                       </label>
                       <p className="text-text font-medium text-sm sm:text-base">
@@ -360,7 +360,7 @@ export function EmailPreview({ properties, templates, timings, onClose, onApprov
                 </div>
 
                 <div className="flex-1 mb-4 sm:mb-6">
-                  <label className="block text-xs font-heading font-semibold text-muted uppercase tracking-wide mb-2">
+                  <label className="block text-xs font-label font-semibold text-muted uppercase tracking-wide mb-2">
                     Body
                   </label>
                   <Card className="p-4 bg-white border border-border h-full overflow-y-auto">

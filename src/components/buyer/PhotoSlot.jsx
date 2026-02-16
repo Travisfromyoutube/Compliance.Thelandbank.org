@@ -120,7 +120,7 @@ export default function PhotoSlot({ label, photo, onUpload, onRemove }) {
       )}
 
       {/* Slot label badge */}
-      <span className="mt-2 text-xs font-mono font-semibold uppercase tracking-wide text-text/60 text-center leading-tight">
+      <span className="mt-2 text-xs font-label font-semibold uppercase tracking-wide text-text/60 text-center leading-tight">
         {label}
       </span>
 

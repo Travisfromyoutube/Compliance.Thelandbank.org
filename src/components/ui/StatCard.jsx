@@ -36,7 +36,7 @@ export function StatCard({
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[11px] font-heading font-semibold uppercase tracking-wider text-muted">{label}</p>
+          <p className="text-[11px] font-label font-semibold uppercase tracking-wider text-muted">{label}</p>
           <p className="text-2xl font-mono font-semibold text-text tabular-nums mt-1">{value}</p>
           {trend && <p className="text-xs text-muted mt-1">{trend}</p>}
         </div>

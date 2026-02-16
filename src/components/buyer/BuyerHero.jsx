@@ -35,7 +35,7 @@ export default function BuyerHero() {
             </div>
           </div>
           <div className="hidden sm:flex flex-col items-end gap-1">
-            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-widest text-accent bg-accent/10 px-3 py-1.5 rounded">
+            <span className="inline-flex items-center gap-1.5 font-label text-[10px] font-medium uppercase tracking-widest text-accent bg-accent/10 px-3 py-1.5 rounded">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />

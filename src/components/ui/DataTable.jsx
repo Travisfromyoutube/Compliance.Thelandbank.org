@@ -83,7 +83,7 @@ export function DataTable({
               <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                 {detailCols.map((col, i) => (
                   <div key={i}>
-                    <p className="text-[10px] font-mono font-medium text-muted uppercase tracking-wider mb-0.5">
+                    <p className="text-[10px] font-label font-medium text-muted uppercase tracking-wider mb-0.5">
                       {col.header}
                     </p>
                     <div className="text-sm">
@@ -111,7 +111,7 @@ export function DataTable({
               {normalizedCols.map((col, i) => (
                 <th
                   key={i}
-                  className={`${cellPx} py-3.5 text-left text-xs font-heading font-semibold uppercase tracking-wide text-text-secondary`}
+                  className={`${cellPx} py-3.5 text-left text-xs font-label font-semibold uppercase tracking-wide text-text-secondary`}
                   style={col.width ? { minWidth: col.width } : {}}
                 >
                   {col.header}

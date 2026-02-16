@@ -356,7 +356,7 @@ export default function AuditTrail() {
 
                                   {/* Type badge */}
                                   <span
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium tracking-wide ${badge.cls}`}
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-label font-medium tracking-wide ${badge.cls}`}
                                   >
                                     <BadgeIcon className="w-3 h-3" />
                                     {badge.label}

@@ -173,7 +173,7 @@ const PropertyDetail = () => {
           <Card title="Featured Homes Requirements" className="mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Occupancy Status</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Occupancy Status</p>
                 <div className="flex items-center gap-2">
                   {property.occupancyEstablished === 'Yes' ? (
                     <CheckCircle className="w-5 h-5 text-success" />
@@ -190,7 +190,7 @@ const PropertyDetail = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Insurance Status</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Insurance Status</p>
                 <div className="flex items-center gap-2">
                   {property.insuranceReceived ? (
                     <CheckCircle className="w-5 h-5 text-success" />
@@ -203,7 +203,7 @@ const PropertyDetail = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Hold Period Timeline</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Hold Period Timeline</p>
                 <p className="text-text">
                   <span className="font-semibold font-mono">
                     {property.minimumHoldExpiry
@@ -216,7 +216,7 @@ const PropertyDetail = () => {
                 </p>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Annual Certification Date</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Annual Certification Date</p>
                 <p className="text-sm font-semibold text-text font-mono">
                   {formatDate(addDays(property.dateSold, 365))}
                 </p>
@@ -271,7 +271,7 @@ const PropertyDetail = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-border pt-6">
                 <div>
-                  <p className="text-xs font-heading font-medium text-muted uppercase mb-2">Permit Status</p>
+                  <p className="text-xs font-label font-medium text-muted uppercase mb-2">Permit Status</p>
                   <div className="flex items-center gap-2">
                     {property.buildingPermitObtained ? (
                       <CheckCircle className="w-5 h-5 text-success" />
@@ -284,7 +284,7 @@ const PropertyDetail = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-heading font-medium text-muted uppercase mb-2">Rehab Deadline</p>
+                  <p className="text-xs font-label font-medium text-muted uppercase mb-2">Rehab Deadline</p>
                   <p className="text-sm font-semibold text-text font-mono">{formatDate(property.rehabDeadline)}</p>
                 </div>
               </div>
@@ -297,7 +297,7 @@ const PropertyDetail = () => {
           <Card title="Demolition Status" className="mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Demolition Status</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Demolition Status</p>
                 <div className="flex items-center gap-2">
                   {property.demoFinalCertDate ? (
                     <CheckCircle className="w-5 h-5 text-success" />
@@ -310,7 +310,7 @@ const PropertyDetail = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Local Gov Certification</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Local Gov Certification</p>
                 <div className="flex items-center gap-2">
                   {property.demoFinalCertDate ? (
                     <CheckCircle className="w-5 h-5 text-success" />
@@ -325,7 +325,7 @@ const PropertyDetail = () => {
                 </div>
               </div>
               <div className="md:col-span-2 space-y-2">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Proof of Investment</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Proof of Investment</p>
                 <div className="flex items-center gap-2">
                   {property.dateProofOfInvestProvided ? (
                     <CheckCircle className="w-5 h-5 text-success" />
@@ -426,7 +426,7 @@ const PropertyDetail = () => {
                         if (typeof value === 'object' && value !== null) {
                           return (
                             <div key={key} className="ml-2 mb-2">
-                              <p className="text-xs font-heading font-medium text-muted uppercase tracking-wide mb-1">
+                              <p className="text-xs font-label font-medium text-muted uppercase tracking-wide mb-1">
                                 {label}
                               </p>
                               {Object.entries(value).map(([subKey, subVal]) => (
@@ -568,55 +568,55 @@ const PropertyDetail = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {property.bedrooms != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Bedrooms</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Bedrooms</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.bedrooms}</p>
               </div>
             )}
             {property.baths != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Baths</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Baths</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.baths}</p>
               </div>
             )}
             {property.sqFt != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Sq Ft</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Sq Ft</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.sqFt.toLocaleString()}</p>
               </div>
             )}
             {property.yearBuilt != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Year Built</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Year Built</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.yearBuilt}</p>
               </div>
             )}
             {property.stories != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Stories</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Stories</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.stories}</p>
               </div>
             )}
             {property.garageSize != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Garage</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Garage</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.garageSize} sq ft</p>
               </div>
             )}
             {property.basementSize != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Basement</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Basement</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.basementSize} sq ft</p>
               </div>
             )}
             {property.lotSize != null && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">Lot Size</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">Lot Size</p>
                 <p className="text-lg font-semibold text-text font-mono">{property.lotSize} acres</p>
               </div>
             )}
             {property.school && (
               <div className="space-y-1">
-                <p className="text-xs font-heading font-medium text-muted uppercase">School District</p>
+                <p className="text-xs font-label font-medium text-muted uppercase">School District</p>
                 <p className="text-lg font-semibold text-text">{property.school}</p>
               </div>
             )}
@@ -629,35 +629,35 @@ const PropertyDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <div>
-              <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Parcel ID</p>
+              <p className="text-xs font-label font-medium text-muted uppercase mb-1">Parcel ID</p>
               <p className="text-sm font-semibold text-text font-mono">{property.parcelId}</p>
             </div>
             <div>
-              <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Buyer Name</p>
+              <p className="text-xs font-label font-medium text-muted uppercase mb-1">Buyer Name</p>
               <p className="text-sm font-semibold text-text">{property.buyerName || property.buyer}</p>
             </div>
             <div>
-              <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Email</p>
+              <p className="text-xs font-label font-medium text-muted uppercase mb-1">Email</p>
               <p className="text-sm font-semibold text-text">{property.buyerEmail || 'Not provided'}</p>
             </div>
             {property.topNote && (
               <div>
-                <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Top Note</p>
+                <p className="text-xs font-label font-medium text-muted uppercase mb-1">Top Note</p>
                 <p className="text-sm font-semibold text-text font-mono">{property.topNote}</p>
               </div>
             )}
           </div>
           <div className="space-y-6">
             <div>
-              <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Date Sold</p>
+              <p className="text-xs font-label font-medium text-muted uppercase mb-1">Date Sold</p>
               <p className="text-sm font-semibold text-text font-mono">{formatDate(property.dateSold)}</p>
             </div>
             <div>
-              <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Offer Type</p>
+              <p className="text-xs font-label font-medium text-muted uppercase mb-1">Offer Type</p>
               <p className="text-sm font-semibold text-text">{property.offerType || 'Standard'}</p>
             </div>
             <div>
-              <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Program</p>
+              <p className="text-xs font-label font-medium text-muted uppercase mb-1">Program</p>
               <p className="text-sm font-semibold text-text">{property.programType}</p>
             </div>
           </div>
@@ -781,17 +781,17 @@ const PropertyDetail = () => {
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-muted">
                         <div>
-                          <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Due Date</p>
+                          <p className="text-xs font-label font-medium text-muted uppercase mb-1">Due Date</p>
                           <p className="font-medium text-text font-mono">{formatDate(milestone.dueDate)}</p>
                         </div>
                         {completedDate && (
                           <div>
-                            <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Completed</p>
+                            <p className="text-xs font-label font-medium text-muted uppercase mb-1">Completed</p>
                             <p className="font-medium text-success font-mono">{formatDate(completedDate)}</p>
                           </div>
                         )}
                         <div>
-                          <p className="text-xs font-heading font-medium text-muted uppercase mb-1">Category</p>
+                          <p className="text-xs font-label font-medium text-muted uppercase mb-1">Category</p>
                           <p className="font-medium text-text">{milestone.category}</p>
                         </div>
                       </div>
@@ -815,11 +815,11 @@ const PropertyDetail = () => {
         <Card title="Enforcement Action" variant={enforcementVariant} className="animate-fade-slide-up admin-stagger-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="space-y-2">
-              <p className="text-xs font-heading font-medium text-muted uppercase">Enforcement Level</p>
+              <p className="text-xs font-label font-medium text-muted uppercase">Enforcement Level</p>
               <p className="text-2xl font-semibold text-text font-mono">Level {property.enforcementLevel}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-heading font-medium text-muted uppercase">Days Overdue</p>
+              <p className="text-xs font-label font-medium text-muted uppercase">Days Overdue</p>
               <p className="text-2xl font-semibold text-text font-mono">
                 {enforcementData.overdue > 0 ? enforcementData.overdue : '-'}
               </p>
@@ -828,13 +828,13 @@ const PropertyDetail = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 pb-8 border-b border-border">
             <div className="space-y-2">
-              <p className="text-xs font-heading font-medium text-muted uppercase">1st Compliance Attempt</p>
+              <p className="text-xs font-label font-medium text-muted uppercase">1st Compliance Attempt</p>
               <p className="text-sm font-semibold text-text font-mono">
                 {property.compliance1stAttempt ? formatDate(property.compliance1stAttempt) : 'Not yet sent'}
               </p>
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-heading font-medium text-muted uppercase">2nd Compliance Attempt</p>
+              <p className="text-xs font-label font-medium text-muted uppercase">2nd Compliance Attempt</p>
               <p className="text-sm font-semibold text-text font-mono">
                 {property.compliance2ndAttempt ? formatDate(property.compliance2ndAttempt) : 'Not yet sent'}
               </p>

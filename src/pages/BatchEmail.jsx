@@ -367,13 +367,13 @@ export default function BatchEmail() {
                         className="w-4 h-4 rounded border-border cursor-pointer"
                       />
                     </th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Address</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Buyer</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Program</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Action</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Due Date</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Days Over</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Level</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Address</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Buyer</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Program</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Action</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Due Date</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Days Over</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Level</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -512,10 +512,10 @@ export default function BatchEmail() {
                             className="w-4 h-4 rounded border-border cursor-pointer"
                           />
                         </th>
-                        <th className="px-4 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Buyer</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Address</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Program</th>
-                        <th className="px-4 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Enforcement</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Buyer</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Address</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Program</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Enforcement</th>
                       </tr>
                     </thead>
                     <tbody>

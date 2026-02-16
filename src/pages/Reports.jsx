@@ -271,7 +271,7 @@ export default function Reports() {
       header: 'Compliant',
       accessor: 'compliant',
       render: (val) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success font-mono">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success font-label">
           {val}
         </span>
       ),
@@ -280,7 +280,7 @@ export default function Reports() {
       header: 'Warning',
       accessor: 'warning',
       render: (val) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-light text-warning font-mono">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-light text-warning font-label">
           {val}
         </span>
       ),
@@ -289,7 +289,7 @@ export default function Reports() {
       header: 'Default',
       accessor: 'defaultLevel',
       render: (val) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-light text-danger font-mono">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-light text-danger font-label">
           {val}
         </span>
       ),
@@ -299,7 +299,7 @@ export default function Reports() {
       accessor: 'complianceRate',
       render: (val) => (
         <span
-          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-mono ${getComplianceColor(val)}`}
+          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-label ${getComplianceColor(val)}`}
         >
           {val}%
         </span>
@@ -318,7 +318,7 @@ export default function Reports() {
       header: 'Completed',
       accessor: 'completedMilestones',
       render: (val) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success font-mono">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success font-label">
           {val}
         </span>
       ),
@@ -328,7 +328,7 @@ export default function Reports() {
       accessor: 'completionRate',
       render: (val) => (
         <span
-          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-mono ${getComplianceColor(val)}`}
+          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-label ${getComplianceColor(val)}`}
         >
           {val}%
         </span>
@@ -338,7 +338,7 @@ export default function Reports() {
       header: 'Overdue',
       accessor: 'overdueMilestones',
       render: (val) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-light text-danger font-mono">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-light text-danger font-label">
           {val}
         </span>
       ),
@@ -439,7 +439,7 @@ export default function Reports() {
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {/* Total Communications */}
             <div className="border-l-4 border-l-accent pl-4">
-              <p className="text-sm font-heading font-medium text-muted">Total Communications Sent</p>
+              <p className="text-sm font-label font-medium text-muted">Total Communications Sent</p>
               <p className="text-3xl font-mono font-bold text-text mt-2 tabular-nums">
                 {communicationMetrics.totalCommunications}
               </p>
@@ -447,7 +447,7 @@ export default function Reports() {
 
             {/* Email */}
             <div className="border-l-4 border-l-success pl-4">
-              <p className="text-sm font-heading font-medium text-muted">Email</p>
+              <p className="text-sm font-label font-medium text-muted">Email</p>
               <p className="text-3xl font-mono font-bold text-text mt-2 tabular-nums">
                 {communicationMetrics.communicationsByType.email}
               </p>
@@ -455,7 +455,7 @@ export default function Reports() {
 
             {/* Mail */}
             <div className="border-l-4 border-l-warning pl-4">
-              <p className="text-sm font-heading font-medium text-muted">Mail</p>
+              <p className="text-sm font-label font-medium text-muted">Mail</p>
               <p className="text-3xl font-mono font-bold text-text mt-2 tabular-nums">
                 {communicationMetrics.communicationsByType.mail}
               </p>
@@ -463,7 +463,7 @@ export default function Reports() {
 
             {/* System */}
             <div className="border-l-4 border-l-accent pl-4">
-              <p className="text-sm font-heading font-medium text-muted">System</p>
+              <p className="text-sm font-label font-medium text-muted">System</p>
               <p className="text-3xl font-mono font-bold text-text mt-2 tabular-nums">
                 {communicationMetrics.communicationsByType.system}
               </p>
@@ -472,13 +472,13 @@ export default function Reports() {
 
           <div className="mt-6 pt-6 border-t border-warm-200 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
-              <p className="text-sm font-heading font-medium text-muted">Properties with No Communications</p>
+              <p className="text-sm font-label font-medium text-muted">Properties with No Communications</p>
               <p className="text-2xl font-mono font-bold text-danger mt-1 tabular-nums">
                 {communicationMetrics.propertiesWithNoCommunications}
               </p>
             </div>
             <div>
-              <p className="text-sm font-heading font-medium text-muted">Properties Awaiting 1st Attempt</p>
+              <p className="text-sm font-label font-medium text-muted">Properties Awaiting 1st Attempt</p>
               <p className="text-2xl font-mono font-bold text-warning mt-1 tabular-nums">
                 {communicationMetrics.propertiesAwaitingFirstAttempt}
               </p>

@@ -397,12 +397,12 @@ export default function ActionQueue() {
                     <th className="px-3 py-3 text-left w-10">
                       <span className="sr-only">Select</span>
                     </th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Address</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Buyer</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Program</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider">Days Over</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Last Contact</th>
-                    <th className="px-3 py-3 text-left text-[11px] font-mono font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Level</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Address</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Buyer</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Program</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider">Days Over</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Last Contact</th>
+                    <th className="px-3 py-3 text-left text-[11px] font-label font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Level</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -524,7 +524,7 @@ export default function ActionQueue() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-surface-alt rounded-md px-4 py-3">
-                <p className="text-[11px] font-heading font-semibold text-muted uppercase tracking-wider mb-1">
+                <p className="text-[11px] font-label font-semibold text-muted uppercase tracking-wider mb-1">
                   Awaiting Response to 1st Attempt
                 </p>
                 <p className="text-xl font-mono font-semibold text-text tabular-nums">
@@ -532,7 +532,7 @@ export default function ActionQueue() {
                 </p>
               </div>
               <div className="bg-surface-alt rounded-md px-4 py-3">
-                <p className="text-[11px] font-heading font-semibold text-muted uppercase tracking-wider mb-1">
+                <p className="text-[11px] font-label font-semibold text-muted uppercase tracking-wider mb-1">
                   Awaiting Response to 2nd Attempt
                 </p>
                 <p className="text-xl font-mono font-semibold text-text tabular-nums">

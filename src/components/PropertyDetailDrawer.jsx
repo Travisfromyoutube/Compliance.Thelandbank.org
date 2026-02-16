@@ -73,12 +73,12 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
           <Card>
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Buyer Name</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Buyer Name</p>
                 <p className="text-text-primary font-medium">{property.buyerName}</p>
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Email</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Email</p>
                 <a
                   href={`mailto:${property.buyerEmail}`}
                   className="text-accent hover:underline flex items-center gap-1"
@@ -89,7 +89,7 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Organization</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Organization</p>
                 <p className="text-text-primary">{property.organization || '-'}</p>
               </div>
 
@@ -106,7 +106,7 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
           <Card>
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Current Action</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Current Action</p>
                 <div className="mt-1">
                   <StatusPill variant={getActionVariant(timing.currentAction)}>
                     {ACTION_LABELS[timing.currentAction] || timing.currentAction}
@@ -115,40 +115,40 @@ export function PropertyDetailDrawer({ property, timing, onClose, onPrepareEmail
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Due Date</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Due Date</p>
                 <p className="text-text-primary">
                   {timing.dueDate ? formatDate(timing.dueDate) : '-'}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Days Overdue</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Days Overdue</p>
                 <p className={timing.daysOverdue > 0 ? 'text-danger font-semibold font-mono' : 'text-text-primary'}>
                   {timing.daysOverdue}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Days Since Close</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Days Since Close</p>
                 <p className="text-text-primary font-mono">{timing.daysSinceClose}</p>
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Next Action</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Next Action</p>
                 <p className="text-text-primary">
                   {timing.nextAction ? ACTION_LABELS[timing.nextAction] : '-'}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Next Due Date</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Next Due Date</p>
                 <p className="text-text-primary">
                   {timing.nextDueDate ? formatDate(timing.nextDueDate) : '-'}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-heading font-medium text-text-muted uppercase tracking-wide">Recommended Level</p>
+                <p className="text-xs font-label font-medium text-text-muted uppercase tracking-wide">Recommended Level</p>
                 <p className="text-text-primary font-medium font-mono">{timing.recommendedEnforcementLevel || '-'}</p>
               </div>
             </div>

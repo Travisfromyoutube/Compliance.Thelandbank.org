@@ -32,7 +32,7 @@ function InlineStat({ label, value, color = 'text-text' }) {
   return (
     <div className="text-center min-w-[60px]">
       <p className={`text-xl font-mono font-semibold tabular-nums ${color}`}>{value}</p>
-      <p className="text-[10px] text-muted font-heading uppercase tracking-wider mt-0.5">{label}</p>
+      <p className="text-[10px] text-muted font-label uppercase tracking-wider mt-0.5">{label}</p>
     </div>
   );
 }
@@ -309,7 +309,7 @@ const Dashboard = () => {
               <span className="text-3xl font-display font-bold text-accent tabular-nums">
                 {complianceRate}%
               </span>
-              <span className="text-xs text-muted font-heading uppercase tracking-wider">
+              <span className="text-xs text-muted font-label uppercase tracking-wider">
                 Compliance Rate
               </span>
             </div>
@@ -413,7 +413,7 @@ const Dashboard = () => {
 
       {/* ── Section 4: Program Breakdown ─────────── */}
       <div className="animate-fade-slide-up admin-stagger-5">
-        <h2 className="font-heading text-sm font-semibold text-muted uppercase tracking-wider mb-3">
+        <h2 className="font-label text-sm font-semibold text-muted uppercase tracking-wider mb-3">
           Programs
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

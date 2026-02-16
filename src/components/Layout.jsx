@@ -73,7 +73,7 @@ function NavItem({ item, onClick }) {
           'group flex items-center gap-2.5 pl-9 pr-3 py-[7px] text-[13px] rounded-md transition-all duration-150',
           isActive
             ? 'bg-white/10 text-white font-medium shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
-            : 'text-blue-200/60 hover:bg-white/[0.05] hover:text-blue-100',
+            : 'text-blue-200/60 font-medium hover:bg-white/[0.05] hover:text-blue-100',
         ].join(' ')
       }
     >
@@ -101,7 +101,7 @@ function NavItemWithBadge({ item, onClick, badgeCount }) {
           'group flex items-center gap-2.5 pl-9 pr-3 py-[7px] text-[13px] rounded-md transition-all duration-150',
           isActive
             ? 'bg-white/10 text-white font-medium shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
-            : 'text-blue-200/60 hover:bg-white/[0.05] hover:text-blue-100',
+            : 'text-blue-200/60 font-medium hover:bg-white/[0.05] hover:text-blue-100',
         ].join(' ')
       }
     >
@@ -128,7 +128,7 @@ function SectionHeader({ section, isOpen, hasActiveChild, onClick }) {
     <Tag
       {...extraProps}
       className={[
-        'w-full flex items-center gap-2 px-3 py-2 text-[12px] font-mono font-semibold tracking-[0.08em] uppercase rounded-md transition-colors duration-150',
+        'w-full flex items-center gap-2 px-3 py-2 text-[12px] font-label font-semibold tracking-[0.08em] uppercase rounded-md transition-colors duration-150',
         isCollapsible ? 'cursor-pointer' : 'cursor-default',
         hasActiveChild
           ? 'text-accent bg-white/[0.06]'
@@ -247,7 +247,7 @@ function FileMakerSyncStatus() {
       >
         <div className="flex items-center gap-2 mb-2">
           <AppIcon icon={ICONS.database} size={13} className="text-blue-200/60" />
-          <span className="text-[11px] font-mono font-semibold tracking-[0.06em] uppercase text-blue-200/50">
+          <span className="text-[11px] font-label font-semibold tracking-[0.06em] uppercase text-blue-200/50">
             FileMaker Bridge
           </span>
         </div>
@@ -357,7 +357,7 @@ function Sidebar({ onNavClick }) {
             v1.1
           </span>
         </div>
-        <p className="text-[10px] font-mono text-blue-200/50 mt-1 tracking-[0.15em] uppercase">
+        <p className="text-[10px] font-label text-blue-200/50 mt-1 tracking-[0.15em] uppercase">
           Compliance Portal
         </p>
       </div>
@@ -511,7 +511,7 @@ export default function Layout() {
           </button>
           <div className="text-center">
             <h1 className="font-heading text-sm font-bold text-white tracking-tight">GCLBA</h1>
-            <p className="text-[9px] font-mono text-blue-200/60 tracking-widest uppercase">
+            <p className="text-[9px] font-label text-blue-200/60 tracking-widest uppercase">
               Compliance Portal
             </p>
           </div>

@@ -9,7 +9,8 @@ export default {
       fontFamily: {
         sans:    ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'system-ui', 'sans-serif'],
         heading: ['"Bitter"', 'Georgia', 'serif'],
-        mono:    ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        label:   ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        mono:    ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
         /* ── Near-neutral warm base ───────────────────────── */

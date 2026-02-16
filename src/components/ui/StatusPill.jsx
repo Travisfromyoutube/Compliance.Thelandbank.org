@@ -36,7 +36,7 @@ export function StatusPill({ children, variant, status, fmStatus, className = ''
     return (
       <span
         className={[
-          'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium tracking-wide border',
+          'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-label font-medium tracking-wide border',
           FM_COLOR_MAP[fmStatus],
           className,
         ].join(' ')}
@@ -50,7 +50,7 @@ export function StatusPill({ children, variant, status, fmStatus, className = ''
   return (
     <span
       className={[
-        'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium tracking-wide',
+        'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-label font-medium tracking-wide',
         VARIANT_STYLES[resolved] || VARIANT_STYLES.default,
         className,
       ].join(' ')}
