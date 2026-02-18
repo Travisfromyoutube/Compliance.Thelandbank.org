@@ -17,8 +17,13 @@ import {
   createRecord,
   updateRecord,
   getLayoutMetadata,
+  discoverLayoutFields,
   isConfigured,
   isCircuitOpen,
+  isContainerUrl,
+  downloadContainerField,
+  extractContainerUrls,
+  getAllPortalRecords,
 } from '../src/lib/filemakerClient.js';
 import {
   toFM,
@@ -53,7 +58,7 @@ export default withSentry(async function handler(req, res) {
   if (!action) {
     return res.status(400).json({
       error: 'Missing ?action= parameter',
-      valid: ['status', 'sync', 'push'],
+      valid: ['status', 'sync', 'push', 'discover'],
     });
   }
 
@@ -68,6 +73,9 @@ export default withSentry(async function handler(req, res) {
     case 'push':
       if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
       return handlePush(req, res);
+    case 'discover':
+      if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+      return handleDiscover(req, res);
     default:
       return res.status(400).json({ error: `Unknown action: ${action}` });
   }
@@ -203,6 +211,112 @@ async function handleStatus(req, res) {
 }
 
 /* ══════════════════════════════════════════════════════════
+ *  DISCOVER - Deep layout field discovery for TBD_ resolution
+ *
+ *  Run this with real FM credentials to discover all field names,
+ *  types, portals, and value lists on a layout. Compare the output
+ *  against PROPERTY_FIELD_MAP to find the actual FM names for
+ *  fields currently prefixed with TBD_.
+ *
+ *  GET /api/filemaker?action=discover
+ *  GET /api/filemaker?action=discover&layout=PARC+-+Form
+ * ══════════════════════════════════════════════════════════ */
+
+async function handleDiscover(req, res) {
+  if (!isConfigured()) {
+    return res.status(503).json({
+      error: 'FileMaker not configured',
+      hint: 'Set FM_SERVER_URL, FM_DATABASE, FM_USERNAME, FM_PASSWORD env vars',
+    });
+  }
+
+  const layouts = getLayouts();
+  const targetLayout = req.query.layout || layouts.properties;
+
+  try {
+    const discovery = await withSession(async (token) => {
+      const result = await discoverLayoutFields(token, targetLayout);
+
+      // Cross-reference with our field map to find TBD_ gaps
+      const allMaps = [
+        { name: 'PROPERTY_FIELD_MAP', map: PROPERTY_FIELD_MAP },
+        { name: 'BUYER_FIELD_MAP', map: BUYER_FIELD_MAP },
+        { name: 'SUBMISSION_FIELD_MAP', map: SUBMISSION_FIELD_MAP },
+        { name: 'COMMUNICATION_FIELD_MAP', map: COMMUNICATION_FIELD_MAP },
+      ];
+
+      const tdbs = [];
+      const confirmed = [];
+      const unmapped = [];
+
+      for (const { name: mapName, map } of allMaps) {
+        for (const [portalKey, fmKey] of Object.entries(map)) {
+          if (fmKey.startsWith('TBD_')) {
+            // Check if any discovered field could be a match
+            const candidates = result.fields.filter((f) =>
+              f.name.toLowerCase().includes(portalKey.toLowerCase().replace(/([A-Z])/g, ' $1').trim().toLowerCase().split(' ')[0])
+            );
+            tdbs.push({
+              portalKey,
+              currentMapping: fmKey,
+              mapSource: mapName,
+              possibleMatches: candidates.map((c) => c.name),
+            });
+          } else {
+            const found = result.fields.find((f) => f.name === fmKey);
+            confirmed.push({
+              portalKey,
+              fmKey,
+              found: !!found,
+              type: found?.result || null,
+            });
+          }
+        }
+      }
+
+      // Fields on the layout not mapped to anything in our portal
+      const allMappedFmKeys = new Set(
+        allMaps.flatMap(({ map }) => Object.values(map).filter((k) => !k.startsWith('TBD_')))
+      );
+      for (const f of result.fields) {
+        if (!allMappedFmKeys.has(f.name)) {
+          unmapped.push({ name: f.name, type: f.type, result: f.result });
+        }
+      }
+
+      return {
+        layout: targetLayout,
+        totalFields: result.fields.length,
+        fieldsByType: {
+          text: result.byType.text.length,
+          number: result.byType.number.length,
+          date: result.byType.date.length,
+          time: result.byType.time.length,
+          timestamp: result.byType.timestamp.length,
+          container: result.byType.container.length,
+        },
+        containerFields: result.byType.container.map((f) => f.name),
+        portals: Object.fromEntries(
+          Object.entries(result.portals).map(([k, v]) => [k, { fieldCount: v.length, fields: v.map((f) => f.name) }])
+        ),
+        valueLists: result.valueLists,
+        mapping: {
+          tdbFieldsNeedingResolution: tdbs,
+          confirmedMappings: confirmed.filter((c) => c.found),
+          brokenMappings: confirmed.filter((c) => !c.found),
+          unmappedFmFields: unmapped,
+        },
+      };
+    });
+
+    return res.status(200).json(discovery);
+  } catch (error) {
+    log.error('fm_discover_failed', { error: error.message });
+    return res.status(500).json({ error: 'Field discovery failed', detail: error.message });
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
  *  SYNC - Pull FM records into Neon (incremental delta)
  *
  *  Default mode is 'delta' - only pulls records modified
@@ -244,7 +358,7 @@ async function handleSync(req, res) {
     data: { status: 'running', errorMessage: null },
   });
 
-  const stats = { synced: 0, created: 0, updated: 0, skipped: 0, errors: [] };
+  const stats = { synced: 0, created: 0, updated: 0, skipped: 0, errors: [], containerUrls: [] };
 
   try {
     const layouts = getLayouts();
@@ -333,6 +447,17 @@ async function handleSync(req, res) {
       try {
         const propertyData = fromFM(fmRecord.fieldData, PROPERTY_FIELD_MAP);
         const buyerData = fromFM(fmRecord.fieldData, BUYER_FIELD_MAP);
+
+        // Detect container field URLs (photos/documents) for later download
+        // FM hosted returns temporary URLs (~15 min) for container fields.
+        // We collect them here; a separate job can download and re-store in Vercel Blob.
+        const containers = extractContainerUrls(fmRecord.fieldData);
+        if (containers.length > 0) {
+          stats.containerUrls.push({
+            parcelId: propertyData.parcelId || fmRecord.recordId,
+            fields: containers.map((c) => c.fieldName),
+          });
+        }
 
         // Normalize programType from rule key to display name (UI expects display names)
         if (propertyData.programType) {

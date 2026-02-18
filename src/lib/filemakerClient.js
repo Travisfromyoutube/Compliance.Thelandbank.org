@@ -6,6 +6,14 @@
  * to avoid login/logout per request. Circuit breaker backs off after
  * 3 consecutive failures.
  *
+ * Features:
+ *   - Script-mode writes (entrymode/prohibitmode) to bypass FM field validation
+ *   - Portal pagination for related record fetches
+ *   - Container field URL resolution (hosted FM returns temp URLs)
+ *   - Layout metadata discovery for TBD_ field name resolution
+ *   - Duplicate record support
+ *   - FM error code classification (auth, validation, not-found, etc.)
+ *
  * Env vars required:
  *   FM_SERVER_URL  - base URL (e.g. https://fm.example.com or Cloudflare Tunnel URL)
  *   FM_DATABASE    - FileMaker database name
@@ -29,6 +37,38 @@ const SESSION_TTL_SECONDS = 840; // 14 minutes (FM expires at 15)
 const FM_CIRCUIT_KEY = 'fm:circuit';
 const CIRCUIT_OPEN_DURATION_SECONDS = 300; // 5 minutes
 const FAILURE_THRESHOLD = 3;
+
+/* ── FM error code classification ──────────────────────────
+ * Common Data API error codes. Used by fmRequest() to attach
+ * a category to thrown errors so callers can branch without
+ * memorizing numeric codes.
+ * Ref: https://help.claris.com/en/pro-help/content/error-codes.html
+ * ──────────────────────────────────────────────────────────── */
+
+export const FM_ERROR = Object.freeze({
+  NO_RECORDS:       '401',  // No records match the request
+  RECORD_MISSING:   '101',  // Record is missing
+  FIELD_MISSING:    '102',  // Field is missing
+  LAYOUT_MISSING:   '105',  // Layout is missing
+  VALIDATION:       '500',  // Date value does not meet validation entry options
+  VALIDATION_RANGE: '503',  // Value in field is not within the range
+  SESSION_EXPIRED:  '952',  // Session token is invalid or expired
+  FILE_LOCKED:      '301',  // Record is locked by another user
+  RECORD_LOCKED:    '306',  // Record modification ID does not match
+});
+
+/**
+ * Classify an FM error code into a category for conditional handling.
+ * @param {string} code - FM error code string
+ * @returns {'auth'|'not_found'|'validation'|'conflict'|'unknown'}
+ */
+export function classifyFMError(code) {
+  if (code === '952' || code === '212') return 'auth';
+  if (code === '401' || code === '101' || code === '105') return 'not_found';
+  if (code >= '500' && code <= '511') return 'validation';
+  if (code === '301' || code === '306') return 'conflict';
+  return 'unknown';
+}
 
 let redis = null;
 function getRedis() {
@@ -223,10 +263,61 @@ async function fmRequest(token, method, path, body = null) {
     const err = new Error(`FileMaker error ${code}: ${msg}`);
     err.fmCode = code;
     err.fmMessage = msg;
+    err.fmCategory = classifyFMError(code);
     throw err;
   }
 
   return data.response;
+}
+
+/* ── Write options ──────────────────────────────────────── */
+
+/**
+ * Default write options for portal-to-FM operations.
+ * entrymode: "script" bypasses FM field validation rules.
+ * prohibitmode: "script" ignores "prohibit modification" settings.
+ *
+ * These are essential for API writes because FM validation rules
+ * are designed for human data entry, not programmatic access.
+ * Without them, auto-enter serial numbers, required field checks,
+ * and range validations can silently reject API writes.
+ */
+const DEFAULT_WRITE_OPTS = Object.freeze({
+  entrymode: 'script',
+  prohibitmode: 'script',
+});
+
+/**
+ * Build a write request body with fieldData + optional FM options.
+ *
+ * @param {object} fieldData - FM field names to values
+ * @param {object} [opts] - { entrymode, prohibitmode, modId, portalData, script }
+ * @returns {object} request body for FM Data API
+ */
+function buildWriteBody(fieldData, opts = {}) {
+  const body = { fieldData };
+
+  // Entry/prohibit modes - default to "script" for API writes
+  const entrymode = opts.entrymode ?? DEFAULT_WRITE_OPTS.entrymode;
+  const prohibitmode = opts.prohibitmode ?? DEFAULT_WRITE_OPTS.prohibitmode;
+  if (entrymode) body.entrymode = entrymode;
+  if (prohibitmode) body.prohibitmode = prohibitmode;
+
+  // Modification ID for optimistic locking (update only)
+  if (opts.modId) body.modId = opts.modId;
+
+  // Portal data for creating/updating related records
+  if (opts.portalData) body.portalData = opts.portalData;
+
+  // FM script triggers (pre-request, pre-sort, after)
+  if (opts.script) body['script'] = opts.script;
+  if (opts.scriptParam) body['script.param'] = opts.scriptParam;
+  if (opts.preRequestScript) body['script.prerequest'] = opts.preRequestScript;
+  if (opts.preRequestParam) body['script.prerequest.param'] = opts.preRequestParam;
+  if (opts.preSortScript) body['script.presort'] = opts.preSortScript;
+  if (opts.preSortParam) body['script.presort.param'] = opts.preSortParam;
+
+  return body;
 }
 
 /* ── CRUD operations ────────────────────────────────────── */
@@ -236,7 +327,11 @@ async function fmRequest(token, method, path, body = null) {
  *
  * @param {string} token
  * @param {string} layout - FM layout name
- * @param {object} [opts] - { limit, offset, sort }
+ * @param {object} [opts] - { limit, offset, sort, portals, portalLimits }
+ *
+ * Portal pagination:
+ *   portals: ['BuyerPortal'] - portal names to include
+ *   portalLimits: { BuyerPortal: { offset: 1, limit: 50 } }
  */
 export async function getRecords(token, layout, opts = {}) {
   const params = new URLSearchParams();
@@ -248,6 +343,24 @@ export async function getRecords(token, layout, opts = {}) {
     ));
   }
 
+  // Portal configuration - specify which portals to include and their pagination
+  if (opts.portals) {
+    params.set('portal', JSON.stringify(
+      Array.isArray(opts.portals) ? opts.portals : [opts.portals]
+    ));
+  }
+  if (opts.portalLimits) {
+    for (const [portalName, pl] of Object.entries(opts.portalLimits)) {
+      if (pl.offset) params.set(`_offset.${portalName}`, pl.offset);
+      if (pl.limit) params.set(`_limit.${portalName}`, pl.limit);
+    }
+  }
+
+  // Response layout - retrieve data in a different layout context
+  if (opts.responseLayout) {
+    params.set('layout.response', opts.responseLayout);
+  }
+
   const qs = params.toString();
   const path = `layouts/${encodeURIComponent(layout)}/records${qs ? `?${qs}` : ''}`;
   return fmRequest(token, 'GET', path);
@@ -255,9 +368,32 @@ export async function getRecords(token, layout, opts = {}) {
 
 /**
  * Get a single record by FM recordId.
+ *
+ * @param {string} token
+ * @param {string} layout
+ * @param {string} recordId
+ * @param {object} [opts] - { portals, portalLimits, responseLayout }
  */
-export async function getRecord(token, layout, recordId) {
-  const path = `layouts/${encodeURIComponent(layout)}/records/${recordId}`;
+export async function getRecord(token, layout, recordId, opts = {}) {
+  const params = new URLSearchParams();
+
+  if (opts.portals) {
+    params.set('portal', JSON.stringify(
+      Array.isArray(opts.portals) ? opts.portals : [opts.portals]
+    ));
+  }
+  if (opts.portalLimits) {
+    for (const [portalName, pl] of Object.entries(opts.portalLimits)) {
+      if (pl.offset) params.set(`_offset.${portalName}`, pl.offset);
+      if (pl.limit) params.set(`_limit.${portalName}`, pl.limit);
+    }
+  }
+  if (opts.responseLayout) {
+    params.set('layout.response', opts.responseLayout);
+  }
+
+  const qs = params.toString();
+  const path = `layouts/${encodeURIComponent(layout)}/records/${recordId}${qs ? `?${qs}` : ''}`;
   return fmRequest(token, 'GET', path);
 }
 
@@ -267,13 +403,27 @@ export async function getRecord(token, layout, recordId) {
  * @param {string} token
  * @param {string} layout
  * @param {Array<object>} query - FM find criteria, e.g. [{ ParcelID: "41-06-..." }]
- * @param {object} [opts]       - { sort, limit, offset }
+ * @param {object} [opts]       - { sort, limit, offset, portals, portalLimits, responseLayout }
  */
 export async function findRecords(token, layout, query, opts = {}) {
   const body = { query };
   if (opts.sort) body.sort = Array.isArray(opts.sort) ? opts.sort : [opts.sort];
   if (opts.limit) body.limit = String(opts.limit);
   if (opts.offset) body.offset = String(opts.offset);
+
+  // Portal configuration for find requests
+  if (opts.portals) {
+    body.portal = Array.isArray(opts.portals) ? opts.portals : [opts.portals];
+  }
+  if (opts.portalLimits) {
+    for (const [portalName, pl] of Object.entries(opts.portalLimits)) {
+      if (pl.offset) body[`offset.${portalName}`] = String(pl.offset);
+      if (pl.limit) body[`limit.${portalName}`] = String(pl.limit);
+    }
+  }
+  if (opts.responseLayout) {
+    body['layout.response'] = opts.responseLayout;
+  }
 
   const path = `layouts/${encodeURIComponent(layout)}/_find`;
   return fmRequest(token, 'POST', path, body);
@@ -282,27 +432,48 @@ export async function findRecords(token, layout, query, opts = {}) {
 /**
  * Create a new record.
  *
+ * Uses script-mode entry by default to bypass FM field validation,
+ * which is designed for human data entry and can reject API writes.
+ *
  * @param {string} token
  * @param {string} layout
- * @param {object} fieldData - FM field names → values
+ * @param {object} fieldData - FM field names to values
+ * @param {object} [opts] - { entrymode, prohibitmode, portalData, script, scriptParam }
  * @returns {{ recordId: string, modId: string }}
  */
-export async function createRecord(token, layout, fieldData) {
+export async function createRecord(token, layout, fieldData, opts = {}) {
   const path = `layouts/${encodeURIComponent(layout)}/records`;
-  return fmRequest(token, 'POST', path, { fieldData });
+  return fmRequest(token, 'POST', path, buildWriteBody(fieldData, opts));
 }
 
 /**
  * Update an existing record.
  *
+ * Uses script-mode entry by default. Pass modId for optimistic locking -
+ * FM returns error 306 if the record was modified since you last read it.
+ *
  * @param {string} token
  * @param {string} layout
  * @param {string} recordId - FM internal record ID
  * @param {object} fieldData - only fields to update
+ * @param {object} [opts] - { entrymode, prohibitmode, modId, portalData, script }
  */
-export async function updateRecord(token, layout, recordId, fieldData) {
+export async function updateRecord(token, layout, recordId, fieldData, opts = {}) {
   const path = `layouts/${encodeURIComponent(layout)}/records/${recordId}`;
-  return fmRequest(token, 'PATCH', path, { fieldData });
+  return fmRequest(token, 'PATCH', path, buildWriteBody(fieldData, opts));
+}
+
+/**
+ * Duplicate an existing record.
+ *
+ * @param {string} token
+ * @param {string} layout
+ * @param {string} recordId - FM record ID to duplicate
+ * @returns {{ recordId: string, modId: string }}
+ */
+export async function duplicateRecord(token, layout, recordId) {
+  const path = `layouts/${encodeURIComponent(layout)}/records/${recordId}`;
+  return fmRequest(token, 'POST', path);
 }
 
 /**
@@ -354,10 +525,176 @@ export async function uploadToContainer(token, layout, recordId, fieldName, file
 
 /**
  * Get field metadata for a layout (useful for mapping validation).
+ * Returns field names, types, value lists, and portal info.
  */
 export async function getLayoutMetadata(token, layout) {
   const path = `layouts/${encodeURIComponent(layout)}`;
   return fmRequest(token, 'GET', path);
+}
+
+/**
+ * Discover all field names on a layout, organized by type.
+ * This is the primary tool for resolving TBD_ field names -
+ * run this with real FM credentials and compare against the field map.
+ *
+ * @param {string} token
+ * @param {string} layout
+ * @returns {{ fields: Array<{name,type,result}>, portals: object, valueLists: object }}
+ */
+export async function discoverLayoutFields(token, layout) {
+  const meta = await getLayoutMetadata(token, layout);
+
+  const fields = (meta.fieldMetaData || []).map((f) => ({
+    name: f.name,
+    type: f.type,        // Normal, Calculation, Summary
+    result: f.result,    // Text, Number, Date, Time, Timestamp, Container
+    maxRepeat: f.maxRepeat,
+    global: f.global === 'Yes',
+    autoEnter: f.autoEnter === 'Yes',
+  }));
+
+  // Portal metadata - shows which portals exist and their fields
+  const portals = {};
+  if (meta.portalMetaData) {
+    for (const [portalName, portalFields] of Object.entries(meta.portalMetaData)) {
+      portals[portalName] = (portalFields || []).map((f) => ({
+        name: f.name,
+        type: f.type,
+        result: f.result,
+      }));
+    }
+  }
+
+  // Value lists - useful for understanding checkbox/radio constraints
+  const valueLists = {};
+  if (meta.valueLists) {
+    for (const vl of meta.valueLists) {
+      valueLists[vl.name] = vl.values?.map((v) => v.value) || [];
+    }
+  }
+
+  // Categorize fields by result type for easy scanning
+  const byType = {
+    text: fields.filter((f) => f.result === 'Text'),
+    number: fields.filter((f) => f.result === 'Number'),
+    date: fields.filter((f) => f.result === 'Date'),
+    time: fields.filter((f) => f.result === 'Time'),
+    timestamp: fields.filter((f) => f.result === 'Timestamp'),
+    container: fields.filter((f) => f.result === 'Container'),
+  };
+
+  return { fields, byType, portals, valueLists };
+}
+
+/* ── Container field handling ──────────────────────────────
+ * When FM is hosted on FileMaker Server/Cloud, container field
+ * values in API responses are temporary URLs (~15 min lifetime).
+ * When opened locally, only the filename is returned.
+ *
+ * These helpers detect container URLs and download the content
+ * for re-storage in your own blob storage (Vercel Blob).
+ * ──────────────────────────────────────────────────────────── */
+
+/**
+ * Check if a value looks like a hosted FM container URL.
+ * Hosted FM returns URLs like: https://fm.example.com/Streaming_SSL/...
+ *
+ * @param {string} value - field value from FM response
+ * @returns {boolean}
+ */
+export function isContainerUrl(value) {
+  if (!value || typeof value !== 'string') return false;
+  return value.startsWith('https://') && value.includes('/Streaming_SSL/');
+}
+
+/**
+ * Download a file from an FM container field URL.
+ * Container URLs are temporary (~15 min) and require the session token.
+ *
+ * @param {string} token - FM session token (used as Bearer auth)
+ * @param {string} containerUrl - the temporary URL from the FM response
+ * @returns {Promise<{ buffer: Buffer, contentType: string, filename: string }>}
+ */
+export async function downloadContainerField(token, containerUrl) {
+  const res = await fetch(containerUrl, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    throw new Error(`FM container download failed (${res.status}): ${containerUrl}`);
+  }
+
+  const contentType = res.headers.get('content-type') || 'application/octet-stream';
+
+  // FM sets Content-Disposition header with the original filename
+  const disposition = res.headers.get('content-disposition') || '';
+  const filenameMatch = disposition.match(/filename[*]?=(?:UTF-8'')?["']?([^"';\n]+)/i);
+  const filename = filenameMatch
+    ? decodeURIComponent(filenameMatch[1])
+    : `container-${Date.now()}`;
+
+  const buffer = Buffer.from(await res.arrayBuffer());
+
+  return { buffer, contentType, filename };
+}
+
+/**
+ * Extract container field URLs from an FM record's fieldData.
+ * Scans all fields and returns those that look like container URLs,
+ * paired with their field names.
+ *
+ * @param {object} fieldData - FM record fieldData
+ * @returns {Array<{ fieldName: string, url: string }>}
+ */
+export function extractContainerUrls(fieldData) {
+  const containers = [];
+  for (const [fieldName, value] of Object.entries(fieldData)) {
+    if (isContainerUrl(value)) {
+      containers.push({ fieldName, url: value });
+    }
+  }
+  return containers;
+}
+
+/* ── Portal record helpers ─────────────────────────────────
+ * GCLBA stores buyers as portal (related) records on the property
+ * layout. The default portal limit is 50 records. These helpers
+ * make it easy to fetch all portal records with pagination.
+ * ──────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch all portal records for a given record, paginating if needed.
+ * FM's default portal limit is 50; this fetches in pages until exhausted.
+ *
+ * @param {string} token
+ * @param {string} layout
+ * @param {string} recordId - FM record ID
+ * @param {string} portalName - portal object name or related table name
+ * @param {number} [pageSize=50] - records per page
+ * @returns {Promise<Array<object>>} all portal records
+ */
+export async function getAllPortalRecords(token, layout, recordId, portalName, pageSize = 50) {
+  const allRecords = [];
+  let offset = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const result = await getRecord(token, layout, recordId, {
+      portals: [portalName],
+      portalLimits: { [portalName]: { offset, limit: pageSize } },
+    });
+
+    const portalData = result.data?.[0]?.portalData?.[portalName] || [];
+    allRecords.push(...portalData);
+
+    if (portalData.length < pageSize) {
+      hasMore = false;
+    } else {
+      offset += pageSize;
+    }
+  }
+
+  return allRecords;
 }
 
 /* ── Convenience: session-scoped operation ──────────────── */
