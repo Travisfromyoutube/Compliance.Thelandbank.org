@@ -160,45 +160,52 @@ export default function Properties() {
       />
 
       {/* Filter Bar */}
-      <div className="bg-warm-100 rounded-lg border border-warm-200 p-5 animate-fade-slide-up admin-stagger-2">
-        <h3 className="font-heading text-sm font-semibold text-text mb-4">Filters</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FormField label="Search">
+      <div className="animate-fade-slide-up admin-stagger-2">
+        <div className="flex flex-col md:flex-row md:items-end gap-3">
+          <div className="flex-1 min-w-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
               <TextInput
-                placeholder="Address, Parcel ID, Buyer..."
+                placeholder="Search by address, parcel ID, or buyer..."
                 value={searchTerm}
                 onChange={(value) => setSearchTerm(value)}
                 className="pl-10"
               />
             </div>
-          </FormField>
-
-          <FormField label="Program Type">
-            <SelectInput
-              value={programFilter}
-              onChange={(value) => setProgramFilter(value)}
-              options={[
-                { value: '', label: 'All Programs' },
-                ...programOptions
-              ]}
-            />
-          </FormField>
-
-          <FormField label="Compliance Level">
-            <SelectInput
-              value={enforcementFilter}
-              onChange={(value) => setEnforcementFilter(value)}
-              options={[
-                { value: '', label: 'All Levels' },
-                { value: '0', label: 'Compliant' },
-                { value: '1', label: 'Warning' },
-                { value: '2', label: 'Watch' },
-                { value: '3', label: 'Danger' }
-              ]}
-            />
-          </FormField>
+          </div>
+          <div className="flex gap-3 flex-shrink-0">
+            <div className="w-40">
+              <SelectInput
+                value={programFilter}
+                onChange={(value) => setProgramFilter(value)}
+                options={[
+                  { value: '', label: 'All Programs' },
+                  ...programOptions
+                ]}
+              />
+            </div>
+            <div className="w-40">
+              <SelectInput
+                value={enforcementFilter}
+                onChange={(value) => setEnforcementFilter(value)}
+                options={[
+                  { value: '', label: 'All Levels' },
+                  { value: '0', label: 'Compliant' },
+                  { value: '1', label: 'Warning' },
+                  { value: '2', label: 'Watch' },
+                  { value: '3', label: 'Danger' }
+                ]}
+              />
+            </div>
+          </div>
+          {(searchTerm || programFilter || enforcementFilter) && (
+            <button
+              onClick={() => { setSearchTerm(''); setProgramFilter(''); setEnforcementFilter(''); }}
+              className="text-xs text-muted hover:text-accent transition-colors flex-shrink-0 pb-2"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       </div>
 

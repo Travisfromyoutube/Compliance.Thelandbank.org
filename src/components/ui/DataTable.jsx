@@ -126,9 +126,8 @@ export function DataTable({
                   key={row.id || rowIdx}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   className={[
-                    'transition-colors',
+                    'transition-colors border-b border-warm-200/40 last:border-b-0',
                     groupHover ? 'group' : '',
-                    rowIdx % 2 === 1 ? 'bg-warm-100/50' : '',
                     onRowClick ? 'cursor-pointer hover:bg-accent/5' : '',
                     rowClassName ? rowClassName(row) : '',
                   ]

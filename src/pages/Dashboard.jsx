@@ -27,36 +27,32 @@ function getGreeting(hour) {
   return 'Good evening';
 }
 
-/* ── Inline stat (compact number + label) ──────── */
-function InlineStat({ label, value, color = 'text-text' }) {
+/* ── Scorecard stat (editorial inline) ────────── */
+function ScorecardStat({ label, value, accent }) {
   return (
-    <div className="text-center min-w-[60px]">
-      <p className={`text-xl font-mono font-semibold tabular-nums ${color}`}>{value}</p>
-      <p className="text-[10px] text-muted font-label uppercase tracking-wider mt-0.5">{label}</p>
-    </div>
+    <span className="inline-flex items-baseline gap-1.5">
+      <span className={`text-lg font-mono font-semibold tabular-nums ${accent || 'text-text'}`}>{value}</span>
+      <span className="text-[11px] text-muted font-label">{label}</span>
+    </span>
   );
 }
 
-/* ── Action-need card (icon + count + context) ─── */
-function ActionNeedCard({ icon, count, label, sublabel, variant = 'warning' }) {
-  const colors = {
-    warning: { bg: 'bg-warning-light', text: 'text-warning', iconBg: 'bg-warning/15' },
-    danger:  { bg: 'bg-danger-light',  text: 'text-danger',  iconBg: 'bg-danger/15' },
-  };
-  const c = colors[variant] || colors.warning;
-
+/* ── Action-need line item (editorial inline) ─── */
+function ActionNeedLine({ icon, count, label, sublabel, isUrgent }) {
+  if (count === 0) return null;
   return (
-    <div className={`flex items-start gap-3 p-3.5 rounded-lg ${c.bg}`}>
-      <div className={`flex-shrink-0 w-8 h-8 rounded-md ${c.iconBg} flex items-center justify-center`}>
-        <AppIcon icon={icon} size={16} className={c.text} />
+    <div className="flex items-center gap-3 py-2.5">
+      <AppIcon icon={icon} size={14} className={isUrgent ? 'text-danger' : 'text-muted'} />
+      <span className={`font-mono font-semibold tabular-nums text-sm ${isUrgent ? 'text-danger' : 'text-text'}`}>
+        {count}
+      </span>
+      <div className="flex-1 min-w-0">
+        <span className="text-sm text-text">{label}</span>
+        <span className="text-xs text-muted ml-2 hidden sm:inline">- {sublabel}</span>
       </div>
-      <div className="min-w-0">
-        <div className="flex items-baseline gap-2">
-          <span className={`text-lg font-mono font-bold tabular-nums ${c.text}`}>{count}</span>
-          <span className="text-xs font-medium text-text truncate">{label}</span>
-        </div>
-        <p className="text-[10px] text-muted mt-0.5">{sublabel}</p>
-      </div>
+      {isUrgent && (
+        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-danger" />
+      )}
     </div>
   );
 }
@@ -302,97 +298,90 @@ const Dashboard = () => {
 
       {/* ── Section 1: Compliance Scorecard ──────── */}
       <div className="animate-fade-slide-up admin-stagger-2">
-        <div className="flex flex-wrap items-center gap-8 py-4 border-b border-warm-200/60">
-          {/* Hero stat: compliance rate */}
-          <div className="flex-shrink-0">
-            <div className="flex items-baseline gap-2.5">
-              <span className="text-3xl font-heading font-bold text-accent tabular-nums">
-                {complianceRate}%
+        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-0 py-4 border-b border-warm-200/60">
+          {/* Left: editorial compliance rate */}
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] font-label uppercase tracking-widest text-muted mb-1">Portfolio Compliance</p>
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-heading font-bold text-text tabular-nums tracking-tight">
+                {complianceRate}
               </span>
-              <span className="text-xs text-muted font-label uppercase tracking-wider">
-                Compliance Rate
-              </span>
+              <span className="text-lg font-heading font-bold text-muted">%</span>
             </div>
-            <div className="mt-2 h-1.5 w-36 bg-warm-200/60 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-accent rounded-full transition-all duration-700 ease-out"
-                style={{ width: `${complianceRate}%` }}
-              />
-            </div>
+            <p className="text-xs text-muted mt-1">
+              {stats.compliantCount} of {stats.totalActiveCases} active properties on track
+            </p>
           </div>
 
-          {/* Divider */}
-          <div className="hidden sm:block w-px h-10 bg-warm-200/60" />
-
-          {/* Inline stat group */}
-          <div className="flex items-center gap-6">
-            <InlineStat label="Active" value={stats.totalActiveCases} />
-            <InlineStat label="On Track" value={stats.compliantCount} color="text-success" />
-            <InlineStat label="Attention" value={stats.warningCount} color="text-warning" />
-            <InlineStat label="At Risk" value={stats.defaultCount} color="text-danger" />
+          {/* Right: compact stat strip with separator dots */}
+          <div className="flex items-baseline gap-3 text-sm flex-shrink-0">
+            <ScorecardStat label="active" value={stats.totalActiveCases} />
+            <span className="text-warm-300">&#183;</span>
+            <ScorecardStat label="on track" value={stats.compliantCount} accent="text-accent" />
+            <span className="text-warm-300">&#183;</span>
+            <ScorecardStat label="attention" value={stats.warningCount} accent="text-warning" />
+            <span className="text-warm-300">&#183;</span>
+            <ScorecardStat label="at risk" value={stats.defaultCount} accent="text-danger" />
           </div>
         </div>
       </div>
 
       {/* ── Section 2: Needs Your Attention ──────── */}
-      <div className="animate-fade-slide-up admin-stagger-3">
-        <Card variant={actionStats.total > 5 ? 'danger' : actionStats.total > 0 ? 'warning' : 'success'}>
-          <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
-            <div>
-              <h2 className="font-heading text-base font-semibold text-text">
-                Needs Your Attention
+      {actionStats.total > 0 && (
+        <div className="animate-fade-slide-up admin-stagger-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="w-1 h-5 rounded-full bg-warning" />
+              <h2 className="font-label text-xs font-semibold text-muted uppercase tracking-widest">
+                Needs Attention
               </h2>
-              <p className="text-xs text-muted mt-0.5">
-                {actionStats.total} item{actionStats.total !== 1 ? 's' : ''} require action
-              </p>
+              <span className="text-xs font-mono text-warning tabular-nums">{actionStats.total}</span>
             </div>
             <Link
               to="/action-queue"
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent/10 text-accent text-sm font-medium hover:bg-accent/20 transition-colors"
+              className="group inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:text-accent-dark transition-colors"
             >
-              <AppIcon icon={ICONS.actionQueue} size={15} />
-              <span>Open Action Queue</span>
-              <AppIcon icon={ICONS.arrowRight} size={13} className="group-hover:translate-x-0.5 transition-transform" />
+              <span>Action Queue</span>
+              <AppIcon icon={ICONS.arrowRight} size={12} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <ActionNeedCard
+          <div className="bg-surface rounded-lg border border-border p-4 divide-y divide-warm-200/50">
+            <ActionNeedLine
               icon={ICONS.warning}
               count={actionStats.needs1st}
-              label="Need 1st Contact"
-              sublabel="No outreach attempt on file"
-              variant="warning"
+              label="Need 1st contact"
+              sublabel="no outreach attempt on file"
             />
-            <ActionNeedCard
+            <ActionNeedLine
               icon={ICONS.clock}
               count={actionStats.needs2nd}
-              label="Need Follow-Up"
+              label="Need follow-up"
               sublabel="1st attempt sent, no response"
-              variant="warning"
             />
-            <ActionNeedCard
+            <ActionNeedLine
               icon={ICONS.alert}
               count={actionStats.noEmail}
-              label="Missing Email"
-              sublabel="Cannot send electronic notice"
-              variant="danger"
+              label="Missing email address"
+              sublabel="cannot send electronic notice"
+              isUrgent
             />
           </div>
-        </Card>
-      </div>
+        </div>
+      )}
 
       {/* ── Section 3: Overdue Properties ────────── */}
       <div className="animate-fade-slide-up admin-stagger-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading text-base font-semibold text-text">
-            Overdue Properties
-          </h2>
-          {tableData.length > 0 && (
-            <span className="text-xs font-mono font-medium text-danger bg-danger-light px-2.5 py-1 rounded-full tabular-nums">
-              {tableData.length} overdue
-            </span>
-          )}
+          <div className="flex items-center gap-2.5">
+            <span className={`w-1 h-5 rounded-full ${tableData.length > 0 ? 'bg-danger' : 'bg-accent'}`} />
+            <h2 className="font-label text-xs font-semibold text-muted uppercase tracking-widest">
+              Overdue Properties
+            </h2>
+            {tableData.length > 0 && (
+              <span className="text-xs font-mono text-danger tabular-nums">{tableData.length}</span>
+            )}
+          </div>
         </div>
         {tableData.length > 0 ? (
           <DataTable
@@ -413,21 +402,24 @@ const Dashboard = () => {
 
       {/* ── Section 4: Program Breakdown ─────────── */}
       <div className="animate-fade-slide-up admin-stagger-5">
-        <h2 className="font-label text-sm font-semibold text-muted uppercase tracking-wider mb-3">
-          Programs
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { label: 'Featured Homes', value: stats.programBreakdown.featuredHomes },
-            { label: 'Ready4Rehab', value: stats.programBreakdown.r4r },
-            { label: 'Demolition', value: stats.programBreakdown.demo },
-            { label: 'VIP', value: stats.programBreakdown.vip },
-          ].map(({ label, value }) => (
-            <div key={label} className="flex items-center gap-3 p-3.5 rounded-lg bg-surface border border-border hover:shadow-md hover:border-accent/20 transition-all duration-150 cursor-default">
-              <p className="text-lg font-mono font-semibold text-text tabular-nums">{value}</p>
-              <p className="text-xs text-muted">{label}</p>
-            </div>
-          ))}
+        <div className="flex items-center gap-3 py-3 border-t border-warm-200/60">
+          <p className="text-[11px] font-label uppercase tracking-widest text-muted flex-shrink-0">By Program</p>
+          <div className="flex items-baseline gap-4 flex-wrap">
+            {[
+              { label: 'Featured Homes', value: stats.programBreakdown.featuredHomes },
+              { label: 'Ready4Rehab', value: stats.programBreakdown.r4r },
+              { label: 'Demolition', value: stats.programBreakdown.demo },
+              { label: 'VIP', value: stats.programBreakdown.vip },
+            ].map(({ label, value }, i, arr) => (
+              <React.Fragment key={label}>
+                <span className="inline-flex items-baseline gap-1.5">
+                  <span className="text-sm font-mono font-semibold tabular-nums text-text">{value}</span>
+                  <span className="text-xs text-muted">{label}</span>
+                </span>
+                {i < arr.length - 1 && <span className="text-warm-300 text-xs">&#183;</span>}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </div>

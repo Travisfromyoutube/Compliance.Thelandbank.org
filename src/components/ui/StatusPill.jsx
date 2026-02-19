@@ -1,7 +1,8 @@
 import React from 'react';
 
 const VARIANT_STYLES = {
-  default: 'bg-surface-alt text-text-secondary',
+  default: 'bg-warm-100 text-warm-500',
+  muted:   'bg-warm-100 text-warm-500',
   success: 'bg-success-light text-success',
   warning: 'bg-warning-light text-warning',
   danger:  'bg-danger-light text-danger',
@@ -12,6 +13,9 @@ const STATUS_TO_VARIANT = {
   compliant:          'success',
   'on-track':         'success',
   completed:          'success',
+  pending:            'muted',
+  'awaiting':         'muted',
+  'in-progress':      'info',
   watch:              'warning',
   'due-soon':         'warning',
   'needs-attention':  'warning',
